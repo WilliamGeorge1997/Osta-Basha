@@ -1,0 +1,6 @@
+{
+    "Common": false,
+    "Admin": true,
+    "Client": true,
+    "Provider": true
+}
