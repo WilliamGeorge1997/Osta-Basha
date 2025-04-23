@@ -13,6 +13,7 @@ use Modules\Client\App\Http\Requests\ClientLoginRequest;
 use Modules\Client\App\Http\Requests\ClientVerifyRequest;
 use Modules\Client\App\Http\Requests\ClientRegisterRequest;
 use Modules\Client\App\Http\Requests\CheckPhoneExistsRequest;
+use Modules\Client\App\Http\Requests\ClientLoginOrRegisterRequest;
 
 
 class ClientAuthController extends Controller
@@ -26,9 +27,38 @@ class ClientAuthController extends Controller
      */
     public function __construct(ClientService $clientService)
     {
-        $this->middleware('auth:client', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists']]);
+        $this->middleware('auth:client', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists', 'loginOrRegister']]);
         $this->clientService = $clientService;
 
+    }
+
+    public function loginOrRegister(ClientLoginOrRegisterRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $client = Client::where('phone', $request->phone)->first();
+            if ($client) {
+                $credentials = $request->validated();
+                if (!$token = auth('client')->attempt($credentials)) {
+                    return returnValidationMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'unauthorized');
+                }
+                if (auth('client')->user()['is_active'] == 0) {
+                    return returnMessage(false, 'In-Active Client Verification Required', null, 'temporary_redirect');
+                }
+                if ($request['fcm_token'] ?? null) {
+                    auth('client')->user()->update(['fcm_token' => $request->fcm_token]);
+                }
+                DB::commit();
+                return $this->respondWithToken($token);
+            }
+            $data = (new ClientDto($request))->dataFromRequest();
+            $this->clientService->create($data);
+            DB::commit();
+            return returnMessage(true, 'Client Registered Successfully', null);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
     }
 
     public function register(ClientRegisterRequest $request)

@@ -20,32 +20,16 @@ use Modules\Client\App\Http\Controllers\Api\PhoneVerificationController;
 Route::group([
     'prefix' => 'client'
 ], function ($router) {
+    Route::post('authenticate', [ClientAuthController::class, 'loginOrRegister']);
     Route::group(['prefix' => 'auth'], function ($router) {
-        Route::post('login', [ClientAuthController::class, 'login']);
+        // Route::post('login', [ClientAuthController::class, 'login']);
+        // Route::post('register', [ClientAuthController::class, 'register']);
         Route::post('logout', [ClientAuthController::class, 'logout']);
-        Route::post('register', [ClientAuthController::class, 'register']);
         Route::post('verify', [ClientAuthController::class, 'verifyOtp']);
         Route::post('refresh', [ClientAuthController::class, 'refresh']);
         Route::post('me', [ClientAuthController::class, 'me']);
-        Route::post('check-phone-exists', [ClientAuthController::class, 'checkPhoneExists']);
+        // Route::post('check-phone-exists', [ClientAuthController::class, 'checkPhoneExists']);
     });
     Route::post('change-password', [ClientController::class, 'changePassword']);
     Route::post('update-profile', [ClientController::class, 'updateProfile']);
-});
-
-
-Route::prefix('client')->middleware(['auth:client'])->group(function () {
-
-    Route::prefix('addresses')->group(function () {
-        Route::get('/', [AddressController::class, 'index']);
-        Route::post('/', [AddressController::class, 'store']);
-        Route::put('/{address}', [AddressController::class, 'update']);
-        Route::delete('/{address}', [AddressController::class, 'destroy']);
-    });
-
-});
-
-Route::prefix('client/phone')->middleware('auth:client')->group(function () {
-    Route::post('send-otp', [PhoneVerificationController::class, 'send']);
-    Route::post('verify-otp', [PhoneVerificationController::class, 'verify']);
 });
