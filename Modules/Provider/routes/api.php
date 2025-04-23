@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Provider\App\Http\Controllers\Api\ProviderController;
+use Modules\Provider\App\Http\Controllers\Api\ProviderAuthController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +16,18 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('provider', fn (Request $request) => $request->user())->name('provider');
+Route::group([
+    'prefix' => 'provider'
+], function ($router) {
+    Route::group(['prefix' => 'auth'], function ($router) {
+        Route::post('login', [ProviderAuthController::class, 'login']);
+        Route::post('logout', [ProviderAuthController::class, 'logout']);
+        Route::post('register', [ProviderAuthController::class, 'register']);
+        Route::post('verify', [ProviderAuthController::class, 'verifyOtp']);
+        Route::post('refresh', [ProviderAuthController::class, 'refresh']);
+        Route::post('me', [ProviderAuthController::class, 'me']);
+        Route::post('check-phone-exists', [ProviderAuthController::class, 'checkPhoneExists']);
+    });
+    Route::post('change-password', [ProviderController::class, 'changePassword']);
+    Route::post('update-profile', [ProviderController::class, 'updateProfile']);
 });

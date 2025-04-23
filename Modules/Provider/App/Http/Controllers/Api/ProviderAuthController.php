@@ -1,56 +1,55 @@
 <?php
 
-namespace Modules\Client\App\Http\Controllers\Api;
+namespace Modules\Provider\App\Http\Controllers\Api;
 
-use Modules\Client\DTO\ClientDto;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Modules\Client\App\Models\Client;
-use Laravel\Socialite\Facades\Socialite;
-use Modules\Client\Service\ClientService;
-use Modules\Client\App\resources\ClientResource;
-use Modules\Client\App\Http\Requests\ClientLoginRequest;
-use Modules\Client\App\Http\Requests\ClientVerifyRequest;
-use Modules\Client\App\Http\Requests\ClientRegisterRequest;
-use Modules\Client\App\Http\Requests\CheckPhoneExistsRequest;
+use Modules\Provider\DTO\ProviderDto;
+use Modules\Provider\App\Models\Provider;
+use Modules\Provider\Service\ProviderService;
+use Modules\Provider\App\resources\ProviderResource;
+use Modules\Provider\App\Http\Requests\ProviderLoginRequest;
+use Modules\Provider\App\Http\Requests\ProviderVerifyRequest;
+use Modules\Provider\App\Http\Requests\ProviderRegisterRequest;
+use Modules\Provider\App\Http\Requests\CheckProviderPhoneExistsRequest;
 
 
-class ClientAuthController extends Controller
+class ProviderAuthController extends Controller
 {
-    protected $clientService;
+    protected $providerService;
 
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-    public function __construct(ClientService $clientService)
+    public function __construct(ProviderService $providerService)
     {
-        $this->middleware('auth:client', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists']]);
-        $this->clientService = $clientService;
+        $this->middleware('auth:provider', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists']]);
+        $this->providerService = $providerService;
 
     }
 
-    public function register(ClientRegisterRequest $request)
+    public function register(ProviderRegisterRequest $request)
     {
         DB::beginTransaction();
         try {
-            $data = (new ClientDto($request))->dataFromRequest();
-            $this->clientService->create($data);
+            $data = (new ProviderDto($request))->dataFromRequest();
+            $this->providerService->create($data);
             DB::commit();
-            return returnMessage(true, 'Client Registered Successfully', null);
+            return returnMessage(true, 'Provider Registered Successfully', null);
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
 
-    public function verifyOtp(ClientVerifyRequest $request)
+    public function verifyOtp(ProviderVerifyRequest $request)
     {
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $result = $this->clientService->verifyOtp($data);
+            $result = $this->providerService->verifyOtp($data);
             if ($result == false) {
                 return returnMessage(false, 'Wrong OTP', null, 'unprocessable_entity');
             }
@@ -68,18 +67,18 @@ class ClientAuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login(ClientLoginRequest $request)
+    public function login(ProviderLoginRequest $request)
     {
         try {
             $credentials = $request->validated();
-            if (!$token = auth('client')->attempt($credentials)) {
+            if (!$token = auth('provider')->attempt($credentials)) {
                 return returnValidationMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'unauthorized');
             }
-            if (auth('client')->user()['is_active'] == 0) {
-                return returnMessage(false, 'In-Active Client Verification Required', null, 'temporary_redirect');
+            if (auth('provider')->user()['is_active'] == 0) {
+                return returnMessage(false, 'In-Active Provider Verification Required', null, 'temporary_redirect');
             }
             if ($request['fcm_token'] ?? null) {
-                auth('client')->user()->update(['fcm_token' => $request->fcm_token]);
+                auth('provider')->user()->update(['fcm_token' => $request->fcm_token]);
             }
             return $this->respondWithToken($token);
         } catch (\Exception $e) {
@@ -88,10 +87,10 @@ class ClientAuthController extends Controller
     }
 
 
-    public function checkPhoneExists(CheckPhoneExistsRequest $request)
+    public function checkPhoneExists(CheckProviderPhoneExistsRequest $request)
     {
-        $client = Client::where('phone', $request->phone)->first();
-        if ($client) {
+        $provider = Provider::where('phone', $request->phone)->first();
+        if ($provider) {
             return returnMessage(true, 'Phone Number Exists', null, 'success');
         }
         return returnMessage(false, 'Phone Number Does Not Exist', null, 'unprocessable_entity');
@@ -104,7 +103,7 @@ class ClientAuthController extends Controller
      */
     public function me()
     {
-        return returnMessage(true, 'Client Data', new ClientResource(auth('client')->user()));
+        return returnMessage(true, 'Provider Data', new ProviderResource(auth('provider')->user()));
     }
 
     /**
@@ -114,7 +113,7 @@ class ClientAuthController extends Controller
      */
     public function logout()
     {
-        auth('client')->logout();
+        auth('provider')->logout();
         return returnMessage(true, 'Successfully logged out', null);
     }
 
@@ -125,7 +124,7 @@ class ClientAuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth('client')->refresh());
+        return $this->respondWithToken(auth('provider')->refresh());
     }
 
     /**
@@ -140,8 +139,8 @@ class ClientAuthController extends Controller
         return returnMessage(true, 'Successfully Logged in', [
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('client')->factory()->getTTL() * 60,
-            'user' => new ClientResource(auth('client')->user()),
+            'expires_in' => auth('provider')->factory()->getTTL() * 60,
+            'user' => new ProviderResource(auth('provider')->user()),
         ]);
     }
 
