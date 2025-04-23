@@ -13,13 +13,15 @@ return new class extends Migration
     {
         Schema::create('providers', function (Blueprint $table) {
             $table->id();
-            $table->string('first_name');
-            $table->string('last_name');
+            $table->string('first_name')->nullable();
+            $table->string('last_name')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('phone')->unique();
             $table->string('password');
             $table->string('image')->nullable();
             $table->string('verify_code');
+            $table->string('lat')->nullable();
+            $table->string('long')->nullable();
             $table->boolean('is_active')->default(0);
             $table->timestamps();
         });

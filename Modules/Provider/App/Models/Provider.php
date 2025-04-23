@@ -15,7 +15,7 @@ class Provider extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'password', 'image', 'verify_code', 'is_active'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'password', 'image', 'verify_code', 'lat', 'long', 'is_active'];
     protected $hidden = ['password'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions

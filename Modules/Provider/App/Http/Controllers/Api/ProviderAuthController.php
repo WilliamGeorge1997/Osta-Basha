@@ -11,6 +11,7 @@ use Modules\Provider\App\resources\ProviderResource;
 use Modules\Provider\App\Http\Requests\ProviderLoginRequest;
 use Modules\Provider\App\Http\Requests\ProviderVerifyRequest;
 use Modules\Provider\App\Http\Requests\ProviderRegisterRequest;
+use Modules\Provider\App\Http\Requests\ProviderLoginOrRegisterRequest;
 use Modules\Provider\App\Http\Requests\CheckProviderPhoneExistsRequest;
 
 
@@ -25,11 +26,38 @@ class ProviderAuthController extends Controller
      */
     public function __construct(ProviderService $providerService)
     {
-        $this->middleware('auth:provider', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists']]);
+        $this->middleware('auth:provider', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists', 'loginOrRegister']]);
         $this->providerService = $providerService;
 
     }
-
+    public function loginOrRegister(ProviderLoginOrRegisterRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $provider = Provider::where('phone', $request->phone)->first();
+            if ($provider) {
+                $credentials = $request->validated();
+                if (!$token = auth('provider')->attempt($credentials)) {
+                    return returnMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'created');
+                }
+                if (auth('provider')->user()['is_active'] == 0) {
+                    return returnMessage(false, 'In-Active Provider Verification Required', null);
+                }
+                if ($request['fcm_token'] ?? null) {
+                    auth('provider')->user()->update(['fcm_token' => $request->fcm_token]);
+                }
+                DB::commit();
+                return $this->respondWithToken($token);
+            }
+            $data = (new ProviderDto($request))->dataFromRequest();
+            $this->providerService->create($data);
+            DB::commit();
+            return returnMessage(false, 'Provider Registered Successfully', null);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
     public function register(ProviderRegisterRequest $request)
     {
         DB::beginTransaction();

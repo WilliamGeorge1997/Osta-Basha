@@ -18,6 +18,7 @@ class ClientResource extends JsonResource
             "email" => $this->email ?? null,
             "phone" => $this->phone,
             "image" => $this->image ?? null,
+            "role" => "client",
             "is_active" => $this->is_active,
             "created_at" => $this->created_at->format('Y-m-d'),
             "updated_at" => $this->updated_at->format('Y-m-d'),

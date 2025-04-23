@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProviderUpdateProfileRequest extends FormRequest
+class ProviderLoginOrRegisterRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -15,15 +16,9 @@ class ProviderUpdateProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $providerId = auth('provider')->id();
         return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:15', 'unique:providers,phone,' . $providerId],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-            'email' => ['required', 'email', 'unique:providers,email,' . $providerId],
-            'lat' => ['nullable', 'string',],
-            'long' => ['nullable', 'string',],
+            'phone' => ['required'],
+            'password' => ['required'],
         ];
     }
 
@@ -33,14 +28,10 @@ class ProviderUpdateProfileRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'phone' => 'Phone',
-            'image' => 'Image',
-            'email' => 'Email',
+            'phone' => 'Phone Number',
+            'password' => 'Password',
         ];
     }
-
     /**
      * Determine if the user is authorized to make this request.
      */

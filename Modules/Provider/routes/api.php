@@ -19,14 +19,15 @@ use Modules\Provider\App\Http\Controllers\Api\ProviderAuthController;
 Route::group([
     'prefix' => 'provider'
 ], function ($router) {
+    Route::post('authenticate', [ProviderAuthController::class, 'loginOrRegister']);
     Route::group(['prefix' => 'auth'], function ($router) {
-        Route::post('login', [ProviderAuthController::class, 'login']);
+        // Route::post('login', [ProviderAuthController::class, 'login']);
+        // Route::post('register', [ProviderAuthController::class, 'register']);
         Route::post('logout', [ProviderAuthController::class, 'logout']);
-        Route::post('register', [ProviderAuthController::class, 'register']);
         Route::post('verify', [ProviderAuthController::class, 'verifyOtp']);
         Route::post('refresh', [ProviderAuthController::class, 'refresh']);
         Route::post('me', [ProviderAuthController::class, 'me']);
-        Route::post('check-phone-exists', [ProviderAuthController::class, 'checkPhoneExists']);
+        // Route::post('check-phone-exists', [ProviderAuthController::class, 'checkPhoneExists']);
     });
     Route::post('change-password', [ProviderController::class, 'changePassword']);
     Route::post('update-profile', [ProviderController::class, 'updateProfile']);

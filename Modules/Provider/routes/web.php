@@ -14,6 +14,6 @@ use Modules\Provider\App\Http\Controllers\ProviderController;
 |
 */
 
-Route::group([], function () {
-    Route::resource('provider', ProviderController::class)->names('provider');
-});
+// Route::group([], function () {
+//     Route::resource('provider', ProviderController::class)->names('provider');
+// });

@@ -40,10 +40,10 @@ class ClientAuthController extends Controller
             if ($client) {
                 $credentials = $request->validated();
                 if (!$token = auth('client')->attempt($credentials)) {
-                    return returnValidationMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'unauthorized');
+                    return returnMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'created');
                 }
                 if (auth('client')->user()['is_active'] == 0) {
-                    return returnMessage(false, 'In-Active Client Verification Required', null, 'temporary_redirect');
+                    return returnMessage(false, 'In-Active Client Verification Required', null);
                 }
                 if ($request['fcm_token'] ?? null) {
                     auth('client')->user()->update(['fcm_token' => $request->fcm_token]);
@@ -54,7 +54,7 @@ class ClientAuthController extends Controller
             $data = (new ClientDto($request))->dataFromRequest();
             $this->clientService->create($data);
             DB::commit();
-            return returnMessage(true, 'Client Registered Successfully', null);
+            return returnMessage(false, 'Client Registered Successfully', null);
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
