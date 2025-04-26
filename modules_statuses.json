@@ -2,5 +2,6 @@
     "Common": false,
     "Admin": true,
     "Client": true,
-    "Provider": true
+    "Provider": true,
+    "Service": true
 }

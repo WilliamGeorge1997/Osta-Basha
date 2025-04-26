@@ -44,6 +44,26 @@ function returnValidationMessage(bool $status = false, ?string $message = null, 
         getStatusCode($statusCode)
     );
 }
+
+/**
+ * Returns a JSON response for unauthorized access
+ *
+ * @param string|null $message Custom unauthorized message
+ * @param mixed $errors Additional errors to include in response
+ * @return JsonResponse
+ */
+function returnUnauthorizedMessage(bool $status = false, ?string $message = null, mixed $errors = null): JsonResponse
+{
+    return new JsonResponse(
+        [
+            'status' => $status,
+            'message' => $message ?? 'Unauthorized access',
+            'errors' => $errors
+        ],
+        getStatusCode('unauthorized')
+    );
+}
+
 /**
  * Get HTTP status code from status type
  *

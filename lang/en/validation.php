@@ -175,6 +175,7 @@ return [
         ],
     ],
     'rules_failed' => 'The given data was invalid.',
+    'unauthorized' => 'You are not authorized to perform this action.',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes
