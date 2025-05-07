@@ -26,7 +26,7 @@ class ServiceService
     public function create($data)
     {
         if (request()->hasFile('image')) {
-            $data['image'] = $this->upload(request()->file('image'), 'provider');
+            $data['image'] = $this->upload(request()->file('image'), 'service');
         }
         $service = Service::create($data);
         return $service;

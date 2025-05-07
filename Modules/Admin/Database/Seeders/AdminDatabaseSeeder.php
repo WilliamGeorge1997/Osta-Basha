@@ -19,8 +19,9 @@ class AdminDatabaseSeeder extends Seeder
         $this->permissionCreation();
         $role = $this->roleCreation();
         $admin->assignRole($role);
-        // $role2 = $this->role2Creation();
-        // $role3 = $this->role3Creation();
+        $role2 = $this->role2Creation();
+        $role3 = $this->role3Creation();
+        $role4 = $this->role4Creation();
     }
 
     function adminCreation()
@@ -63,6 +64,24 @@ class AdminDatabaseSeeder extends Seeder
         $role = Role::create(['name' => 'Super Admin', 'guard_name' => 'admin']);
         $permissions = Permission::all();
         $role->syncPermissions($permissions);
+        return $role;
+    }
+
+    function role2Creation()
+    {
+        $role = Role::create(['name' => 'Client', 'guard_name' => 'admin']);
+        return $role;
+    }
+
+    function role3Creation()
+    {
+        $role = Role::create(['name' => 'Service Provider', 'guard_name' => 'admin']);
+        return $role;
+    }
+
+    function role4Creation()
+    {
+        $role = Role::create(['name' => 'Shop Owner', 'guard_name' => 'admin']);
         return $role;
     }
 }

@@ -1,13 +1,14 @@
 <?php
 
 
-namespace Modules\Service\DTO;
+namespace Modules\Shop\DTO;
 
-class ServiceDto
+use Illuminate\Support\Facades\Hash;
+
+class ShopDto
 {
     public $title;
     public $description;
-    public $price;
     public $image;
     public $user_id;
 
@@ -17,8 +18,6 @@ class ServiceDto
             $this->title = $request->get('title');
         if ($request->get('description'))
             $this->description = $request->get('description');
-        if ($request->get('price'))
-            $this->price = $request->get('price');
         if ($request->get('image'))
             $this->image = $request->get('image');
         if ($request->get('user_id'))
@@ -32,8 +31,6 @@ class ServiceDto
             unset($data['title']);
         if ($this->description == null)
             unset($data['description']);
-        if ($this->price == null)
-            unset($data['price']);
         if ($this->image == null)
             unset($data['image']);
         if ($this->user_id == null)

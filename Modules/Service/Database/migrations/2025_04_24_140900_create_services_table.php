@@ -1,8 +1,8 @@
 <?php
 
+use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
-use Modules\Provider\App\Models\Provider;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
@@ -18,7 +18,7 @@ return new class extends Migration
             $table->text('description');
             $table->unsignedDecimal('price', 10, 2)->default(0);
             $table->string('image')->nullable();
-            $table->foreignIdFor(Provider::class)->index()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(0);
             $table->timestamps();
         });

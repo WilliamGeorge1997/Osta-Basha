@@ -1,7 +1,10 @@
 {
     "Common": false,
     "Admin": true,
-    "Client": true,
+    "Client": false,
     "Provider": true,
-    "Service": true
+    "Service": true,
+    "User": true,
+    "Shop": true,
+    "Package": true
 }
