@@ -12,6 +12,7 @@ use Modules\Shop\Service\ShopService;
 use Modules\User\Service\UserService;
 use Modules\Service\Service\ServiceService;
 use Modules\User\Validation\UserValidation;
+use Modules\User\App\resources\UserResource;
 use Modules\User\App\Http\Requests\UserLoginRequest;
 use Modules\User\App\Http\Requests\UserVerifyRequest;
 use Modules\User\App\Http\Requests\UserRegisterRequest;

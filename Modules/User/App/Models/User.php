@@ -2,11 +2,15 @@
 
 namespace Modules\User\App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\User\App\Models\User;
 use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
+use Modules\Service\App\Models\Service;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Modules\Client\App\Models\ClientProviderContact;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
 class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, LogsActivity;
@@ -53,6 +57,26 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('is_active', 1);
     }
 
+    //Relations
+    public function providerContacts()
+    {
+        return $this->hasMany(ClientProviderContact::class, 'provider_id');
+    }
+
+    public function clientContacts()
+    {
+        return $this->hasMany(ClientProviderContact::class, 'client_id');
+    }
+
+    public function provider()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function service()
+    {
+        return $this->hasOne(Service::class);
+    }
 
     //JWT
 

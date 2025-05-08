@@ -2,11 +2,12 @@
 
 namespace Modules\Provider\App\Models;
 
+use Spatie\Activitylog\LogOptions;
+use Tymon\JWTAuth\Contracts\JWTSubject;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Modules\Client\App\Models\ClientProviderContact;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class Provider extends Authenticatable implements JWTSubject
 {
@@ -45,6 +46,8 @@ class Provider extends Authenticatable implements JWTSubject
             }
         }
     }
+
+ 
     //JWT
 
     /**

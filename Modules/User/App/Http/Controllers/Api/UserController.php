@@ -1,33 +1,33 @@
 <?php
 
-namespace Modules\Client\App\Http\Controllers\Api;
+namespace Modules\User\App\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Modules\Client\App\resources\ClientResource;
-use Modules\Client\Service\ClientService;
-use Modules\Client\App\Http\Requests\ClientChangePasswordRequest;
-use Modules\Client\App\Http\Requests\ClientUpdateProfileRequest;
+use Modules\User\App\resources\UserResource;
+use Modules\User\Service\UserService;
+use Modules\User\App\Http\Requests\UserChangePasswordRequest;
+use Modules\User\App\Http\Requests\UserUpdateProfileRequest;
 
-class ClientController extends Controller
+class UserController extends Controller
 {
-    protected $clientService;
+    protected $userService;
     /**
      * Create a new AuthController instance.
      *
      * @return void
      */
-    public function __construct(ClientService $clientService)
+    public function __construct(UserService $userService)
     {
-        $this->middleware('auth:client');
-        $this->clientService = $clientService;
+        $this->middleware('auth:user');
+        $this->userService = $userService;
     }
 
-    public function changePassword(ClientChangePasswordRequest $request)
+    public function changePassword(UserChangePasswordRequest $request)
     {
         try{
             DB::beginTransaction();
-            $this->clientService->changePassword($request->validated());
+            $this->userService->changePassword($request->validated());
             DB::commit();
             return returnMessage(true, 'Password Changed Successfully');
         }
@@ -37,13 +37,13 @@ class ClientController extends Controller
         }
     }
 
-    public function updateProfile(ClientUpdateProfileRequest $request)
+    public function updateProfile(UserUpdateProfileRequest $request)
     {
         try{
             DB::beginTransaction();
-            $this->clientService->updateProfile($request->validated());
+            $this->userService->updateProfile($request->validated());
             DB::commit();
-            return returnMessage(true, 'Profile Updated Successfully', new ClientResource(auth('client')->user()));
+            return returnMessage(true, 'Profile Updated Successfully', new UserResource(auth('user')->user()));
         }catch(\Exception $e){
             DB::rollBack();
             return returnMessage(false, $e->getMessage(),null ,500);

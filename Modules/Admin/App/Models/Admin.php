@@ -50,11 +50,6 @@ class Admin extends Authenticatable implements JWTSubject
         }
     }
 
-    //Relations
-    public function restaurant()
-    {
-        return $this->hasOne(Restaurant::class);
-    }
 
     //JWT
 

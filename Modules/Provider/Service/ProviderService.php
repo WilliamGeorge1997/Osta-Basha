@@ -2,10 +2,11 @@
 
 namespace Modules\Provider\Service;
 
+use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Modules\Provider\App\Models\Provider;
 use Modules\Common\Helpers\UploadHelper;
+use Modules\Provider\App\Models\Provider;
 
 class ProviderService
 {
@@ -19,7 +20,7 @@ class ProviderService
     {
         return Provider::where($key, $value)->get();
     }
-    public function create($data)
+    function create($data)
     {
         if (request()->hasFile('image')) {
             $data['image'] = $this->upload(request()->file('image'), 'provider');
@@ -28,7 +29,7 @@ class ProviderService
         return $provider;
     }
 
-    public function verifyOtp($data)
+    function verifyOtp($data)
     {
         $provider = $this->findBy('phone', $data['phone'])[0];
         if ($provider && $provider->verify_code == $data['otp']) {
@@ -48,7 +49,7 @@ class ProviderService
         return $provider;
     }
 
-    public function changePassword($data)
+    function changePassword($data)
     {
         $provider = auth('provider')->user();
         $provider->update([
@@ -56,7 +57,7 @@ class ProviderService
         ]);
     }
 
-    public function updateProfile($data)
+    function updateProfile($data)
     {
         $provider = auth('provider')->user();
         if (request()->hasFile('image')) {
@@ -66,5 +67,15 @@ class ProviderService
             $data['image'] = $this->upload(request()->file('image'), 'provider');
         }
         $provider->update($data);
+    }
+
+    function mostContactedProviders($data = [], $relations = [])
+    {
+        $providers = User::query()
+            ->with($relations)
+            ->withCount('providerContacts as contacts_count')
+            ->orderByDesc('contacts_count')
+            ->take(10);
+        return getCaseCollection($providers, $data);
     }
 }

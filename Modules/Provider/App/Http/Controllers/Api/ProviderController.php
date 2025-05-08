@@ -2,6 +2,7 @@
 
 namespace Modules\Provider\App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\Provider\Service\ProviderService;
@@ -19,9 +20,22 @@ class ProviderController extends Controller
      */
     public function __construct(ProviderService $providerService)
     {
-        $this->middleware('auth:provider');
+        $this->middleware('auth:user');
         $this->providerService = $providerService;
     }
+
+    public function mostContactedProviders(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $relations = ['provider', 'service'];
+            $providers = $this->providerService->mostContactedProviders($data, $relations);
+            return returnMessage(true, 'Most Contacted Providers', $providers);
+        } catch (\Exception $e) {
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
 
     public function changePassword(ProviderChangePasswordRequest $request)
     {
@@ -32,7 +46,7 @@ class ProviderController extends Controller
             return returnMessage(true, 'Password Changed Successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            return returnMessage(false, $e->getMessage(), null, 500);
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
 
@@ -45,7 +59,7 @@ class ProviderController extends Controller
             return returnMessage(true, 'Profile Updated Successfully', new ProviderResource(auth('provider')->user()));
         } catch (\Exception $e) {
             DB::rollBack();
-            return returnMessage(false, $e->getMessage(), null, 500);
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
 }

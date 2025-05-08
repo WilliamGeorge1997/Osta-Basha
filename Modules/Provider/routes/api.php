@@ -19,6 +19,8 @@ use Modules\Provider\App\Http\Controllers\Api\ProviderAuthController;
 Route::group([
     'prefix' => 'provider'
 ], function ($router) {
+    Route::get('most-contacted', [ProviderController::class, 'mostContactedProviders']);
+
     Route::post('authenticate', [ProviderAuthController::class, 'loginOrRegister']);
     Route::group(['prefix' => 'auth'], function ($router) {
         // Route::post('login', [ProviderAuthController::class, 'login']);

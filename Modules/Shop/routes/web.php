@@ -1,8 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Modules\Shop\App\Http\Controllers\ShopController;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,7 +10,3 @@ use Modules\Shop\App\Http\Controllers\ShopController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('shop', ShopController::class)->names('shop');
-});
