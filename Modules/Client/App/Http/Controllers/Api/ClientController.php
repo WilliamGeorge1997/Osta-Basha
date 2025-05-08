@@ -4,10 +4,8 @@ namespace Modules\Client\App\Http\Controllers\Api;
 
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Modules\Client\App\resources\ClientResource;
 use Modules\Client\Service\ClientService;
-use Modules\Client\App\Http\Requests\ClientChangePasswordRequest;
-use Modules\Client\App\Http\Requests\ClientUpdateProfileRequest;
+use Modules\Client\App\Http\Requests\ContactProviderRequest;
 
 class ClientController extends Controller
 {
@@ -19,34 +17,21 @@ class ClientController extends Controller
      */
     public function __construct(ClientService $clientService)
     {
-        $this->middleware('auth:client');
+        $this->middleware('auth:user');
+        $this->middleware('role:Client');
         $this->clientService = $clientService;
     }
 
-    public function changePassword(ClientChangePasswordRequest $request)
+    public function contactProvider(ContactProviderRequest $request)
     {
-        try{
-            DB::beginTransaction();
-            $this->clientService->changePassword($request->validated());
+        DB::beginTransaction();
+        try {
+            $this->clientService->contactProvider($request->validated());
             DB::commit();
-            return returnMessage(true, 'Password Changed Successfully');
-        }
-        catch(\Exception $e){
+            return returnMessage(true, 'Client Contacted Provider Successfully');
+        } catch (\Exception $e) {
             DB::rollBack();
-            return returnMessage(false, $e->getMessage(),null ,500);
-        }
-    }
-
-    public function updateProfile(ClientUpdateProfileRequest $request)
-    {
-        try{
-            DB::beginTransaction();
-            $this->clientService->updateProfile($request->validated());
-            DB::commit();
-            return returnMessage(true, 'Profile Updated Successfully', new ClientResource(auth('client')->user()));
-        }catch(\Exception $e){
-            DB::rollBack();
-            return returnMessage(false, $e->getMessage(),null ,500);
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
 }

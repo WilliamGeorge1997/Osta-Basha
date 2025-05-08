@@ -1,10 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Modules\Client\App\Http\Controllers\Api\ClientAuthController;
-use Modules\Client\App\Http\Controllers\Api\ClientController;
-use Modules\Client\App\Http\Controllers\Api\AddressController;
-use Modules\Client\App\Http\Controllers\Api\PhoneVerificationController;
+
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -16,9 +14,6 @@ use Modules\Client\App\Http\Controllers\Api\PhoneVerificationController;
     |
 */
 
-
-Route::group([
-    'prefix' => 'client'
-], function ($router) {
-    Route::post('contact-provider', [ClientController::class, 'contactProvider']);
+Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
+    Route::get('category', fn (Request $request) => $request->user())->name('category');
 });

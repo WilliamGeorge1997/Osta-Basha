@@ -1,22 +1,20 @@
 <?php
 
-namespace Modules\Client\App\Models;
+namespace Modules\Category\App\Models;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class Client extends Authenticatable implements JWTSubject
+class Category extends Model
 {
     use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'password', 'image', 'verify_code', 'is_active'];
-    protected $hidden = ['password'];
+    protected $fillable = ['title', 'image', 'is_active'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions
@@ -25,10 +23,9 @@ class Client extends Authenticatable implements JWTSubject
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Client')
+            ->useLogName('Category')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
-
     //Serialize Dates
     protected function serializeDate(\DateTimeInterface $date)
     {
@@ -42,31 +39,21 @@ class Client extends Authenticatable implements JWTSubject
             if (filter_var($value, FILTER_VALIDATE_URL)) {
                 return $value;
             } else {
-                return asset('uploads/client/' . $value);
+                return asset('uploads/category/' . $value);
             }
         }
     }
 
-    //JWT
-
-    /**
-     * Get the identifier that will be stored in the subject claim of the JWT.
-     *
-     * @return mixed
-     */
-    public function getJWTIdentifier()
+    //Helper
+    public function scopeActive($query)
     {
-        return $this->getKey();
+        return $query->where('is_active', 1);
     }
 
-    /**
-     * Return a key value array, containing any custom claims to be added to the JWT.
-     *
-     * @return array
-     */
-    public function getJWTCustomClaims()
+    //Relations
+    public function subCategories()
     {
-        return [];
+        return $this->hasMany(SubCategory::class);
     }
 
 }

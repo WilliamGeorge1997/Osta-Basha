@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->string('password');
             $table->enum('type', ['client', 'service_provider', 'shop_owner']);
             $table->string('image')->nullable();
+            $table->decimal('lat', 10, 8)->nullable();
+            $table->decimal('long', 10, 8)->nullable();
             $table->string('verify_code');
             $table->boolean('is_active')->default(0);
             $table->timestamps();

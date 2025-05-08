@@ -1,20 +1,22 @@
 <?php
 
-namespace Modules\Service\App\Models;
+namespace Modules\Provider\App\Models;
 
+use Modules\User\App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Service extends Model
+class ProviderWorkingTime extends Model
 {
     use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'price', 'image', 'provider_id', 'sub_category_id', 'start_date', 'end_date', 'is_active'];
+    protected $fillable = ['user_id', 'day', 'start_at', 'end_at'];
+
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -22,7 +24,7 @@ class Service extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Service')
+            ->useLogName('Provider Working Time')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
 
@@ -32,15 +34,10 @@ class Service extends Model
         return $date->format('Y-m-d h:i A');
     }
 
-    //Get FullImage Path
-    public function getImageAttribute($value)
+
+    //Relations
+    public function user()
     {
-        if ($value != null && $value != '') {
-            if (filter_var($value, FILTER_VALIDATE_URL)) {
-                return $value;
-            } else {
-                return asset('uploads/service/' . $value);
-            }
-        }
+        return $this->belongsTo(User::class);
     }
 }

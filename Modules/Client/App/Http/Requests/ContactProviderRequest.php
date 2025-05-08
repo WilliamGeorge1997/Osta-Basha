@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ClientUpdateProfileRequest extends FormRequest
+class ContactProviderRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,13 +15,9 @@ class ClientUpdateProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $clientId = auth('client')->id();
         return [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:15', 'unique:clients,phone,' . $clientId],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-            'email' => ['required', 'email', 'unique:clients,email,' . $clientId],
+            'provider_id' => ['required', 'exists:users,id,type,service_provider'],
+            'service_id' => ['required', 'exists:services,id'],
         ];
     }
 
@@ -31,11 +27,8 @@ class ClientUpdateProfileRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'phone' => 'Phone',
-            'image' => 'Image',
-            'email' => 'Email',
+            'provider_id' => 'Service Provider',
+            'service_id' => 'Service',
         ];
     }
 

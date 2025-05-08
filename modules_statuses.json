@@ -6,5 +6,6 @@
     "Service": true,
     "User": true,
     "Shop": true,
-    "Package": true
+    "Package": true,
+    "Category": true
 }

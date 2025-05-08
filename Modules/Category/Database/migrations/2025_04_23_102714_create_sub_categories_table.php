@@ -1,22 +1,22 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Modules\Category\App\Models\Category;
+use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration {
+return new class extends Migration
+{
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        Schema::create('packages', function (Blueprint $table) {
+        Schema::create('sub_categories', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description')->nullable();
             $table->string('image')->nullable();
-            $table->unsignedDecimal('price', 10, 2);
-            $table->unsignedInteger('duration')->comment('In Days');
+            $table->foreignIdFor(Category::class)->nullable()->index()->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
@@ -27,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('packages');
+        Schema::dropIfExists('sub_categories');
     }
 };

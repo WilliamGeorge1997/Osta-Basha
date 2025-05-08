@@ -3,6 +3,7 @@
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Modules\Category\App\Models\SubCategory;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
@@ -18,6 +19,9 @@ return new class extends Migration
             $table->text('description');
             $table->string('image')->nullable();
             $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(SubCategory::class)->nullable()->index()->constrained()->nullOnDelete();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->boolean('is_active')->default(0);
             $table->timestamps();
         });

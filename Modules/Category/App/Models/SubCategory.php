@@ -1,20 +1,21 @@
 <?php
 
-namespace Modules\Service\App\Models;
+namespace Modules\Category\App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Category\App\Models\Category;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Service extends Model
+class SubCategory extends Model
 {
     use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'price', 'image', 'provider_id', 'sub_category_id', 'start_date', 'end_date', 'is_active'];
+    protected $fillable = ['title', 'image', 'category_id', 'is_active'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -22,10 +23,9 @@ class Service extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Service')
+            ->useLogName('SubCategory')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
-
     //Serialize Dates
     protected function serializeDate(\DateTimeInterface $date)
     {
@@ -39,8 +39,20 @@ class Service extends Model
             if (filter_var($value, FILTER_VALIDATE_URL)) {
                 return $value;
             } else {
-                return asset('uploads/service/' . $value);
+                return asset('uploads/sub_category/' . $value);
             }
         }
+    }
+
+    //Helper
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 1);
+    }
+
+    //Relations
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
     }
 }
