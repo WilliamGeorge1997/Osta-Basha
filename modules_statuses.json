@@ -7,5 +7,6 @@
     "User": true,
     "Shop": true,
     "Package": true,
-    "Category": true
+    "Category": true,
+    "ShopOwner": true
 }

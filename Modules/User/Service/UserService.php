@@ -33,12 +33,69 @@ class UserService
         $user = User::create($data);
         return $user;
     }
+    public function completeRegistration($type, $user, $userDetailsData, $profileData, $workingTimesData)
+    {
+        if (request()->hasFile('image')) {
+            $userDetailsData['image'] = $this->upload(request()->file('image'), 'user');
+        }
+        $user->update($userDetailsData);
+
+        switch ($type) {
+            case 'service_provider':
+                $this->completeProviderRegistration($user, $profileData, $workingTimesData);
+                return $user->fresh();
+
+            case 'shop_owner':
+                $this->completeShopOwnerRegistration($user, $profileData, $workingTimesData);
+                return $user->fresh();
+
+            default:
+                return $user->fresh();
+        }
+    }
+
+    private function completeProviderRegistration($user, $profileData, $workingTimesData)
+    {
+        if (request()->hasFile('card_image')) {
+            $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
+        }
+        $providerProfile = $user->providerProfile()->create($profileData);
+        $user->providerWorkingTimes()->createMany($workingTimesData);
+        $this->processCertificates($user, 'certificates', 'provider/certificates', 'providerCertificates');
+    }
+
+    private function completeShopOwnerRegistration($user, $profileData, $workingTimesData)
+    {
+        if (request()->hasFile('card_image')) {
+            $profileData['card_image'] = $this->upload(request()->file('card_image'), 'shop_owner');
+        }
+        $shopOwnerProfile = $user->shopOwnerProfile()->create($profileData);
+        $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
+        $this->processCertificates($user, 'certificates', 'shop_owner/certificates', 'shopOwnerCertificates');
+    }
+
+    private function processCertificates($user, $requestKey, $uploadPath, $relationMethod)
+    {
+        if (!request()->has($requestKey)) {
+            return;
+        }
+        $certificates = collect(request()->file($requestKey))->map(function ($certificate) use ($uploadPath) {
+            return [
+                'certificate_image' => $this->upload($certificate, $uploadPath)
+            ];
+        })->toArray();
+        if (!empty($certificates)) {
+            $user->$relationMethod()->createMany($certificates);
+        }
+    }
+
 
     public function verifyOtp($data)
     {
         $user = $this->findBy('phone', $data['phone'])[0];
         if ($user && $user->verify_code == $data['otp']) {
-            return $this->update($user->id, ['is_active' => 1]);
+            $this->update($user->id, ['is_active' => 1]);
+            return $user;
         }
         return false;
     }

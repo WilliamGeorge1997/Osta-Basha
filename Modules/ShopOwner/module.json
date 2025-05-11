@@ -1,0 +1,11 @@
+{
+    "name": "ShopOwner",
+    "alias": "shopowner",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\ShopOwner\\App\\Providers\\ShopOwnerServiceProvider"
+    ],
+    "files": []
+}

@@ -2,27 +2,24 @@
 
 namespace Modules\User\App\Http\Controllers\Api;
 
-use Modules\Shop\DTO\ShopDto;
 use Modules\User\DTO\UserDto;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
-use Modules\Service\DTO\ServiceDto;
 use App\Http\Controllers\Controller;
-use Modules\Shop\Service\ShopService;
+use Modules\User\DTO\UserDetailsDto;
+use Modules\Provider\DTO\ProviderDto;
 use Modules\User\Service\UserService;
-use Modules\Service\Service\ServiceService;
-use Modules\User\Validation\UserValidation;
+use Modules\ShopOwner\DTO\ShopOwnerDto;
 use Modules\User\App\resources\UserResource;
-use Modules\User\App\Http\Requests\UserLoginRequest;
+use Modules\Provider\DTO\ProviderWorkingTimeDto;
+use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
 use Modules\User\App\Http\Requests\UserVerifyRequest;
-use Modules\User\App\Http\Requests\UserRegisterRequest;
-use Modules\User\App\Http\Requests\CheckPhoneExistsRequest;
 use Modules\User\App\Http\Requests\UserLoginOrRegisterRequest;
+use Modules\User\App\Http\Requests\UserCompleteRegistrationRequest;
 
 
 class UserAuthController extends Controller
 {
-    use UserValidation;
     protected $userService;
 
     /**
@@ -56,19 +53,8 @@ class UserAuthController extends Controller
                 DB::commit();
                 return $this->respondWithToken($token);
             }
-            $validator = $this->validateUserRegister($request->all());
-            if ($validator->fails()) {
-                return returnValidationMessage(false, 'Validation Error', $validator->errors(), 'unprocessable_entity');
-            }
             $data = (new UserDto($request))->dataFromRequest();
-            $user = $this->userService->create($data);
-            if ($user->type == 'service_provider') {
-                $serviceData = (new ServiceDto($request))->dataFromRequest();
-                (new ServiceService())->create($serviceData);
-            } else if ($user->type == 'shop_owner') {
-                $shopData = (new ShopDto($request))->dataFromRequest();
-                (new ShopService())->create($shopData);
-            }
+            $this->userService->create($data);
             DB::commit();
             return returnMessage(false, 'User Registered Successfully', null);
         } catch (\Exception $e) {
@@ -77,70 +63,52 @@ class UserAuthController extends Controller
         }
     }
 
-    public function register(UserRegisterRequest $request)
+    public function completeRegistration(UserCompleteRegistrationRequest $request)
     {
         DB::beginTransaction();
         try {
-            $data = (new UserDto($request))->dataFromRequest();
-            $this->userService->create($data);
+            $user = auth('user')->user();
+            if ($user && !$user->type == null) {
+                return returnMessage(false, 'User Already Completed Registration', null, 'unprocessable_entity');
+            }
+            $userDetailsData = (new UserDetailsDto($request))->dataFromRequest();
+            $type = $userDetailsData['type'];
+            $profileData = null;
+            $workingTimesData = null;
+            if ($type == 'service_provider') {
+                $profileData = (new ProviderDto($request, $user->id))->dataFromRequest();
+                $workingTimesData = (new ProviderWorkingTimeDto($request, $user->id))->dataFromRequest();
+            } else if ($type == 'shop_owner') {
+                $profileData = (new ShopOwnerDto($request, $user->id))->dataFromRequest();
+                $workingTimesData = (new ShopOwnerWorkingTimeDto($request, $user->id))->dataFromRequest();
+            }
+            $user = $this->userService->completeRegistration($type, $user, $userDetailsData, $profileData, $workingTimesData);
             DB::commit();
-            return returnMessage(true, 'User Registered Successfully', null);
+            return returnMessage(true, 'User Completed Registration Successfully', new UserResource($user));
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
-
     public function verifyOtp(UserVerifyRequest $request)
     {
         DB::beginTransaction();
         try {
             $data = $request->all();
-            $result = $this->userService->verifyOtp($data);
-            if ($result == false) {
+            $user = $this->userService->verifyOtp($data);
+            if ($user == false) {
                 return returnMessage(false, 'Wrong OTP', null, 'unprocessable_entity');
             }
+            $token = auth('user')->login($user);
+            if ($request['fcm_token'] ?? null) {
+                auth('user')->user()->update(['fcm_token' => $request->fcm_token]);
+            }
             DB::commit();
-            return returnMessage(true, 'Phone Number Verified Successfully', null);
+            return $this->respondWithToken($token);
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
-    }
-
-
-    /**
-     * Get a JWT via given credentials.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function login(UserLoginRequest $request)
-    {
-        try {
-            $credentials = $request->validated();
-            if (!$token = auth('user')->attempt($credentials)) {
-                return returnValidationMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'unauthorized');
-            }
-            if (auth('user')->user()['is_active'] == 0) {
-                return returnMessage(false, 'In-Active User Verification Required', null, 'temporary_redirect');
-            }
-            if ($request['fcm_token'] ?? null) {
-                auth('user')->user()->update(['fcm_token' => $request->fcm_token]);
-            }
-            return $this->respondWithToken($token);
-        } catch (\Exception $e) {
-            return returnMessage(false, $e->getMessage(), null, 'server_error');
-        }
-    }
-
-
-    public function checkPhoneExists(CheckPhoneExistsRequest $request)
-    {
-        $user = User::where('phone', $request->phone)->first();
-        if ($user) {
-            return returnMessage(true, 'Phone Number Exists', null, 'success');
-        }
-        return returnMessage(false, 'Phone Number Does Not Exist', null, 'unprocessable_entity');
     }
 
     /**
@@ -183,12 +151,22 @@ class UserAuthController extends Controller
      */
     protected function respondWithToken($token)
     {
-        return returnMessage(true, 'Successfully Logged in', [
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('user')->factory()->getTTL() * 60,
-            'user' => new UserResource(auth('user')->user()),
-        ]);
+        $status = 'ok';
+        $authUser = auth('user')->user();
+        if ($authUser->type == null) {
+            $status = 'non_authoritative_information';
+        }
+        return returnMessage(
+            true,
+            'Successfully Logged in',
+            [
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => auth('user')->factory()->getTTL() * 60,
+                'user' => new UserResource($authUser),
+            ],
+            $status
+        );
     }
 
 }

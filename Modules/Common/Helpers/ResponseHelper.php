@@ -86,6 +86,7 @@ function allStatusCode(): array
         "ok" => Response::HTTP_OK, // 200
         "created" => Response::HTTP_CREATED, // 201
         "accepted" => Response::HTTP_ACCEPTED, // 202
+        "non_authoritative_information" => Response::HTTP_NON_AUTHORITATIVE_INFORMATION, // 203
         "no_content" => Response::HTTP_NO_CONTENT, // 204
         "moved" => Response::HTTP_MOVED_PERMANENTLY, // 301
         "found" => Response::HTTP_FOUND, // 302

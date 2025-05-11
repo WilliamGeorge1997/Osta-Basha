@@ -1,14 +1,13 @@
 <?php
 
-namespace Modules\Provider\App\Models;
+namespace Modules\ShopOwner\App\Models;
 
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\User\App\Models\User;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
-class Provider extends Model
+class ShopOwner extends Model
 {
     use HasFactory, LogsActivity;
 
@@ -16,7 +15,7 @@ class Provider extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = ['user_id', 'card_number', 'card_image', 'address', 'experience_years', 'experience_description', 'min_price', 'max_price'];
-    protected $hidden = ['password'];
+
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -24,7 +23,7 @@ class Provider extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Provider_Profile')
+            ->useLogName('ShopOwner_Profile')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
 
@@ -33,10 +32,4 @@ class Provider extends Model
     {
         return $date->format('Y-m-d h:i A');
     }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
-    }
-
 }

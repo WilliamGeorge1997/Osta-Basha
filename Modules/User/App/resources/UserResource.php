@@ -19,11 +19,20 @@ class UserResource extends JsonResource
                 "email" => $this->email ?? null,
                 "phone" => $this->phone,
                 "image" => $this->image ?? null,
-                "role" => $this->type,
+                "type" => $this->type ?? null,
                 "is_active" => $this->is_active,
                 "created_at" => $this->created_at->format('Y-m-d'),
                 "updated_at" => $this->updated_at->format('Y-m-d'),
             ];
+        if ($this->type == 'service_provider') {
+            $data['profile'] = $this->providerProfile;
+            $data['working_times'] = $this->providerWorkingTimes;
+            $data['certificates'] = $this->providerCertificates;
+        } elseif ($this->type == 'shop_owner') {
+            $data['profile'] = $this->shopOwnerProfile;
+            $data['working_times'] = $this->shopOwnerWorkingTimes;
+            $data['certificates'] = $this->shopOwnerCertificates;
+        }
         return $data;
     }
 }

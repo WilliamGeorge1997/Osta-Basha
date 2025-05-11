@@ -1,10 +1,10 @@
 <?php
 
 
-namespace Modules\Provider\DTO;
+namespace Modules\ShopOwner\DTO;
 
 
-class ProviderDto
+class ShopOwnerDto
 {
     public $user_id;
     public $card_number;

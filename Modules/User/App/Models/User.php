@@ -2,13 +2,18 @@
 
 namespace Modules\User\App\Models;
 
-use Modules\User\App\Models\User;
 use Spatie\Activitylog\LogOptions;
 use Modules\Service\App\Models\Service;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Modules\Provider\App\Models\Provider;
+use Modules\ShopOwner\App\Models\ShopOwner;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Modules\Client\App\Models\ClientProviderContact;
+use Modules\Provider\App\Models\ProviderCertificate;
+use Modules\Provider\App\Models\ProviderWorkingTime;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\ShopOwner\App\Models\ShopOwnerCertificate;
+use Modules\ShopOwner\App\Models\ShopOwnerWorkingTime;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
@@ -18,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'password', 'image', 'verify_code', 'is_active'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token'];
     protected $hidden = ['password'];
 
     //Log Activity
@@ -67,15 +72,42 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(ClientProviderContact::class, 'client_id');
     }
+    // ----------------------Provider--------------------------------
 
-    public function provider()
+    public function providerProfile()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasOne(Provider::class);
     }
 
+    public function providerWorkingTimes()
+    {
+        return $this->hasMany(ProviderWorkingTime::class);
+    }
+
+    public function providerCertificates()
+    {
+        return $this->hasMany(ProviderCertificate::class);
+    }
     public function service()
     {
         return $this->hasOne(Service::class);
+    }
+
+    // ---------------------- Shop Owner --------------------------------
+
+    public function shopOwnerProfile()
+    {
+        return $this->hasOne(ShopOwner::class);
+    }
+
+    public function shopOwnerWorkingTimes()
+    {
+        return $this->hasMany(ShopOwnerWorkingTime::class);
+    }
+
+    public function shopOwnerCertificates()
+    {
+        return $this->hasMany(ShopOwnerCertificate::class);
     }
 
     //JWT

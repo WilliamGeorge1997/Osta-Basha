@@ -1,7 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Modules\Client\App\Http\Controllers\Api\ClientController;
+
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -13,9 +14,6 @@ use Modules\Client\App\Http\Controllers\Api\ClientController;
     |
 */
 
-
-Route::group([
-    'prefix' => 'client'
-], function ($router) {
-    Route::post('contact-provider', [ClientController::class, 'contactProvider']);
+Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
+    Route::get('shopowner', fn (Request $request) => $request->user())->name('shopowner');
 });
