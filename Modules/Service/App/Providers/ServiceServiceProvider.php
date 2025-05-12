@@ -4,6 +4,7 @@ namespace Modules\Service\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\Service\App\Console\DeactivateExpiredServicesCommand;
 
 class ServiceServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,9 @@ class ServiceServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            DeactivateExpiredServicesCommand::class
+        ]);
     }
 
     /**

@@ -21,7 +21,8 @@ class ServiceProviderController extends Controller
      */
     public function __construct(ServiceService $serviceService)
     {
-        $this->middleware('auth:provider');
+        $this->middleware('auth:user');
+        $this->middleware('role:Service Provider');
         $this->serviceService = $serviceService;
     }
 
@@ -31,16 +32,23 @@ class ServiceProviderController extends Controller
         $services = $this->serviceService->providerServices($data);
         return returnMessage(true, 'Services Fetched Successfully', ServiceResource::collection($services)->response()->getData(true));
     }
+
     public function show(ServiceRequest $request, Service $service)
     {
         return returnMessage(true, 'Service Fetched Successfully', new ServiceResource($service));
     }
+
     public function store(ServiceRequest $request)
     {
+        $userId = auth('user')->id();
+        $service = $this->serviceService->findBy('user_id', $userId);
+        if ($service->count() > 0) {
+            return returnMessage(false, 'You already have a service', null, 'bad_request');
+        }
         DB::beginTransaction();
         try {
             $data = (new ServiceDto($request))->dataFromRequest();
-            $data['provider_id'] = auth('provider')->id();
+            $data['user_id'] = $userId;
             $service = $this->serviceService->create($data);
             DB::commit();
             return returnMessage(true, 'Service Created Successfully', $service);

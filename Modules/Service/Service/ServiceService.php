@@ -10,9 +10,9 @@ class ServiceService
 {
     use UploadHelper;
 
-    function findAll($data)
+    function findAll($data, $relations = [])
     {
-        $services = Service::all();
+        $services = Service::query()->with($relations)->latest();
         return getCaseCollection($services, $data);
     }
     function findById($id)
@@ -55,7 +55,13 @@ class ServiceService
     }
     function providerServices($data)
     {
-        $services = Service::where('provider_id', auth('provider')->id())->orderByDesc('id');
+        $services = Service::where('user_id', auth('user')->id())->orderByDesc('id');
         return getCaseCollection($services, $data);
+    }
+
+    public function toggleActivate($service)
+    {
+        $service->update(['is_active' => !$service->is_active]);
+        return $service->fresh();
     }
 }

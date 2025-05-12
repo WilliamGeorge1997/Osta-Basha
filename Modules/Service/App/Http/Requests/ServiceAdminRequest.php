@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ServiceRequest extends FormRequest
+class ServiceAdminRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -22,8 +22,10 @@ class ServiceRequest extends FormRequest
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'price' => ['required', 'decimal:0,2', 'min:0'],
-            'image' => ['required', 'image', 'mimes:jpeg,jpg,png,webp', 'max:1024'],
+            'image' => ['sometimes', 'image', 'mimes:jpeg,jpg,png,webp', 'max:1024'],
             'sub_category_id' => ['required', 'exists:sub_categories,id'],
+            'start_date' => ['sometimes', 'date'],
+            'end_date' => ['sometimes', 'date', 'after:start_date'],
         ];
     }
 
@@ -38,6 +40,8 @@ class ServiceRequest extends FormRequest
             'price' => 'Price',
             'image' => 'Image',
             'sub_category_id' => 'Sub Category',
+            'start_date' => 'Start Date',
+            'end_date' => 'End Date',
         ];
     }
 
@@ -46,19 +50,6 @@ class ServiceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $service = $this->route('service');
-        if (!$service) {
-            return true;
-        }
-        if (auth('user')->id() !== $service->user_id) {
-            throw new HttpResponseException(
-                returnUnauthorizedMessage(
-                    false,
-                    trans('validation.unauthorized'),
-                    null
-                )
-            );
-        }
         return true;
     }
 

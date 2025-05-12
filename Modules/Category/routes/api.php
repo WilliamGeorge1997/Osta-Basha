@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Modules\Category\App\Http\Controllers\Api\CategorController;
+use Modules\Category\App\Http\Controllers\Api\SubCategoryController;
 use Modules\Category\App\Http\Controllers\Api\CategoryAdminController;
 use Modules\Category\App\Http\Controllers\Api\SubCategoryAdminController;
 
@@ -26,5 +28,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::apiResource('sub-categories', SubCategoryAdminController::class)->except('update');
     Route::post('sub-categories/{subCategory}', [SubCategoryAdminController::class, 'update']);
     Route::post('sub-categories/{subCategory}/toggle-activate', [SubCategoryAdminController::class, 'toggleActivate']);
-
 });
+
+Route::get('categories', [CategorController::class, 'index']);
+Route::get('categories/{category}/sub-categories', [SubCategoryController::class, 'index']);

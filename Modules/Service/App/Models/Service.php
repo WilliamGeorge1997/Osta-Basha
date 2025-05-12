@@ -2,10 +2,12 @@
 
 namespace Modules\Service\App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\User\App\Models\User;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Modules\Category\App\Models\SubCategory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Service extends Model
 {
@@ -14,7 +16,7 @@ class Service extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'price', 'image', 'provider_id', 'sub_category_id', 'start_date', 'end_date', 'is_active'];
+    protected $fillable = ['title', 'description', 'price', 'image', 'user_id', 'sub_category_id', 'start_date', 'end_date', 'is_active'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -42,5 +44,15 @@ class Service extends Model
                 return asset('uploads/service/' . $value);
             }
         }
+    }
+
+    //Relations
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class);
     }
 }

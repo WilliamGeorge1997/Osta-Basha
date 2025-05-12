@@ -3,7 +3,7 @@
 
 namespace Modules\Service\DTO;
 
-class ServiceDto
+class ServiceAdminDto
 {
     public $title;
     public $description;
@@ -11,6 +11,9 @@ class ServiceDto
     public $image;
     public $user_id;
     public $sub_category_id;
+    public $start_date;
+    public $end_date;
+    public $is_active;
     public function __construct($request)
     {
         if ($request->get('title'))
@@ -25,6 +28,11 @@ class ServiceDto
             $this->user_id = $request->get('user_id');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
+        if ($request->get('start_date'))
+            $this->start_date = $request->get('start_date');
+        if ($request->get('end_date'))
+            $this->end_date = $request->get('end_date');
+        $this->is_active = isset($request['is_active']) ? 1 : 0;
     }
 
     public function dataFromRequest()
@@ -42,6 +50,11 @@ class ServiceDto
             unset($data['user_id']);
         if ($this->sub_category_id == null)
             unset($data['sub_category_id']);
+        if ($this->start_date == null)
+            unset($data['start_date']);
+        if ($this->end_date == null)
+            unset($data['end_date']);
+        
         return $data;
     }
 }

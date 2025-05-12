@@ -17,10 +17,15 @@ class ServiceResource extends JsonResource
             'description' => $this->description,
             'price' => $this->price,
             'image' => $this->image ?? null,
-            'provider_id' => $this->provider_id,
+            'user_id' => $this->user_id,
+            'sub_category_id' => $this->sub_category_id,
+            'start_date' => $this->start_date ?? null,
+            'end_date' => $this->end_date ?? null,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at->format('Y-m-d h:i A'),
             'updated_at' => $this->updated_at->format('Y-m-d h:i A'),
+            'user' => $this->whenLoaded('user'),
+            'sub_category' => $this->whenLoaded('subCategory'),
         ];
     }
 }

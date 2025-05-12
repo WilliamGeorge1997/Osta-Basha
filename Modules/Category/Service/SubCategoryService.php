@@ -36,6 +36,11 @@ class SubCategoryService
         return $subCategory;
     }
 
+    public function active($category, $data = [], $relations = [])
+    {
+        $subCategories = SubCategory::query()->active()->where('category_id', $category->id)->with($relations)->latest();
+        return getCaseCollection($subCategories, $data);
+    }
     function update($subCategory, $data)
     {
         if (request()->hasFile('image')) {

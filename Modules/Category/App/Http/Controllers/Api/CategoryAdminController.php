@@ -33,10 +33,12 @@ class CategoryAdminController extends Controller
         return returnMessage(true, 'Categories Fetched Successfully', CategoryResource::collection($categories)->response()->getData(true));
     }
 
-    public function subCategories(Category $category)
+    public function subCategories(Request $request, Category $category)
     {
-        $subCategories = $this->categoryService->findSubCategories($category);
-        return returnMessage(true, 'Sub-Categories Fetched Successfully', SubCategoryResource::collection($subCategories)->response()->getData(true));
+        $data = $request->all();
+        $relations = ['subCategories'];
+        $subCategories = $this->categoryService->findSubCategories($category, $data, $relations);
+        return returnMessage(true, 'Category and Sub-Categories Fetched Successfully', CategoryResource::collection($subCategories)->response()->getData(true));
     }
 
     public function store(CategoryRequest $request)

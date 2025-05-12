@@ -20,7 +20,7 @@ class SubCategoryResource extends JsonResource
             'is_active' => $this->is_active,
             "created_at" => $this->created_at->format('Y-m-d h:i A'),
             "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
-            'category' => $this->category,
+            'category' => $this->whenLoaded('category'),
         ];
     }
 }

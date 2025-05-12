@@ -19,7 +19,7 @@ class CategoryService
 
     function findSubCategories($category, $data = [], $relations = [])
     {
-        $subCategories = SubCategory::query()->where('category_id', $category->id)->with($relations)->latest();
+        $subCategories = Category::query()->where('id', $category->id)->with($relations)->latest();
         return getCaseCollection($subCategories, $data);
     }
 
@@ -34,6 +34,11 @@ class CategoryService
         return Category::where($key, $value)->with($relations)->get();
     }
 
+    function active($data = [], $relations = [])
+    {
+        $categories = Category::query()->active()->with($relations)->latest();
+        return getCaseCollection($categories, $data);
+    }
     public function create($data)
     {
         if (request()->hasFile('image')) {
