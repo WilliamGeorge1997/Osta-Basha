@@ -69,19 +69,19 @@ class AdminDatabaseSeeder extends Seeder
 
     function role2Creation()
     {
-        $role = Role::create(['name' => 'Client', 'guard_name' => 'admin']);
+        $role = Role::create(['name' => 'Client', 'guard_name' => 'user']);
         return $role;
     }
 
     function role3Creation()
     {
-        $role = Role::create(['name' => 'Service Provider', 'guard_name' => 'admin']);
+        $role = Role::create(['name' => 'Service Provider', 'guard_name' => 'user']);
         return $role;
     }
 
     function role4Creation()
     {
-        $role = Role::create(['name' => 'Shop Owner', 'guard_name' => 'admin']);
+        $role = Role::create(['name' => 'Shop Owner', 'guard_name' => 'user']);
         return $role;
     }
 }

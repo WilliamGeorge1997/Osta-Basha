@@ -41,6 +41,10 @@ class UserService
         $user->update($userDetailsData);
 
         switch ($type) {
+            case 'client':
+                $user->assignRole('Client');
+                return $user->fresh();
+
             case 'service_provider':
                 $this->completeProviderRegistration($user, $profileData, $workingTimesData);
                 return $user->fresh();
@@ -59,6 +63,7 @@ class UserService
         if (request()->hasFile('card_image')) {
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
         }
+        $user->assignRole('Service Provider');
         $providerProfile = $user->providerProfile()->create($profileData);
         $user->providerWorkingTimes()->createMany($workingTimesData);
         $this->processCertificates($user, 'certificates', 'provider/certificates', 'providerCertificates');
@@ -69,6 +74,7 @@ class UserService
         if (request()->hasFile('card_image')) {
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'shop_owner');
         }
+        $user->assignRole('Shop Owner');
         $shopOwnerProfile = $user->shopOwnerProfile()->create($profileData);
         $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
         $this->processCertificates($user, 'certificates', 'shop_owner/certificates', 'shopOwnerCertificates');

@@ -21,8 +21,8 @@ class UserResource extends JsonResource
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
                 "is_active" => $this->is_active,
-                "created_at" => $this->created_at->format('Y-m-d'),
-                "updated_at" => $this->updated_at->format('Y-m-d'),
+                "created_at" => $this->created_at->format('Y-m-d h:i A'),
+                "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
             $data['profile'] = $this->providerProfile;

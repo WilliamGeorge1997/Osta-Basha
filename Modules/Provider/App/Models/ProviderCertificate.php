@@ -26,7 +26,7 @@ class ProviderCertificate extends Model
             ->useLogName('Provider Certificate')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
-    
+
     //Serialize Dates
     protected function serializeDate(\DateTimeInterface $date)
     {
@@ -34,7 +34,7 @@ class ProviderCertificate extends Model
     }
 
     //Get FullImage Path
-    public function getImageAttribute($value)
+    public function getCertificateImageAttribute($value)
     {
         if ($value != null && $value != '') {
             if (filter_var($value, FILTER_VALIDATE_URL)) {

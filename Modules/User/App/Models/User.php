@@ -15,10 +15,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\ShopOwner\App\Models\ShopOwnerCertificate;
 use Modules\ShopOwner\App\Models\ShopOwnerWorkingTime;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, LogsActivity;
+    use HasFactory, LogsActivity, HasRoles;
 
     /**
      * The attributes that are mass assignable.

@@ -27,6 +27,17 @@ class ShopOwner extends Model
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
 
+    //Get FullImage Path
+    public function getCardImageAttribute($value)
+    {
+        if ($value != null && $value != '') {
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return $value;
+            } else {
+                return asset('uploads/shop_owner/' . $value);
+            }
+        }
+    }
     //Serialize Dates
     protected function serializeDate(\DateTimeInterface $date)
     {

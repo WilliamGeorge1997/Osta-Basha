@@ -15,7 +15,7 @@ class SubCategory extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'image', 'category_id', 'is_active'];
+    protected $fillable = ['title', 'description', 'image', 'category_id', 'is_active'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {

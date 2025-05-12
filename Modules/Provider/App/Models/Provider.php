@@ -34,6 +34,17 @@ class Provider extends Model
         return $date->format('Y-m-d h:i A');
     }
 
+    //Get FullImage Path
+    public function getCardImageAttribute($value)
+    {
+        if ($value != null && $value != '') {
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return $value;
+            } else {
+                return asset('uploads/provider/' . $value);
+            }
+        }
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

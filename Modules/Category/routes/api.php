@@ -1,7 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Category\App\Http\Controllers\Api\CategoryAdminController;
+use Modules\Category\App\Http\Controllers\Api\SubCategoryAdminController;
+
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +16,15 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('category', fn (Request $request) => $request->user())->name('category');
+Route::group(['prefix' => 'admin'], function () {
+    Route::apiResource('categories', CategoryAdminController::class)->except('update');
+    Route::post('categories/{category}', [CategoryAdminController::class, 'update']);
+    Route::get('categories/{category}/sub-categories', [CategoryAdminController::class, 'subCategories']);
+    Route::post('categories/{category}/toggle-activate', [CategoryAdminController::class, 'toggleActivate']);
+
+
+    Route::apiResource('sub-categories', SubCategoryAdminController::class)->except('update');
+    Route::post('sub-categories/{subCategory}', [SubCategoryAdminController::class, 'update']);
+    Route::post('sub-categories/{subCategory}/toggle-activate', [SubCategoryAdminController::class, 'toggleActivate']);
+
 });

@@ -14,7 +14,7 @@ class Category extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'image', 'is_active'];
+    protected $fillable = ['title', 'description', 'image', 'is_active'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions
