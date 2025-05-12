@@ -2,6 +2,7 @@
 
 namespace Modules\User\App\Http\Controllers\Api;
 
+use Modules\User\App\Http\Requests\UserChooseType;
 use Modules\User\DTO\UserDto;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +30,7 @@ class UserAuthController extends Controller
      */
     public function __construct(UserService $userService)
     {
-        $this->middleware('auth:user', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists', 'loginOrRegister']]);
+        $this->middleware('auth:user', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists', 'loginOrRegister', 'chooseUserType']]);
         $this->userService = $userService;
 
     }
@@ -63,16 +64,31 @@ class UserAuthController extends Controller
         }
     }
 
+    public function chooseUserType(UserChooseType $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = auth('user')->user();
+            if ($user && $user->type !== null) {
+                return returnMessage(false, 'User type already set', null, 'unprocessable_entity');
+            }
+            $data = $request->validated();
+            $user = $this->userService->chooseUserType($data, $user);
+            DB::commit();
+            return returnMessage(true, 'User type set successfully', new UserResource($user));
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
     public function completeRegistration(UserCompleteRegistrationRequest $request)
     {
         DB::beginTransaction();
         try {
             $user = auth('user')->user();
-            if ($user && !$user->type == null) {
-                return returnMessage(false, 'User Already Completed Registration', null, 'unprocessable_entity');
-            }
             $userDetailsData = (new UserDetailsDto($request))->dataFromRequest();
-            $type = $userDetailsData['type'];
+            $type = $user->type;
             $profileData = null;
             $workingTimesData = null;
             if ($type == 'service_provider') {
@@ -118,7 +134,15 @@ class UserAuthController extends Controller
      */
     public function me()
     {
-        return returnMessage(true, 'User Data', new UserResource(auth('user')->user()));
+        $user = auth('user')->user();
+
+        if ($user->type == 'service_provider') {
+            $user->load(['providerProfile', 'providerWorkingTimes', 'providerCertificates']);
+        } elseif ($user->type == 'shop_owner') {
+            $user->load(['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerCertificates']);
+        }
+
+        return returnMessage(true, 'User Data', new UserResource($user));
     }
 
     /**
@@ -152,8 +176,8 @@ class UserAuthController extends Controller
     protected function respondWithToken($token)
     {
         $status = 'ok';
-        $authUser = auth('user')->user();
-        if ($authUser->type == null) {
+        $user = auth('user')->user();
+        if ($user->type == null) {
             $status = 'non_authoritative_information';
         }
         return returnMessage(
@@ -163,7 +187,7 @@ class UserAuthController extends Controller
                 'access_token' => $token,
                 'token_type' => 'bearer',
                 'expires_in' => auth('user')->factory()->getTTL() * 60,
-                'user' => new UserResource($authUser),
+                'user' => new UserResource($user),
             ],
             $status
         );

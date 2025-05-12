@@ -176,6 +176,8 @@ return [
     ],
     'rules_failed' => 'The given data was invalid.',
     'unauthorized' => 'You are not authorized to perform this action.',
+    'user_type_not_set' => 'User type not set',
+    'user_already_completed_registration' => 'User already completed registration',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

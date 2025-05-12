@@ -9,7 +9,6 @@ class UserDetailsDto
     public $first_name;
     public $last_name;
     public $email;
-    public $type;
 
     public function __construct($request)
     {
@@ -19,8 +18,6 @@ class UserDetailsDto
             $this->last_name = $request->get('last_name');
         if ($request->get('email'))
             $this->email = $request->get('email');
-        if ($request->get('type'))
-            $this->type = $request->get('type');
     }
 
     public function dataFromRequest()
@@ -32,8 +29,6 @@ class UserDetailsDto
             unset($data['last_name']);
         if ($this->email == null)
             unset($data['email']);
-        if ($this->type == null)
-            unset($data['type']);
         return $data;
     }
 }

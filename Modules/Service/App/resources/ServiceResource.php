@@ -2,6 +2,7 @@
 
 namespace Modules\Service\App\resources;
 
+use Modules\User\App\resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ServiceResource extends JsonResource
@@ -24,8 +25,8 @@ class ServiceResource extends JsonResource
             'is_active' => $this->is_active,
             'created_at' => $this->created_at->format('Y-m-d h:i A'),
             'updated_at' => $this->updated_at->format('Y-m-d h:i A'),
-            'user' => $this->whenLoaded('user'),
             'sub_category' => $this->whenLoaded('subCategory'),
+            'user' => new UserResource($this->whenLoaded('user')),
         ];
     }
 }

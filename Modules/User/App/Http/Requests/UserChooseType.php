@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserRegisterRequest extends FormRequest
+class UserChooseType extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -16,12 +16,9 @@ class UserRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'first_name' => ['required', 'max:255'],
-            'last_name' => ['required', 'max:255'],
-            'email' => ['nullable', 'email', 'unique:users,email'],
-            'password' => ['required', 'min:6', 'confirmed'],
-            'phone' => ['required' ,'unique:users,phone'],
-            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:1024'],
+            'type' => ['required', 'in:client,service_provider,shop_owner'],
+            'long' => ['sometimes', 'numeric', 'min:-180', 'max:180'],
+            'lat' => ['sometimes', 'numeric', 'min:-90', 'max:90'],
         ];
     }
 
@@ -31,12 +28,9 @@ class UserRegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email Address',
-            'password' => 'Password',
-            'phone' => 'Phone',
-            'image' => 'Image',
+            'type' => 'User Type',
+            'long' => 'Longitude',
+            'lat' => 'Latitude',
         ];
     }
 

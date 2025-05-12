@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Service\App\Http\Controllers\Api\ServiceController;
 use Modules\Service\App\Http\Controllers\Api\ServiceAdminController;
 use Modules\Service\App\Http\Controllers\Api\ServiceProviderController;
 
@@ -25,3 +26,5 @@ Route::group(['prefix' => 'admin'], function ($router) {
     Route::post('services/{service}', [ServiceAdminController::class, 'update']);
     Route::post('services/{service}/toggle-activate', [ServiceAdminController::class, 'toggleActivate']);
 });
+
+Route::get('services', [ServiceController::class, 'index']);

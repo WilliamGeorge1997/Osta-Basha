@@ -33,25 +33,44 @@ class UserService
         $user = User::create($data);
         return $user;
     }
+
+    public function chooseUserType($data, $user)
+    {
+        switch ($data['type']) {
+            case 'client':
+                $user->assignRole('Client');
+                break;
+            case 'service_provider':
+                $user->assignRole('Service Provider');
+                break;
+            case 'shop_owner':
+                $user->assignRole('Shop Owner');
+                break;
+            default:
+                throw new \Exception('Invalid user type');
+        }
+        $user->update($data);
+        return $user->fresh();
+    }
     public function completeRegistration($type, $user, $userDetailsData, $profileData, $workingTimesData)
     {
         if (request()->hasFile('image')) {
             $userDetailsData['image'] = $this->upload(request()->file('image'), 'user');
         }
+        $userDetailsData['completed_registration'] = 1;
         $user->update($userDetailsData);
 
         switch ($type) {
             case 'client':
-                $user->assignRole('Client');
                 return $user->fresh();
 
             case 'service_provider':
                 $this->completeProviderRegistration($user, $profileData, $workingTimesData);
-                return $user->fresh();
+                return $user->fresh()->load('providerProfile', 'providerWorkingTimes', 'providerCertificates');
 
             case 'shop_owner':
                 $this->completeShopOwnerRegistration($user, $profileData, $workingTimesData);
-                return $user->fresh();
+                return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerCertificates');
 
             default:
                 return $user->fresh();
@@ -63,7 +82,6 @@ class UserService
         if (request()->hasFile('card_image')) {
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
         }
-        $user->assignRole('Service Provider');
         $providerProfile = $user->providerProfile()->create($profileData);
         $user->providerWorkingTimes()->createMany($workingTimesData);
         $this->processCertificates($user, 'certificates', 'provider/certificates', 'providerCertificates');
@@ -74,7 +92,6 @@ class UserService
         if (request()->hasFile('card_image')) {
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'shop_owner');
         }
-        $user->assignRole('Shop Owner');
         $shopOwnerProfile = $user->shopOwnerProfile()->create($profileData);
         $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
         $this->processCertificates($user, 'certificates', 'shop_owner/certificates', 'shopOwnerCertificates');

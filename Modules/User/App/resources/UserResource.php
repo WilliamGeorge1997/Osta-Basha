@@ -25,13 +25,13 @@ class UserResource extends JsonResource
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
-            $data['profile'] = $this->providerProfile;
-            $data['working_times'] = $this->providerWorkingTimes;
-            $data['certificates'] = $this->providerCertificates;
+            $data['profile'] = $this->whenLoaded('providerProfile');
+            $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
+            $data['certificates'] = $this->whenLoaded('providerCertificates');
         } elseif ($this->type == 'shop_owner') {
-            $data['profile'] = $this->shopOwnerProfile;
-            $data['working_times'] = $this->shopOwnerWorkingTimes;
-            $data['certificates'] = $this->shopOwnerCertificates;
+            $data['profile'] = $this->whenLoaded('shopOwnerProfile');
+            $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
+            $data['certificates'] = $this->whenLoaded('shopOwnerCertificates');
         }
         return $data;
     }

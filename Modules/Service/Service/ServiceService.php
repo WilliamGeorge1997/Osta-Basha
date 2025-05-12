@@ -23,6 +23,19 @@ class ServiceService
     {
         return Service::where($key, $value)->get();
     }
+
+    function active($data = [], $relations = [])
+    {
+        $service = Service::query()
+            ->when($data['sub_category_id'] ?? null, function ($query) use ($data) {
+                return $query->where('sub_category_id', $data['sub_category_id']);
+            })
+            ->active()
+            ->with($relations)
+            ->latest();
+        return getCaseCollection($service, $data);
+    }
+
     public function create($data)
     {
         if (request()->hasFile('image')) {

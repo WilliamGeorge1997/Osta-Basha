@@ -21,6 +21,7 @@ Route::group([
 ], function ($router) {
     Route::group(['prefix' => 'auth'], function ($router) {
         Route::post('login-or-register', [UserAuthController::class, 'loginOrRegister']);
+        Route::post('choose-user-type', [UserAuthController::class, 'chooseUserType']);
         Route::post('complete-registration', [UserAuthController::class, 'completeRegistration']);
         Route::post('verify', [UserAuthController::class, 'verifyOtp']);
         Route::post('logout', [UserAuthController::class, 'logout']);
