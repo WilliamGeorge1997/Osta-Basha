@@ -27,6 +27,7 @@ class UserCompleteRegistrationRequest extends FormRequest
 
         if ($isProviderOrShop) {
             $rules = array_merge($rules, [
+                'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'card_number' => ['required', 'string', 'max:255'],
                 'card_image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'address' => ['required', 'string', 'max:255'],

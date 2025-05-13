@@ -39,6 +39,15 @@ class UserChooseType extends FormRequest
      */
     public function authorize(): bool
     {
+        $user = auth('user')->user();
+        if ($user->is_active !== 1)
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    "User is not verified",
+                    null
+                )
+            );
         return true;
     }
 

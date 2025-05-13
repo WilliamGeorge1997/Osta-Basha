@@ -3,16 +3,11 @@
 namespace Modules\Category\App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Modules\Category\DTO\CategoryDto;
-use Modules\Category\App\Models\Category;
 use Modules\Category\Service\CategoryService;
 use Modules\Category\App\resources\CategoryResource;
-use Modules\Category\App\Http\Requests\CategoryRequest;
-use Modules\Category\App\resources\SubCategoryResource;
 
-class CategorController extends Controller
+class CategoryController extends Controller
 {
     protected $categoryService;
     /**

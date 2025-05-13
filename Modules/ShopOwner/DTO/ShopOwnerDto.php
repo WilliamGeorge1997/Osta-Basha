@@ -32,7 +32,8 @@ class ShopOwnerDto
             $this->min_price = $request->get('min_price');
         if ($request->get('max_price'))
             $this->max_price = $request->get('max_price');
-
+        if ($request->get('sub_category_id'))
+            $this->sub_category_id = $request->get('sub_category_id');
     }
 
     public function dataFromRequest()

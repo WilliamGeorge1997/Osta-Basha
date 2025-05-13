@@ -14,6 +14,7 @@ class ProviderDto
     public $experience_description;
     public $min_price;
     public $max_price;
+    public $sub_category_id;
 
     public function __construct($request, $user_id)
     {
@@ -32,7 +33,8 @@ class ProviderDto
             $this->min_price = $request->get('min_price');
         if ($request->get('max_price'))
             $this->max_price = $request->get('max_price');
-
+        if ($request->get('sub_category_id'))
+            $this->sub_category_id = $request->get('sub_category_id');
     }
 
     public function dataFromRequest()
@@ -52,6 +54,8 @@ class ProviderDto
             unset($data['min_price']);
         if ($this->max_price == null)
             unset($data['max_price']);
+        if ($this->sub_category_id == null)
+            unset($data['sub_category_id']);
         return $data;
     }
 }

@@ -3,9 +3,9 @@
     "Admin": true,
     "Client": false,
     "Provider": true,
-    "Service": true,
+    "Service": false,
     "User": true,
-    "Shop": true,
+    "Shop": false,
     "Package": true,
     "Category": true,
     "ShopOwner": true
