@@ -26,6 +26,7 @@ return new class extends Migration {
             $table->string('max_price');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
+            $table->enum('status', ['free_trial', 'subscribed'])->default('free_trial');
             $table->boolean('is_active')->default(0);
             $table->timestamps();
         });

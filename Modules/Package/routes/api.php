@@ -2,6 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\Package\App\Http\Controllers\Api\PackageController;
+use Modules\Package\App\Http\Controllers\Api\PackageAdminController;
 
 /*
     |--------------------------------------------------------------------------
@@ -13,7 +15,9 @@ use Illuminate\Support\Facades\Route;
     | is assigned the "api" middleware group. Enjoy building your API!
     |
 */
-
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('package', fn (Request $request) => $request->user())->name('package');
+Route::group(['prefix' => 'admin'], function () {
+    Route::apiResource('packages', PackageAdminController::class)->except('update');
+    Route::post('packages/{package}', [PackageAdminController::class, 'update']);
+    Route::post('packages/{package}/toggle-activate', [PackageAdminController::class, 'toggleActivate']);
 });
+Route::get('packages', [PackageController::class, 'index']);

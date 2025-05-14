@@ -21,6 +21,7 @@ Route::group([
     'prefix' => 'admin'
 ], function ($router) {
     Route::apiResource('providers', ProviderAdminController::class)->only(['index']);
+    Route::post('providers/{user}', [ProviderAdminController::class, 'updateSubscription']);
 });
 
 Route::apiResource('providers', ProviderController::class)->only(['index']);

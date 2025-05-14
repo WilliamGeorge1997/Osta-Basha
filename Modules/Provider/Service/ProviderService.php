@@ -77,4 +77,16 @@ class ProviderService
             ->take(10);
         return getCaseCollection($providers, $data);
     }
+
+    function updateSubscription($user, $data)
+    {
+        if (request()->has('is_active') && request()->input('is_active') == 1) {
+            $data['is_active'] = 1;
+        } else {
+            $data['is_active'] = 0;
+        }
+        $data['status'] = 'subscribed';
+        $user->providerProfile->update($data);
+        return $user;
+    }
 }

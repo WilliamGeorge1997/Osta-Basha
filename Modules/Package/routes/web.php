@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Modules\Package\App\Http\Controllers\PackageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +11,3 @@ use Modules\Package\App\Http\Controllers\PackageController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('package', PackageController::class)->names('package');
-});
