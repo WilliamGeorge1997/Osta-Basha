@@ -11,19 +11,21 @@ class ProviderResource extends JsonResource
      */
     public function toArray($request): array
     {
-        return [
-            "id" => $this->id,
-            "first_name" => $this->first_name,
-            "last_name" => $this->last_name,
-            "email" => $this->email ?? null,
-            "phone" => $this->phone,
-            "image" => $this->image ?? null,
-            "lat" => $this->lat ?? null,
-            "long" => $this->long ?? null,
-            "role" => "provider",
-            "is_active" => $this->is_active,
-            "created_at" => $this->created_at->format('Y-m-d'),
-            "updated_at" => $this->updated_at->format('Y-m-d'),
-        ];
+        return
+            [
+                "id" => $this->id,
+                "first_name" => $this->first_name ?? null,
+                "last_name" => $this->last_name ?? null,
+                "email" => $this->email ?? null,
+                "phone" => $this->phone,
+                "image" => $this->image ?? null,
+                "type" => $this->type ?? null,
+                "is_active" => $this->is_active,
+                "created_at" => $this->created_at->format('Y-m-d h:i A'),
+                "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
+                "profile" => $this->whenLoaded('providerProfile'),
+                "working_times" => $this->whenLoaded('providerWorkingTimes'),
+                "certificates" => $this->whenLoaded('providerCertificates'),
+            ];
     }
 }

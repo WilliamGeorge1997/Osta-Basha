@@ -4,39 +4,46 @@ namespace Modules\Provider\Service;
 
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Hash;
 use Modules\Common\Helpers\UploadHelper;
-use Modules\Provider\App\Models\Provider;
 
 class ProviderService
 {
     use UploadHelper;
 
+    function findAll($data = [], $relations = [])
+    {
+        $providers = User::query()
+            ->where('type', 'service_provider')
+            ->whereHas('providerProfile')
+            ->with($relations);
+        return getCaseCollection($providers, $data);
+    }
+
     function findById($id)
     {
-        return Provider::find($id);
+        return User::find($id);
     }
     function findBy($key, $value)
     {
-        return Provider::where($key, $value)->get();
+        return User::where($key, $value)->get();
     }
-    function create($data)
+    function active($data = [], $relations = [])
     {
-        if (request()->hasFile('image')) {
-            $data['image'] = $this->upload(request()->file('image'), 'provider');
-        }
-        $provider = Provider::create($data);
-        return $provider;
+        $providers = User::query()
+            ->where('type', 'service_provider')
+            ->whereHas('providerProfile', function ($query) use ($data) {
+                $query
+                    ->when($data['sub_category_id'] ?? null, function ($q) use ($data) {
+                        $q->where('sub_category_id', $data['sub_category_id']);
+                    })
+                    ->active()
+                    ->withinActiveSubscriptionPeriod();
+
+            })
+            ->with($relations);
+        return getCaseCollection($providers, $data);
     }
 
-    function verifyOtp($data)
-    {
-        $provider = $this->findBy('phone', $data['phone'])[0];
-        if ($provider && $provider->verify_code == $data['otp']) {
-            return $this->update($provider->id, ['is_active' => 1]);
-        }
-        return false;
-    }
 
     function update($id, $data)
     {
@@ -47,14 +54,6 @@ class ProviderService
         }
         $provider->update($data);
         return $provider;
-    }
-
-    function changePassword($data)
-    {
-        $provider = auth('provider')->user();
-        $provider->update([
-            'password' => Hash::make($data['new_password'])
-        ]);
     }
 
     function updateProfile($data)

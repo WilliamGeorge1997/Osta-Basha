@@ -1,12 +1,13 @@
 <?php
 
-namespace Modules\Provider\App\Http\Requests;
+namespace Modules\Common\App\Http\Requests;
 
+use Modules\Common\App\Models\Setting;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProviderChangePasswordRequest extends FormRequest
+class SettingRequest extends FormRequest
 {
 
     /**
@@ -16,10 +17,28 @@ class ProviderChangePasswordRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            'current_password' => ['required', 'current_password'],
-            'new_password' => ['required', 'string', 'min:6' ,'confirmed']
+        $rules = [
+            'settings' => 'required|array',
         ];
+
+        $settings = $this->input('settings');
+        if (!is_array($settings)) {
+            return $rules;
+        }
+
+        foreach ($settings as $index => $setting) {
+            $rules["settings.{$index}.key"] = 'required|string|exists:settings,key';
+            $rules["settings.{$index}.value"] = 'required';
+
+            if (isset($setting['key'])) {
+                $dbSetting = Setting::where('key', $setting['key'])->first();
+                if ($dbSetting) {
+                    $rules["settings.{$index}.value"] = "required|{$dbSetting->type}";
+                }
+            }
+        }
+
+        return $rules;
     }
 
     /**
@@ -28,9 +47,9 @@ class ProviderChangePasswordRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'current_password' => 'Old Password',
-            'new_password' => 'New Password',
-            'new_password_confirmation' => 'New Password Confirmation',
+            'settings' => 'Settings',
+            'settings.*.key' => 'Key',
+            'settings.*.value' => 'Value',
         ];
     }
 

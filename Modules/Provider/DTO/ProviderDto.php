@@ -3,6 +3,9 @@
 
 namespace Modules\Provider\DTO;
 
+use Carbon\Carbon;
+use Modules\Common\App\Models\Setting;
+
 
 class ProviderDto
 {
@@ -15,6 +18,9 @@ class ProviderDto
     public $min_price;
     public $max_price;
     public $sub_category_id;
+    public $is_active;
+    public $start_date;
+    public $end_date;
 
     public function __construct($request, $user_id)
     {
@@ -35,6 +41,17 @@ class ProviderDto
             $this->max_price = $request->get('max_price');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
+        $this->start_date = Carbon::now()->toDateString();
+        $freeTrialMonths = $this->getFreeTrialMonths();
+        $this->end_date = Carbon::now()->addMonths($freeTrialMonths)->toDateString();
+        $this->is_active = 1;
+    }
+
+
+    private function getFreeTrialMonths()
+    {
+        $setting = Setting::where('key', 'free_trial_months')->first();
+        return $setting ? (int) $setting->value : 3;
     }
 
     public function dataFromRequest()
@@ -56,6 +73,10 @@ class ProviderDto
             unset($data['max_price']);
         if ($this->sub_category_id == null)
             unset($data['sub_category_id']);
+        if ($this->start_date == null)
+            unset($data['start_date']);
+        if ($this->end_date == null)
+            unset($data['end_date']);
         return $data;
     }
 }

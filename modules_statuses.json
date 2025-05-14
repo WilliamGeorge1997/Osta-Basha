@@ -1,5 +1,5 @@
 {
-    "Common": false,
+    "Common": true,
     "Admin": true,
     "Client": false,
     "Provider": true,

@@ -3,7 +3,6 @@
 namespace Modules\User\App\Models;
 
 use Spatie\Activitylog\LogOptions;
-use Modules\Service\App\Models\Service;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Modules\Provider\App\Models\Provider;
 use Modules\ShopOwner\App\Models\ShopOwner;
@@ -89,11 +88,6 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(ProviderCertificate::class);
     }
-    public function service()
-    {
-        return $this->hasOne(Service::class);
-    }
-
     // ---------------------- Shop Owner --------------------------------
 
     public function shopOwnerProfile()

@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Provider\App\Http\Controllers\Api\ProviderController;
 use Modules\Provider\App\Http\Controllers\Api\ProviderAuthController;
+use Modules\Provider\App\Http\Controllers\Api\ProviderAdminController;
 
 /*
     |--------------------------------------------------------------------------
@@ -17,20 +18,10 @@ use Modules\Provider\App\Http\Controllers\Api\ProviderAuthController;
 */
 
 Route::group([
-    'prefix' => 'provider'
+    'prefix' => 'admin'
 ], function ($router) {
-    Route::get('most-contacted', [ProviderController::class, 'mostContactedProviders']);
-
-    Route::post('authenticate', [ProviderAuthController::class, 'loginOrRegister']);
-    Route::group(['prefix' => 'auth'], function ($router) {
-        // Route::post('login', [ProviderAuthController::class, 'login']);
-        // Route::post('register', [ProviderAuthController::class, 'register']);
-        Route::post('logout', [ProviderAuthController::class, 'logout']);
-        Route::post('verify', [ProviderAuthController::class, 'verifyOtp']);
-        Route::post('refresh', [ProviderAuthController::class, 'refresh']);
-        Route::post('me', [ProviderAuthController::class, 'me']);
-        // Route::post('check-phone-exists', [ProviderAuthController::class, 'checkPhoneExists']);
-    });
-    Route::post('change-password', [ProviderController::class, 'changePassword']);
-    Route::post('update-profile', [ProviderController::class, 'updateProfile']);
+    Route::apiResource('providers', ProviderAdminController::class)->only(['index']);
 });
+
+Route::apiResource('providers', ProviderController::class)->only(['index']);
+Route::get('most-contacted', [ProviderController::class, 'mostContactedProviders']);

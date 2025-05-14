@@ -24,6 +24,9 @@ return new class extends Migration {
             $table->text('experience_description');
             $table->string('min_price');
             $table->string('max_price');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->boolean('is_active')->default(0);
             $table->timestamps();
         });
     }
