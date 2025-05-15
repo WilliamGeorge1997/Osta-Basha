@@ -35,9 +35,9 @@ class ProviderController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = ['provider', 'service'];
+            $relations = ['providerProfile', 'providerWorkingTimes', 'providerCertificates'];
             $providers = $this->providerService->mostContactedProviders($data, $relations);
-            return returnMessage(true, 'Most Contacted Providers', $providers);
+            return returnMessage(true, 'Most Contacted Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Client\App\Http\Controllers\Api\ClientController;
+use Modules\Client\App\Http\Controllers\Api\ClientAdminController;
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -13,9 +14,13 @@ use Modules\Client\App\Http\Controllers\Api\ClientController;
     |
 */
 
-
+Route::group([
+    'prefix' => 'admin'
+], function ($router) {
+    Route::apiResource('clients', ClientAdminController::class)->only(['index']);
+});
 Route::group([
     'prefix' => 'client'
 ], function ($router) {
-    Route::post('contact-provider', [ClientController::class, 'contactProvider']);
+    Route::post('contact', [ClientController::class, 'clientContact']);
 });

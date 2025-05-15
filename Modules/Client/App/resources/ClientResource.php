@@ -17,11 +17,12 @@ class ClientResource extends JsonResource
             "last_name" => $this->last_name ?? null,
             "email" => $this->email ?? null,
             "phone" => $this->phone,
+            'whatsapp' => $this->whatsapp ?? null,
             "image" => $this->image ?? null,
-            "role" => "client",
+            "type" => $this->type ?? null,
             "is_active" => $this->is_active,
-            "created_at" => $this->created_at->format('Y-m-d'),
-            "updated_at" => $this->updated_at->format('Y-m-d'),
+            "created_at" => $this->created_at->format('Y-m-d H:i:s'),
+            "updated_at" => $this->updated_at->format('Y-m-d H:i:s'),
         ];
     }
 }

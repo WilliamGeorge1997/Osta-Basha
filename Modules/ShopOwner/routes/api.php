@@ -1,7 +1,8 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Modules\ShopOwner\App\Http\Controllers\Api\ShopOwnerController;
+use Modules\ShopOwner\App\Http\Controllers\Api\ShopOwnerAdminController;
 
 /*
     |--------------------------------------------------------------------------
@@ -14,6 +15,9 @@ use Illuminate\Support\Facades\Route;
     |
 */
 
-Route::middleware(['auth:sanctum'])->prefix('v1')->name('api.')->group(function () {
-    Route::get('shopowner', fn (Request $request) => $request->user())->name('shopowner');
+Route::group([
+    'prefix' => 'admin'
+], function ($router) {
+    Route::apiResource('shop-owners', ShopOwnerAdminController::class)->only(['index']);
 });
+Route::apiResource('shop-owners', ShopOwnerController::class)->only(['index']);

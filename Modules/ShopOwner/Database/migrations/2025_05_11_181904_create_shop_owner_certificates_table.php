@@ -12,10 +12,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('shop_owner_certificates', function (Blueprint $table) {
+        Schema::create('shop_owner_shop_images', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
-            $table->string('certificate_image');
+            $table->string('image');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('shop_owner_certificates');
+        Schema::dropIfExists('shop_owner_shop_images');
     }
 };

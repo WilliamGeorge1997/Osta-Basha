@@ -1,11 +1,9 @@
 {
     "Common": true,
     "Admin": true,
-    "Client": false,
+    "Client": true,
     "Provider": true,
-    "Service": false,
     "User": true,
-    "Shop": false,
     "Package": true,
     "Category": true,
     "ShopOwner": true

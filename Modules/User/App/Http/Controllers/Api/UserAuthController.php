@@ -139,7 +139,7 @@ class UserAuthController extends Controller
         if ($user->type == 'service_provider') {
             $user->load(['providerProfile', 'providerWorkingTimes', 'providerCertificates']);
         } elseif ($user->type == 'shop_owner') {
-            $user->load(['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerCertificates']);
+            $user->load(['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages']);
         }
 
         return returnMessage(true, 'User Data', new UserResource($user));

@@ -70,7 +70,7 @@ class UserService
 
             case 'shop_owner':
                 $this->completeShopOwnerRegistration($user, $profileData, $workingTimesData);
-                return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerCertificates');
+                return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
 
             default:
                 return $user->fresh();
@@ -94,7 +94,7 @@ class UserService
         }
         $shopOwnerProfile = $user->shopOwnerProfile()->create($profileData);
         $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
-        $this->processCertificates($user, 'certificates', 'shop_owner/certificates', 'shopOwnerCertificates');
+        $this->processCertificates($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
     }
 
     private function processCertificates($user, $requestKey, $uploadPath, $relationMethod)
@@ -104,7 +104,7 @@ class UserService
         }
         $certificates = collect(request()->file($requestKey))->map(function ($certificate) use ($uploadPath) {
             return [
-                'certificate_image' => $this->upload($certificate, $uploadPath)
+                'image' => $this->upload($certificate, $uploadPath)
             ];
         })->toArray();
         if (!empty($certificates)) {

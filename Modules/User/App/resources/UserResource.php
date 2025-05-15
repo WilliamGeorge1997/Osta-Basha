@@ -18,6 +18,7 @@ class UserResource extends JsonResource
                 "last_name" => $this->last_name ?? null,
                 "email" => $this->email ?? null,
                 "phone" => $this->phone,
+                "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
                 "is_active" => $this->is_active,
@@ -31,7 +32,7 @@ class UserResource extends JsonResource
         } elseif ($this->type == 'shop_owner') {
             $data['profile'] = $this->whenLoaded('shopOwnerProfile');
             $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
-            $data['certificates'] = $this->whenLoaded('shopOwnerCertificates');
+            $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
         }
         return $data;
     }

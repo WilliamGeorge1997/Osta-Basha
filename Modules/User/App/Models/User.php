@@ -3,18 +3,18 @@
 namespace Modules\User\App\Models;
 
 use Spatie\Activitylog\LogOptions;
+use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Modules\Provider\App\Models\Provider;
 use Modules\ShopOwner\App\Models\ShopOwner;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Modules\Client\App\Models\ClientProviderContact;
+use Modules\Client\App\Models\ClientContact;
 use Modules\Provider\App\Models\ProviderCertificate;
 use Modules\Provider\App\Models\ProviderWorkingTime;
+use Modules\ShopOwner\App\Models\ShopOwnerShopImage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\ShopOwner\App\Models\ShopOwnerCertificate;
 use Modules\ShopOwner\App\Models\ShopOwnerWorkingTime;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -23,7 +23,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token', 'completed_registration', 'lat', 'long'];
     protected $hidden = ['password'];
 
     //Log Activity
@@ -65,12 +65,17 @@ class User extends Authenticatable implements JWTSubject
     //Relations
     public function providerContacts()
     {
-        return $this->hasMany(ClientProviderContact::class, 'provider_id');
+        return $this->hasMany(ClientContact::class, 'contactable_id')
+            ->where('contactable_type', Provider::class);
     }
-
+    public function shopOwnerContacts()
+    {
+        return $this->morphMany(ClientContact::class, 'contactable')
+            ->where('contactable_type', ShopOwner::class);
+    }
     public function clientContacts()
     {
-        return $this->hasMany(ClientProviderContact::class, 'client_id');
+        return $this->hasMany(ClientContact::class, 'client_id');
     }
     // ----------------------Provider--------------------------------
 
@@ -100,9 +105,9 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(ShopOwnerWorkingTime::class);
     }
 
-    public function shopOwnerCertificates()
+    public function shopOwnerShopImages()
     {
-        return $this->hasMany(ShopOwnerCertificate::class);
+        return $this->hasMany(ShopOwnerShopImage::class);
     }
 
     //JWT

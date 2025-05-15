@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->string('last_name')->nullable();
             $table->string('email')->nullable()->unique();
             $table->string('phone')->unique();
+            $table->string('whatsapp')->nullable();
             $table->string('password');
             $table->enum('type', ['client', 'service_provider', 'shop_owner'])->nullable();
             $table->string('image')->nullable();

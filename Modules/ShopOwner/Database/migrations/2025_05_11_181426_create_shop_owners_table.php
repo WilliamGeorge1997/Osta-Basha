@@ -14,15 +14,15 @@ return new class extends Migration {
     {
         Schema::create('shop_owners', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(User::class)->unique()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(SubCategory::class)->nullable()->index()->constrained()->nullOnDelete();
-            $table->string('card_number');
-            $table->string('card_image');
+            $table->string('shop_name');
+            $table->text('products_description');
             $table->string('address');
-            $table->string('experience_years');
-            $table->text('experience_description');
-            $table->string('min_price');
-            $table->string('max_price');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
+            $table->enum('status', ['free_trial', 'subscribed'])->default('free_trial');
+            $table->boolean('is_active')->default(0);
             $table->timestamps();
         });
     }

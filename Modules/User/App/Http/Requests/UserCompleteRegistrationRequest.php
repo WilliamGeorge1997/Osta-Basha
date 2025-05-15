@@ -13,19 +13,19 @@ class UserCompleteRegistrationRequest extends FormRequest
      *
      * @return array<string, mixed>
      */
-    public function rules(): array
+  public function rules(): array
     {
 
         $user = auth('user')->user();
-        $isProviderOrShop = in_array($user->type, ['service_provider', 'shop_owner']);
 
         $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['sometimes', 'email', 'max:255', 'unique:users'],
+            'whatsapp' => ['required', 'string', 'max:255'],
         ];
 
-        if ($isProviderOrShop) {
+        if ($user->type === 'service_provider') {
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'card_number' => ['required', 'string', 'max:255'],
@@ -42,32 +42,22 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'working_times.*.start_at' => ['required', 'date_format:H:i'],
                 'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
             ]);
+        } elseif ($user->type === 'shop_owner') {
+            $rules = array_merge($rules, [
+                'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
+                'address' => ['required', 'string', 'max:255'],
+                'shop_name' => ['required', 'string', 'max:255'],
+                'products_description' => ['required', 'string'],
+                'shop_images' => ['required', 'array'],
+                'shop_images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'working_times' => ['required', 'array'],
+                'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
+                'working_times.*.start_at' => ['required', 'date_format:H:i'],
+                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+            ]);
         }
 
         return $rules;
-        // $user = auth('user')->user();
-        // $type = $user->type;
-        // return [
-        //     'first_name' => ['required', 'string', 'max:255'],
-        //     'last_name' => ['required', 'string', 'max:255'],
-        //     'email' => ['sometimes', 'email', 'max:255', 'unique:users'],
-        //     //Provider Or Shop Owner
-        //     'card_number' => ['required_if:type,service_provider,shop_owner', 'string', 'max:255'],
-        //     'card_image' => ['required_if:type,service_provider,shop_owner', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-        //     'address' => ['required_if:type,service_provider,shop_owner', 'string', 'max:255'],
-        //     'experience_years' => ['required_if:type,service_provider,shop_owner', 'numeric', 'min:0'],
-        //     'experience_description' => ['required_if:type,service_provider,shop_owner', 'string'],
-        //     'min_price' => ['required_if:type,service_provider,shop_owner', 'numeric', 'min:0'],
-        //     'max_price' => ['required_if:type,service_provider,shop_owner', 'numeric', 'min:0'],
-        //     //Certificates
-        //     'certificates' => ['required_if:type,service_provider,shop_owner', 'array'],
-        //     'certificates.*' => ['required_if:type,service_provider,shop_owner', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-        //     //Working Times
-        //     'working_times' => ['required_if:type,service_provider,shop_owner', 'array'],
-        //     'working_times.*.day' => ['required_if:type,service_provider,shop_owner', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
-        //     'working_times.*.start_at' => ['required_if:type,service_provider,shop_owner', 'date_format:H:i'],
-        //     'working_times.*.end_at' => ['required_if:type,service_provider,shop_owner', 'date_format:H:i', 'after:provider_working_times.*.start_at'],
-        // ];
     }
 
     /**
@@ -92,6 +82,11 @@ class UserCompleteRegistrationRequest extends FormRequest
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
             'email' => 'Email',
+            'sub_category_id' => 'Sub Category',
+            'shop_name' => 'Shop Name',
+            'products_description' => 'Products Description',
+            'shop_images' => 'Shop Images',
+            'shop_images.*' => 'Shop Image',
         ];
     }
 

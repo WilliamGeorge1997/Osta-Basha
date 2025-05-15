@@ -5,7 +5,7 @@ namespace Modules\Client\App\Http\Controllers\Api;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\Client\Service\ClientService;
-use Modules\Client\App\Http\Requests\ContactProviderRequest;
+use Modules\Client\App\Http\Requests\ClientContactRequest;
 
 class ClientController extends Controller
 {
@@ -22,13 +22,13 @@ class ClientController extends Controller
         $this->clientService = $clientService;
     }
 
-    public function contactProvider(ContactProviderRequest $request)
+    public function clientContact(ClientContactRequest $request)
     {
         DB::beginTransaction();
         try {
-            $this->clientService->contactProvider($request->validated());
+            $this->clientService->clientContact($request->validated());
             DB::commit();
-            return returnMessage(true, 'Client Contacted Provider Successfully');
+            return returnMessage(true, 'Client Contacted Successfully');
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');

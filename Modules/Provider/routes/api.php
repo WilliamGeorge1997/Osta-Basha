@@ -1,9 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\Provider\App\Http\Controllers\Api\ProviderController;
-use Modules\Provider\App\Http\Controllers\Api\ProviderAuthController;
 use Modules\Provider\App\Http\Controllers\Api\ProviderAdminController;
 
 /*
@@ -25,4 +23,4 @@ Route::group([
 });
 
 Route::apiResource('providers', ProviderController::class)->only(['index']);
-Route::get('most-contacted', [ProviderController::class, 'mostContactedProviders']);
+Route::get('most-contacted-providers', [ProviderController::class, 'mostContactedProviders']);

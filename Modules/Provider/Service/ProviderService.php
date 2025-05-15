@@ -30,6 +30,16 @@ class ProviderService
     function active($data = [], $relations = [])
     {
         $providers = User::query()
+            ->when($data['name'] ?? null, function ($query) use ($data) {
+                $query->where('first_name', 'like', '%' . $data['name'] . '%')
+                    ->orWhere('last_name', 'like', '%' . $data['name'] . '%');
+            })
+            ->when($data['email'] ?? null, function ($query) use ($data) {
+                $query->where('email', 'like', '%' . $data['email'] . '%');
+            })
+            ->when($data['phone'] ?? null, function ($query) use ($data) {
+                $query->where('phone', 'like', '%' . $data['phone'] . '%');
+            })
             ->where('type', 'service_provider')
             ->whereHas('providerProfile', function ($query) use ($data) {
                 $query
@@ -40,7 +50,14 @@ class ProviderService
                     ->withinActiveSubscriptionPeriod();
 
             })
-            ->with($relations);
+            ->with($relations)
+            ->when(auth('user')->check(), function ($query) {
+                $query->withCount([
+                    'providerContacts as is_contacted' => function ($q) {
+                        $q->where('client_id', auth('user')->id());
+                    }
+                ]);
+            });
         return getCaseCollection($providers, $data);
     }
 
@@ -71,10 +88,10 @@ class ProviderService
     function mostContactedProviders($data = [], $relations = [])
     {
         $providers = User::query()
+            ->where('type', 'service_provider')
             ->with($relations)
             ->withCount('providerContacts as contacts_count')
-            ->orderByDesc('contacts_count')
-            ->take(10);
+            ->orderByDesc('contacts_count');
         return getCaseCollection($providers, $data);
     }
 
