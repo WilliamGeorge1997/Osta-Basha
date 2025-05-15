@@ -2,12 +2,14 @@
 
 namespace Modules\User\App\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Modules\User\App\resources\UserResource;
 use Modules\User\Service\UserService;
-use Modules\User\App\Http\Requests\UserChangePasswordRequest;
+use Modules\User\App\resources\UserResource;
+use Modules\User\App\resources\UserSearchResource;
 use Modules\User\App\Http\Requests\UserUpdateProfileRequest;
+use Modules\User\App\Http\Requests\UserChangePasswordRequest;
 
 class UserController extends Controller
 {
@@ -19,7 +21,7 @@ class UserController extends Controller
      */
     public function __construct(UserService $userService)
     {
-        $this->middleware('auth:user');
+        $this->middleware('auth:user')->except(['search']);
         $this->userService = $userService;
     }
 
@@ -48,5 +50,12 @@ class UserController extends Controller
             DB::rollBack();
             return returnMessage(false, $e->getMessage(),null ,500);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $data = $request->all();
+        $users = $this->userService->search($data);
+        return returnMessage(true, 'Users', UserSearchResource::collection($users)->response()->getData(true));
     }
 }

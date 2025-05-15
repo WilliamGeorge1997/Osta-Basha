@@ -153,4 +153,39 @@ class UserService
         }
         $user->update($data);
     }
+
+    function search($data)
+    {
+        $query = User::query()
+            ->where(function ($q) {
+                $q->where('type', 'service_provider')
+                    ->orWhere('type', 'shop_owner');
+            })
+            ->when($data['query'] ?? null, function ($q) use ($data) {
+                $searchTerm = '%' . $data['query'] . '%';
+                $q->where(function ($query) use ($searchTerm) {
+                    $query->where('first_name', 'like', $searchTerm)
+                        ->orWhere('last_name', 'like', $searchTerm)
+                        ->orWhere('email', 'like', $searchTerm)
+                        ->orWhere('phone', 'like', $searchTerm);
+                });
+            });
+
+        $query->where(function ($q) {
+            $q->where(function ($query) {
+                $query->where('type', 'service_provider')
+                    ->whereHas('providerProfile', function ($subquery) {
+                        $subquery->where('is_active', 1);
+                    });
+            })
+                ->orWhere(function ($query) {
+                    $query->where('type', 'shop_owner')
+                        ->whereHas('shopOwnerProfile', function ($subquery) {
+                            $subquery->where('is_active', 1);
+                        });
+                });
+        })
+        ->latest();
+        return getCaseCollection($query, $data);
+    }
 }

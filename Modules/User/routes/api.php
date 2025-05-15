@@ -30,4 +30,5 @@ Route::group([
     });
     Route::post('change-password', [UserController::class, 'changePassword']);
     Route::post('update-profile', [UserController::class, 'updateProfile']);
+    Route::get('search', [UserController::class, 'search']);
 });

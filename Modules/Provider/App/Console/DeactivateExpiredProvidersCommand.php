@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Service\App\Console;
+namespace Modules\Provider\App\Console;
 
 use Illuminate\Console\Command;
 use Modules\Provider\App\Jobs\DeactivateExpiredProvidersJob;
 
-class DeactivateExpiredServicesCommand extends Command
+class DeactivateExpiredProvidersCommand extends Command
 {
     /**
      * The name and signature of the console command.

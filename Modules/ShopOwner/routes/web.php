@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Modules\ShopOwner\App\Http\Controllers\ShopOwnerController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,7 +11,3 @@ use Modules\ShopOwner\App\Http\Controllers\ShopOwnerController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::group([], function () {
-    Route::resource('shopowner', ShopOwnerController::class)->names('shopowner');
-});

@@ -4,6 +4,7 @@ namespace Modules\ShopOwner\App\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
+use Modules\ShopOwner\App\Console\DeactivateExpiredShopOwnersCommand;
 
 class ShopOwnerServiceProvider extends ServiceProvider
 {
@@ -37,7 +38,9 @@ class ShopOwnerServiceProvider extends ServiceProvider
      */
     protected function registerCommands(): void
     {
-        // $this->commands([]);
+        $this->commands([
+            DeactivateExpiredShopOwnersCommand::class
+        ]);
     }
 
     /**
