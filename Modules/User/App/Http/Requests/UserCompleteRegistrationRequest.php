@@ -21,7 +21,7 @@ class UserCompleteRegistrationRequest extends FormRequest
         $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'max:255', 'unique:users'],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email'],
             'whatsapp' => ['required', 'string', 'max:255'],
         ];
 

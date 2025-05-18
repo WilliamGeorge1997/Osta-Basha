@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Common\App\Http\Controllers\Api\CommonController;
 use Modules\Common\App\Http\Controllers\Api\SettingController;
+use Modules\Common\App\Http\Controllers\Api\SliderAdminController;
 
 /*
     |--------------------------------------------------------------------------
@@ -19,3 +20,11 @@ use Modules\Common\App\Http\Controllers\Api\SettingController;
 Route::post('contact', [CommonController::class, 'contact']);
 Route::apiResource('settings', SettingController::class)->only(['index']);
 Route::post('settings', [SettingController::class, 'update']);
+
+
+// Slider Routes
+Route::group(['prefix' => 'admin'], function () {
+    Route::apiResource('sliders', SliderAdminController::class)->only(['index', 'store', 'destroy']);
+    Route::post('sliders/{slider}', [SliderAdminController::class, 'update']);
+    Route::post('sliders/{slider}/toggle-activate', [SliderAdminController::class, 'toggleActivate']);
+});
