@@ -14,6 +14,7 @@ use Modules\User\App\resources\UserResource;
 use Modules\Provider\DTO\ProviderWorkingTimeDto;
 use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
 use Modules\User\App\resources\UserSearchResource;
+use Modules\User\App\Http\Requests\UserDeleteImageRequest;
 use Modules\User\App\Http\Requests\UserUpdateProfileRequest;
 use Modules\User\App\Http\Requests\UserChangePasswordRequest;
 
@@ -28,20 +29,20 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->middleware('auth:user')->except(['search']);
+        $this->middleware('role:Service Provider|Shop Owner')->only('deleteImage');
         $this->userService = $userService;
     }
 
     public function changePassword(UserChangePasswordRequest $request)
     {
-        try{
+        try {
             DB::beginTransaction();
             $this->userService->changePassword($request->validated());
             DB::commit();
             return returnMessage(true, 'Password Changed Successfully');
-        }
-        catch(\Exception $e){
+        } catch (\Exception $e) {
             DB::rollBack();
-            return returnMessage(false, $e->getMessage(),null ,'server_error');
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
 
@@ -71,7 +72,18 @@ class UserController extends Controller
         }
     }
 
-    
+    public function deleteImage(UserDeleteImageRequest $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            $result = $this->userService->deleteImage($id);
+            DB::commit();
+            return returnMessage($result, $result ? 'Image deleted successfully' : 'Image not found', null);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
 
     public function search(Request $request)
     {

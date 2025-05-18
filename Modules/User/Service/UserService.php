@@ -174,16 +174,44 @@ class UserService
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
         }
         $user->providerProfile()->update($profileData);
-        $user->providerWorkingTimes()->delete();
-        $user->providerWorkingTimes()->createMany($workingTimesData);
+        foreach ($workingTimesData as $workingTime) {
+            if (isset($workingTime['id'])) {
+                $user->providerWorkingTimes()->where('id', $workingTime['id'])->update([
+                    'day' => $workingTime['day'],
+                    'start_at' => $workingTime['start_at'],
+                    'end_at' => $workingTime['end_at']
+                ]);
+            } else {
+                $user->providerWorkingTimes()->create([
+                    'user_id' => $workingTime['user_id'],
+                    'day' => $workingTime['day'],
+                    'start_at' => $workingTime['start_at'],
+                    'end_at' => $workingTime['end_at']
+                ]);
+            }
+        }
         $this->processUpdateImages($user, 'certificates', 'provider/certificates', 'providerCertificates');
     }
 
     private function updateShopOwnerProfile($user, $profileData, $workingTimesData)
     {
         $user->shopOwnerProfile()->update($profileData);
-        $user->shopOwnerWorkingTimes()->delete();
-        $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
+        foreach ($workingTimesData as $workingTime) {
+            if (isset($workingTime['id'])) {
+                $user->shopOwnerWorkingTimes()->where('id', $workingTime['id'])->update([
+                    'day' => $workingTime['day'],
+                    'start_at' => $workingTime['start_at'],
+                    'end_at' => $workingTime['end_at']
+                ]);
+            } else {
+                $user->shopOwnerWorkingTimes()->create([
+                    'user_id' => $workingTime['user_id'],
+                    'day' => $workingTime['day'],
+                    'start_at' => $workingTime['start_at'],
+                    'end_at' => $workingTime['end_at']
+                ]);
+            }
+        }
         $this->processUpdateImages($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
     }
 
@@ -196,7 +224,6 @@ class UserService
         foreach ($userImages as $image) {
             File::delete(public_path('uploads/' . $uploadPath . '/' . $this->getImageName($uploadPath, $image->image)));
         }
-        $user->$relationMethod()->delete();
 
         $certificates = collect(request()->file($requestKey))->map(function ($certificate) use ($uploadPath) {
             return [
@@ -240,5 +267,27 @@ class UserService
         })
             ->latest();
         return getCaseCollection($query, $data);
+    }
+
+    function deleteImage($id)
+    {
+        $user = auth('user')->user();
+        $type = $user->type;
+        if ($type == User::TYPE_SERVICE_PROVIDER) {
+            $image = $user->providerCertificates()->find($id);
+            if (!$image) {
+                return false;
+            }
+            File::delete(public_path('uploads/provider/certificates/' . $this->getImageName('provider/certificates', $image->image)));
+            $image->delete();
+        } elseif ($type == User::TYPE_SHOP_OWNER) {
+            $image = $user->shopOwnerShopImages()->find($id);
+            if (!$image) {
+                return false;
+            }
+            File::delete(public_path('uploads/shop_owner/shop_images/' . $this->getImageName('shop_owner/shop_images', $image->image)));
+            $image->delete();
+        }
+        return true;
     }
 }
