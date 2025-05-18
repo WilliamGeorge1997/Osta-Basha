@@ -61,14 +61,14 @@ class UserService
         $user->update($userDetailsData);
 
         switch ($type) {
-            case 'client':
+            case User::TYPE_CLIENT:
                 return $user->fresh();
 
-            case 'service_provider':
+            case User::TYPE_SERVICE_PROVIDER:
                 $this->completeProviderRegistration($user, $profileData, $workingTimesData);
                 return $user->fresh()->load('providerProfile', 'providerWorkingTimes', 'providerCertificates');
 
-            case 'shop_owner':
+            case User::TYPE_SHOP_OWNER:
                 $this->completeShopOwnerRegistration($user, $profileData, $workingTimesData);
                 return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
 
@@ -84,20 +84,17 @@ class UserService
         }
         $providerProfile = $user->providerProfile()->create($profileData);
         $user->providerWorkingTimes()->createMany($workingTimesData);
-        $this->processCertificates($user, 'certificates', 'provider/certificates', 'providerCertificates');
+        $this->processImages($user, 'certificates', 'provider/certificates', 'providerCertificates');
     }
 
     private function completeShopOwnerRegistration($user, $profileData, $workingTimesData)
     {
-        if (request()->hasFile('card_image')) {
-            $profileData['card_image'] = $this->upload(request()->file('card_image'), 'shop_owner');
-        }
         $shopOwnerProfile = $user->shopOwnerProfile()->create($profileData);
         $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
-        $this->processCertificates($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
+        $this->processImages($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
     }
 
-    private function processCertificates($user, $requestKey, $uploadPath, $relationMethod)
+    private function processImages($user, $requestKey, $uploadPath, $relationMethod)
     {
         if (!request()->has($requestKey)) {
             return;
@@ -142,24 +139,80 @@ class UserService
         ]);
     }
 
-    public function updateProfile($data)
+    public function updateProfile($type, $user, $userDetailsData, $profileData, $workingTimesData)
     {
-        $user = auth('user')->user();
         if (request()->hasFile('image')) {
             if ($user->image) {
                 File::delete(public_path('uploads/user/' . $this->getImageName('user', $user->image)));
             }
-            $data['image'] = $this->upload(request()->file('image'), 'user');
+            $userDetailsData['image'] = $this->upload(request()->file('image'), 'user');
         }
-        $user->update($data);
+        $user->update($userDetailsData);
+
+        switch ($type) {
+            case User::TYPE_CLIENT:
+                return $user->fresh();
+
+            case User::TYPE_SERVICE_PROVIDER:
+                $this->updateProviderProfile($user, $profileData, $workingTimesData);
+                return $user->fresh()->load('providerProfile', 'providerWorkingTimes', 'providerCertificates');
+
+            case User::TYPE_SHOP_OWNER:
+                $this->updateShopOwnerProfile($user, $profileData, $workingTimesData);
+                return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
+
+            default:
+                return $user->fresh();
+        }
+    }
+    private function updateProviderProfile($user, $profileData, $workingTimesData)
+    {
+        if (request()->hasFile('card_image')) {
+            if ($user->providerProfile->card_image) {
+                File::delete(public_path('uploads/provider' . $this->getImageName('provider', $user->providerProfile->card_image)));
+            }
+            $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
+        }
+        $user->providerProfile()->update($profileData);
+        $user->providerWorkingTimes()->delete();
+        $user->providerWorkingTimes()->createMany($workingTimesData);
+        $this->processUpdateImages($user, 'certificates', 'provider/certificates', 'providerCertificates');
     }
 
+    private function updateShopOwnerProfile($user, $profileData, $workingTimesData)
+    {
+        $user->shopOwnerProfile()->update($profileData);
+        $user->shopOwnerWorkingTimes()->delete();
+        $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
+        $this->processUpdateImages($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
+    }
+
+    private function processUpdateImages($user, $requestKey, $uploadPath, $relationMethod)
+    {
+        if (!request()->has($requestKey)) {
+            return;
+        }
+        $userImages = $user->$relationMethod()->get();
+        foreach ($userImages as $image) {
+            File::delete(public_path('uploads/' . $uploadPath . '/' . $this->getImageName($uploadPath, $image->image)));
+        }
+        $user->$relationMethod()->delete();
+
+        $certificates = collect(request()->file($requestKey))->map(function ($certificate) use ($uploadPath) {
+            return [
+                'image' => $this->upload($certificate, $uploadPath)
+            ];
+        })->toArray();
+        if (!empty($certificates)) {
+            $user->$relationMethod()->createMany($certificates);
+        }
+    }
     function search($data)
     {
         $query = User::query()
             ->where(function ($q) {
-                $q->where('type', 'service_provider')
-                    ->orWhere('type', 'shop_owner');
+                $q->where('type', User::TYPE_SERVICE_PROVIDER)
+                    ->orWhere('type', User::TYPE_SHOP_OWNER);
             })
             ->when($data['query'] ?? null, function ($q) use ($data) {
                 $searchTerm = '%' . $data['query'] . '%';
@@ -173,19 +226,19 @@ class UserService
 
         $query->where(function ($q) {
             $q->where(function ($query) {
-                $query->where('type', 'service_provider')
+                $query->where('type', User::TYPE_SERVICE_PROVIDER)
                     ->whereHas('providerProfile', function ($subquery) {
                         $subquery->where('is_active', 1);
                     });
             })
                 ->orWhere(function ($query) {
-                    $query->where('type', 'shop_owner')
+                    $query->where('type', User::TYPE_SHOP_OWNER)
                         ->whereHas('shopOwnerProfile', function ($subquery) {
                             $subquery->where('is_active', 1);
                         });
                 });
         })
-        ->latest();
+            ->latest();
         return getCaseCollection($query, $data);
     }
 }

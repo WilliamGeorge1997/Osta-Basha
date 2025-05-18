@@ -2,7 +2,7 @@
 
 namespace Modules\User\App\Http\Controllers\Api;
 
-use Modules\User\App\Http\Requests\UserChooseType;
+use Carbon\Carbon;
 use Modules\User\DTO\UserDto;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -10,10 +10,12 @@ use App\Http\Controllers\Controller;
 use Modules\User\DTO\UserDetailsDto;
 use Modules\Provider\DTO\ProviderDto;
 use Modules\User\Service\UserService;
+use Modules\Common\App\Models\Setting;
 use Modules\ShopOwner\DTO\ShopOwnerDto;
 use Modules\User\App\resources\UserResource;
 use Modules\Provider\DTO\ProviderWorkingTimeDto;
 use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
+use Modules\User\App\Http\Requests\UserChooseType;
 use Modules\User\App\Http\Requests\UserVerifyRequest;
 use Modules\User\App\Http\Requests\UserLoginOrRegisterRequest;
 use Modules\User\App\Http\Requests\UserCompleteRegistrationRequest;
@@ -57,7 +59,7 @@ class UserAuthController extends Controller
             $data = (new UserDto($request))->dataFromRequest();
             $this->userService->create($data);
             DB::commit();
-            return returnMessage(false, 'User Registered Successfully', null);
+            return returnMessage(true, 'User Registered Successfully', null);
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
@@ -87,16 +89,24 @@ class UserAuthController extends Controller
         DB::beginTransaction();
         try {
             $user = auth('user')->user();
+            $user_id = $user->id;
             $userDetailsData = (new UserDetailsDto($request))->dataFromRequest();
             $type = $user->type;
             $profileData = null;
             $workingTimesData = null;
-            if ($type == 'service_provider') {
-                $profileData = (new ProviderDto($request, $user->id))->dataFromRequest();
-                $workingTimesData = (new ProviderWorkingTimeDto($request, $user->id))->dataFromRequest();
-            } else if ($type == 'shop_owner') {
-                $profileData = (new ShopOwnerDto($request, $user->id))->dataFromRequest();
-                $workingTimesData = (new ShopOwnerWorkingTimeDto($request, $user->id))->dataFromRequest();
+            if ($type == User::TYPE_SERVICE_PROVIDER) {
+                $profileData = (new ProviderDto($request))->dataFromRequest();
+                $workingTimesData = (new ProviderWorkingTimeDto($request, $user_id))->dataFromRequest();
+            } else if ($type == User::TYPE_SHOP_OWNER) {
+                $profileData = (new ShopOwnerDto($request))->dataFromRequest();
+                $workingTimesData = (new ShopOwnerWorkingTimeDto($request, $user_id))->dataFromRequest();
+            }
+            if ($profileData != null) {
+                $profileData['user_id'] = $user_id;
+                $profileData['start_date'] = Carbon::now()->toDateString();
+                $freeTrialMonths = $this->getFreeTrialMonths();
+                $profileData['end_date'] = Carbon::now()->addMonths($freeTrialMonths)->toDateString();
+                $profileData['is_active'] = 1;
             }
             $user = $this->userService->completeRegistration($type, $user, $userDetailsData, $profileData, $workingTimesData);
             DB::commit();
@@ -106,6 +116,12 @@ class UserAuthController extends Controller
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
+    private function getFreeTrialMonths()
+    {
+        $setting = Setting::where('key', 'free_trial_months')->first();
+        return $setting ? (int) $setting->value : 3;
+    }
+
     public function verifyOtp(UserVerifyRequest $request)
     {
         DB::beginTransaction();

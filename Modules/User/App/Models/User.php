@@ -20,6 +20,10 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasFactory, LogsActivity, HasRoles;
 
+    const TYPE_CLIENT = 'client';
+    const TYPE_SERVICE_PROVIDER = 'service_provider';
+    const TYPE_SHOP_OWNER = 'shop_owner';
+
     /**
      * The attributes that are mass assignable.
      */

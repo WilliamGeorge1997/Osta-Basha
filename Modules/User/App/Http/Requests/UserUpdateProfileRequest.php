@@ -15,14 +15,49 @@ class UserUpdateProfileRequest extends FormRequest
      */
     public function rules(): array
     {
-        $userId = auth('user')->id();
-        return [
+
+        $user = auth('user')->user();
+
+        $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'phone' => ['required', 'string', 'max:15', 'unique:users,phone,' . $userId],
-            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-            'email' => ['required', 'email', 'unique:users,email,' . $userId],
+            'email' => ['sometimes', 'email', 'max:255', 'unique:users'],
+            'whatsapp' => ['required', 'string', 'max:255'],
         ];
+
+        if ($user->type === 'service_provider') {
+            $rules = array_merge($rules, [
+                'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
+                'card_number' => ['required', 'string', 'max:255'],
+                'card_image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'address' => ['required', 'string', 'max:255'],
+                'experience_years' => ['required', 'numeric', 'min:0'],
+                'experience_description' => ['required', 'string'],
+                'min_price' => ['required', 'numeric', 'min:0'],
+                'max_price' => ['required', 'numeric', 'min:0'],
+                'certificates' => ['required', 'array'],
+                'certificates.*' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'working_times' => ['required', 'array'],
+                'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
+                'working_times.*.start_at' => ['required', 'date_format:H:i'],
+                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+            ]);
+        } elseif ($user->type === 'shop_owner') {
+            $rules = array_merge($rules, [
+                'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
+                'address' => ['required', 'string', 'max:255'],
+                'shop_name' => ['required', 'string', 'max:255'],
+                'products_description' => ['required', 'string'],
+                'shop_images' => ['sometimes', 'array'],
+                'shop_images.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'working_times' => ['required', 'array'],
+                'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
+                'working_times.*.start_at' => ['required', 'date_format:H:i'],
+                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+            ]);
+        }
+
+        return $rules;
     }
 
     /**
@@ -31,11 +66,27 @@ class UserUpdateProfileRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'card_number' => 'Card Number',
+            'card_image' => 'Card Image',
+            'address' => 'Address',
+            'experience_years' => 'Experience Years',
+            'experience_description' => 'Experience Description',
+            'min_price' => 'Min Price',
+            'max_price' => 'Max Price',
+            'certificates' => 'Certificates',
+            'certificates.*' => 'Certificate',
+            'working_times' => 'Working Times',
+            'working_times.*.day' => 'Day',
+            'working_times.*.start_at' => 'Start At',
+            'working_times.*.end_at' => 'End At',
             'first_name' => 'First Name',
             'last_name' => 'Last Name',
-            'phone' => 'Phone',
-            'image' => 'Image',
             'email' => 'Email',
+            'sub_category_id' => 'Sub Category',
+            'shop_name' => 'Shop Name',
+            'products_description' => 'Products Description',
+            'shop_images' => 'Shop Images',
+            'shop_images.*' => 'Shop Image',
         ];
     }
 
@@ -44,6 +95,16 @@ class UserUpdateProfileRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $user = auth('user')->user();
+        if ($user->type == null) {
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    trans('validation.user_type_not_set'),
+                    null
+                )
+            );
+        }
         return true;
     }
 
