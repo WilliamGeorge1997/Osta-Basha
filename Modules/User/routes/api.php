@@ -1,9 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Modules\User\App\Http\Controllers\Api\UserController;
 use Modules\User\App\Http\Controllers\Api\UserAuthController;
+use Modules\User\App\Http\Controllers\Api\UserAdminController;
 
 /*
     |--------------------------------------------------------------------------
@@ -15,6 +15,12 @@ use Modules\User\App\Http\Controllers\Api\UserAuthController;
     | is assigned the "api" middleware group. Enjoy building your API!
     |
 */
+
+Route::group([
+    'prefix' => 'admin'
+], function ($router) {
+    Route::post('users/{user}/toggle-activate', [UserAdminController::class, 'toggleActivate']);
+});
 
 Route::group([
     'prefix' => 'user'

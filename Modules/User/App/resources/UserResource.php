@@ -3,6 +3,7 @@
 namespace Modules\User\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Provider\App\resources\ProviderProfileResource;
 
 class UserResource extends JsonResource
 {
@@ -21,12 +22,18 @@ class UserResource extends JsonResource
                 "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
+                "lat" => $this->lat ?? null,
+                "long" => $this->long ?? null,
+                "city" => $this->city ?? null,
+                "country" => $this->country ?? null,
                 "is_active" => $this->is_active,
                 "created_at" => $this->created_at->format('Y-m-d h:i A'),
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
-            $data['profile'] = $this->whenLoaded('providerProfile');
+            $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
+                return new ProviderProfileResource($profile);
+            });
             $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
             $data['certificates'] = $this->whenLoaded('providerCertificates');
         } elseif ($this->type == 'shop_owner') {

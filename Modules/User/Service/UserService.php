@@ -290,4 +290,10 @@ class UserService
         }
         return true;
     }
+
+    function toggleActivate($user)
+    {
+        $user->update(['is_active' => !$user->is_active]);
+        return $user;
+    }
 }

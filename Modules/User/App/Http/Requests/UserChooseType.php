@@ -17,8 +17,30 @@ class UserChooseType extends FormRequest
     {
         return [
             'type' => ['required', 'in:client,service_provider,shop_owner'],
-            'long' => ['sometimes', 'numeric', 'min:-180', 'max:180'],
-            'lat' => ['sometimes', 'numeric', 'min:-90', 'max:90'],
+            'long' => [
+                'required_if:type,service_provider,shop_owner',
+                'sometimes',
+                'numeric',
+                'min:-180',
+                'max:180'
+            ],
+            'lat' => [
+                'required_if:type,service_provider,shop_owner',
+                'sometimes',
+                'numeric',
+                'min:-90',
+                'max:90'
+            ],
+            'city' => [
+                'required',
+                'string',
+                'max:255'
+            ],
+            'country' => [
+                'required',
+                'string',
+                'max:255'
+            ],
         ];
     }
 
@@ -31,6 +53,8 @@ class UserChooseType extends FormRequest
             'type' => 'User Type',
             'long' => 'Longitude',
             'lat' => 'Latitude',
+            'city' => 'City',
+            'country' => 'Country',
         ];
     }
 

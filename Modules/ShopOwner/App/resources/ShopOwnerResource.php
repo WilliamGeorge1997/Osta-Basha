@@ -21,6 +21,10 @@ class ShopOwnerResource extends JsonResource
                 "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
+                "lat" => $this->lat ?? null,
+                "long" => $this->long ?? null,
+                "city" => $this->city ?? null,
+                "country" => $this->country ?? null,
                 "is_active" => $this->is_active,
             ];
         if (isset($this->is_contacted)) {

@@ -39,6 +39,12 @@ class ShopOwnerService
             ->when($data['phone'] ?? null, function ($query) use ($data) {
                 $query->where('phone', 'like', '%' . $data['phone'] . '%');
             })
+            ->when($data['city'] ?? null, function ($query) use ($data) {
+                $query->where('city', $data['city']);
+            })
+            ->when($data['country'] ?? null, function ($query) use ($data) {
+                $query->where('country', $data['country']);
+            })
             ->where('type', 'shop_owner')
             ->whereHas('shopOwnerProfile', function ($query) use ($data) {
                 $query

@@ -3,6 +3,7 @@
 namespace Modules\Provider\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Provider\App\resources\ProviderProfileResource;
 
 class ProviderResource extends JsonResource
 {
@@ -21,19 +22,25 @@ class ProviderResource extends JsonResource
                 "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
+                "lat" => $this->lat ?? null,
+                "long" => $this->long ?? null,
+                "city" => $this->city ?? null,
+                "country" => $this->country ?? null,
                 "is_active" => $this->is_active,
             ];
-            if (isset($this->is_contacted)) {
-                $data['is_contacted'] = $this->is_contacted;
-            }
-            if (isset($this->contacts_count)) {
-                $data['contacts_count'] = $this->contacts_count;
-            }
-            $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
-            $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');
-            $data['profile'] = $this->whenLoaded('providerProfile');
-            $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
-            $data['certificates'] = $this->whenLoaded('providerCertificates');
+        if (isset($this->is_contacted)) {
+            $data['is_contacted'] = $this->is_contacted;
+        }
+        if (isset($this->contacts_count)) {
+            $data['contacts_count'] = $this->contacts_count;
+        }
+        $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
+        $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');
+        $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
+            return new ProviderProfileResource($profile);
+        });
+        $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
+        $data['certificates'] = $this->whenLoaded('providerCertificates');
 
         return $data;
     }

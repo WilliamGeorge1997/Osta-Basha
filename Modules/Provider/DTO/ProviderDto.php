@@ -14,7 +14,7 @@ class ProviderDto
     public $min_price;
     public $max_price;
     public $sub_category_id;
-
+    public $currency_id;
 
     public function __construct($request)
     {
@@ -33,6 +33,8 @@ class ProviderDto
             $this->max_price = $request->get('max_price');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
+        if ($request->get('currency_id'))
+            $this->currency_id = $request->get('currency_id');
     }
 
     public function dataFromRequest()
@@ -52,6 +54,8 @@ class ProviderDto
             unset($data['max_price']);
         if ($this->sub_category_id == null)
             unset($data['sub_category_id']);
+        if ($this->currency_id == null)
+            unset($data['currency_id']);
 
         return $data;
     }

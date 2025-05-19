@@ -22,6 +22,8 @@ return new class extends Migration {
             $table->string('image')->nullable();
             $table->decimal('lat', 10, 8)->nullable();
             $table->decimal('long', 10, 8)->nullable();
+            $table->string('city')->nullable();
+            $table->string('country')->nullable();
             $table->string('verify_code');
             $table->boolean('completed_registration')->default(0);
             $table->boolean('is_active')->default(0);

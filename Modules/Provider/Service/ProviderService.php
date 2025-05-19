@@ -3,6 +3,7 @@
 namespace Modules\Provider\Service;
 
 use Modules\User\App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Modules\Common\Helpers\UploadHelper;
 
@@ -39,6 +40,12 @@ class ProviderService
             })
             ->when($data['phone'] ?? null, function ($query) use ($data) {
                 $query->where('phone', 'like', '%' . $data['phone'] . '%');
+            })
+            ->when($data['city'] ?? null, function ($query) use ($data) {
+                $query->where('city', $data['city']);
+            })
+            ->when($data['country'] ?? null, function ($query) use ($data) {
+                $query->where('country', $data['country']);
             })
             ->where('type', 'service_provider')
             ->whereHas('providerProfile', function ($query) use ($data) {
@@ -88,6 +95,12 @@ class ProviderService
     function mostContactedProviders($data = [], $relations = [])
     {
         $providers = User::query()
+            ->when($data['city'] ?? null, function ($query) use ($data) {
+                $query->where('city', $data['city']);
+            })
+            ->when($data['country'] ?? null, function ($query) use ($data) {
+                $query->where('country', $data['country']);
+            })
             ->where('type', 'service_provider')
             ->with($relations)
             ->withCount('providerContacts as contacts_count')

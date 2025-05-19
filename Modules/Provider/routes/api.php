@@ -20,6 +20,7 @@ Route::group([
 ], function ($router) {
     Route::apiResource('providers', ProviderAdminController::class)->only(['index']);
     Route::post('providers/{user}', [ProviderAdminController::class, 'updateSubscription']);
+    Route::post('providers/{user}/toggle-activate', [ProviderAdminController::class, 'toggleActivate']);
 });
 
 Route::apiResource('providers', ProviderController::class)->only(['index']);

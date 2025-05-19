@@ -2,11 +2,12 @@
 
 namespace Modules\Provider\App\Models;
 
-use Spatie\Activitylog\LogOptions;
-use Spatie\Activitylog\Traits\LogsActivity;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\User\App\Models\User;
+use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Common\App\Models\Currency;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Provider extends Model
 {
@@ -15,7 +16,7 @@ class Provider extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['user_id', 'sub_category_id', 'card_number', 'card_image', 'address', 'experience_years', 'experience_description', 'min_price', 'max_price', 'start_date', 'end_date', 'is_active', 'status'];
+    protected $fillable = ['user_id', 'sub_category_id', 'card_number', 'card_image', 'address', 'experience_years', 'experience_description', 'min_price', 'max_price', 'start_date', 'end_date', 'is_active', 'status', 'currency_id'];
     protected $hidden = ['password'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions
@@ -60,5 +61,8 @@ class Provider extends Model
     {
         return $this->belongsTo(User::class);
     }
-
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
 }
