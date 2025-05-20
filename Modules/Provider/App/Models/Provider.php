@@ -16,7 +16,7 @@ class Provider extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['user_id', 'sub_category_id', 'card_number', 'card_image', 'address', 'experience_years', 'experience_description', 'min_price', 'max_price', 'start_date', 'end_date', 'is_active', 'status', 'currency_id'];
+    protected $fillable = ['user_id', 'sub_category_id', 'card_number', 'card_image', 'address', 'experience_years', 'experience_description', 'price', 'start_date', 'end_date', 'is_active', 'status', 'currency_id'];
     protected $hidden = ['password'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions

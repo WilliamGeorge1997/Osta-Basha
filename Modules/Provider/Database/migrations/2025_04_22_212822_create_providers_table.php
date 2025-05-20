@@ -23,8 +23,7 @@ return new class extends Migration {
             $table->string('address');
             $table->string('experience_years');
             $table->text('experience_description');
-            $table->string('min_price');
-            $table->string('max_price');
+            $table->string('price');
             $table->foreignIdFor(Currency::class)->nullable()->index()->constrained()->nullOnDelete();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

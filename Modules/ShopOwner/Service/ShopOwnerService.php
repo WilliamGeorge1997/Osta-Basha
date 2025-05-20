@@ -62,7 +62,10 @@ class ShopOwnerService
                         $q->where('client_id', auth('user')->id());
                     }
                 ]);
-            });
+            })
+            ->where('is_active', 1)
+            ->where('is_available', 1)
+            ->latest();
         return getCaseCollection($shopOwners, $data);
     }
 

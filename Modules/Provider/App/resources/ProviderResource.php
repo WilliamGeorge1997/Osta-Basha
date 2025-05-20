@@ -27,6 +27,7 @@ class ProviderResource extends JsonResource
                 "city" => $this->city ?? null,
                 "country" => $this->country ?? null,
                 "is_active" => $this->is_active,
+                "is_available" => $this->is_available,
             ];
         if (isset($this->is_contacted)) {
             $data['is_contacted'] = $this->is_contacted;

@@ -265,6 +265,8 @@ class UserService
                         });
                 });
         })
+            ->where('is_active', 1)
+            ->where('is_available', 1)
             ->latest();
         return getCaseCollection($query, $data);
     }
@@ -294,6 +296,26 @@ class UserService
     function toggleActivate($user)
     {
         $user->update(['is_active' => !$user->is_active]);
-        return $user;
+        return $user->fresh();
+    }
+
+    function toggleAvailable()
+    {
+        $user = auth('user')->user();
+        $user->update(['is_available' => !$user->is_available]);
+        return $user->fresh();
+    }
+
+    function getReceivedContacts($data)
+    {
+        $user = auth('user')->user();
+        $type = $user->type;
+        if ($type == User::TYPE_SERVICE_PROVIDER) {
+            $relation = 'providerContacts';
+        } elseif ($type == User::TYPE_SHOP_OWNER) {
+            $relation = 'shopOwnerContacts';
+        }
+        $contacts = $user->$relation()->with('client')->latest();
+        return getCaseCollection($contacts, $data);
     }
 }

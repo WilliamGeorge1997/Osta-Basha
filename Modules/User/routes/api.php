@@ -38,4 +38,6 @@ Route::group([
     Route::post('update-profile', [UserController::class, 'updateProfile']);
     Route::delete('delete-image/{id}', [UserController::class, 'deleteImage']);
     Route::get('search', [UserController::class, 'search']);
+    Route::post('toggle-available', [UserController::class, 'toggleAvailable']);
+    Route::get('received-contacts', [UserController::class, 'receivedContacts']);
 });

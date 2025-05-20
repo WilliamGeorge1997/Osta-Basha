@@ -11,8 +11,7 @@ class ProviderDto
     public $address;
     public $experience_years;
     public $experience_description;
-    public $min_price;
-    public $max_price;
+    public $price;
     public $sub_category_id;
     public $currency_id;
 
@@ -27,10 +26,8 @@ class ProviderDto
             $this->experience_years = $request->get('experience_years');
         if ($request->get('experience_description'))
             $this->experience_description = $request->get('experience_description');
-        if ($request->get('min_price'))
-            $this->min_price = $request->get('min_price');
-        if ($request->get('max_price'))
-            $this->max_price = $request->get('max_price');
+        if ($request->get('price'))
+            $this->price = $request->get('price');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
         if ($request->get('currency_id'))
@@ -48,10 +45,8 @@ class ProviderDto
             unset($data['experience_years']);
         if ($this->experience_description == null)
             unset($data['experience_description']);
-        if ($this->min_price == null)
-            unset($data['min_price']);
-        if ($this->max_price == null)
-            unset($data['max_price']);
+        if ($this->price == null)
+            unset($data['price']);
         if ($this->sub_category_id == null)
             unset($data['sub_category_id']);
         if ($this->currency_id == null)

@@ -29,7 +29,7 @@ class UserController extends Controller
     public function __construct(UserService $userService)
     {
         $this->middleware('auth:user')->except(['search']);
-        $this->middleware('role:Service Provider|Shop Owner')->only('deleteImage');
+        $this->middleware('role:Service Provider|Shop Owner')->only('deleteImage', 'toggleAvailable', 'receivedContacts');
         $this->userService = $userService;
     }
 
@@ -90,5 +90,26 @@ class UserController extends Controller
         $data = $request->all();
         $users = $this->userService->search($data);
         return returnMessage(true, 'Users', UserSearchResource::collection($users)->response()->getData(true));
+    }
+
+    public function toggleAvailable(Request $request)
+    {
+        try {
+            $user = $this->userService->toggleAvailable();
+            return returnMessage(true, "User updated successfully", new UserResource($user));
+        } catch (\Exception $e) {
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
+    public function receivedContacts(Request $request)
+    {
+        try {
+            $data = $request->all();
+            $contacts = $this->userService->getReceivedContacts($data);
+            return returnMessage(true, 'Contacts Received', $contacts);
+        } catch (\Exception $e) {
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
     }
 }

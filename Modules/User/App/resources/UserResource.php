@@ -27,6 +27,7 @@ class UserResource extends JsonResource
                 "city" => $this->city ?? null,
                 "country" => $this->country ?? null,
                 "is_active" => $this->is_active,
+                "is_available" => $this->is_available,
                 "created_at" => $this->created_at->format('Y-m-d h:i A'),
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
