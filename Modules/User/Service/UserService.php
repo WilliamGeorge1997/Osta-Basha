@@ -318,4 +318,11 @@ class UserService
         $contacts = $user->$relation()->with('client')->latest();
         return getCaseCollection($contacts, $data);
     }
+
+    function updateLocation($data)
+    {
+        $user = auth('user')->user();
+        $user->update($data);
+        return $user->fresh();
+    }
 }

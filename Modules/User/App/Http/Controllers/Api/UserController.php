@@ -14,6 +14,7 @@ use Modules\User\App\resources\UserResource;
 use Modules\Provider\DTO\ProviderWorkingTimeDto;
 use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
 use Modules\User\App\resources\UserSearchResource;
+use Modules\User\App\Http\Requests\UserUpdateLocation;
 use Modules\User\App\Http\Requests\UserDeleteImageRequest;
 use Modules\User\App\Http\Requests\UserUpdateProfileRequest;
 use Modules\User\App\Http\Requests\UserChangePasswordRequest;
@@ -108,6 +109,16 @@ class UserController extends Controller
             $data = $request->all();
             $contacts = $this->userService->getReceivedContacts($data);
             return returnMessage(true, 'Contacts Received', $contacts);
+        } catch (\Exception $e) {
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
+    public function updateLocation(UserUpdateLocation $request)
+    {
+        try {
+            $user = $this->userService->updateLocation($request->validated());
+            return returnMessage(true, 'Location Updated Successfully', new UserResource($user));
         } catch (\Exception $e) {
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }

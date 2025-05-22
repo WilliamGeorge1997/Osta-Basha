@@ -3,6 +3,8 @@
 namespace Modules\User\App\Models;
 
 use Spatie\Activitylog\LogOptions;
+use Modules\Client\App\Models\Rate;
+use Modules\Client\App\Models\Comment;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Modules\Provider\App\Models\Provider;
@@ -67,20 +69,12 @@ class User extends Authenticatable implements JWTSubject
     }
 
     //Relations
-    public function providerContacts()
-    {
-        return $this->hasMany(ClientContact::class, 'contactable_id')
-            ->where('contactable_type', Provider::class);
-    }
-    public function shopOwnerContacts()
-    {
-        return $this->morphMany(ClientContact::class, 'contactable')
-            ->where('contactable_type', ShopOwner::class);
-    }
+
     public function clientContacts()
     {
         return $this->hasMany(ClientContact::class, 'client_id');
     }
+
     // ----------------------Provider--------------------------------
 
     public function providerProfile()
@@ -97,6 +91,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(ProviderCertificate::class);
     }
+    public function providerContacts()
+    {
+        return $this->hasMany(ClientContact::class, 'contactable_id')
+            ->where('contactable_type', Provider::class);
+    }
+
     // ---------------------- Shop Owner --------------------------------
 
     public function shopOwnerProfile()
@@ -112,6 +112,21 @@ class User extends Authenticatable implements JWTSubject
     public function shopOwnerShopImages()
     {
         return $this->hasMany(ShopOwnerShopImage::class);
+    }
+    public function shopOwnerContacts()
+    {
+        return $this->hasMany(ClientContact::class, 'contactable_id')
+            ->where('contactable_type', ShopOwner::class);
+    }
+
+    public function rates()
+    {
+        return $this->hasMany(Rate::class, 'rateable_id')->with('client');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class, 'commentable_id')->with('client');
     }
 
     //JWT

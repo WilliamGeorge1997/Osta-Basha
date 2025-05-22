@@ -26,6 +26,9 @@ class ProviderResource extends JsonResource
                 "long" => $this->long ?? null,
                 "city" => $this->city ?? null,
                 "country" => $this->country ?? null,
+                "rates_count" => $this->rates_count ?? null,
+                "rates_avg" => $this->rates_avg ?? null,
+                "comments_count" => $this->comments_count ?? null,
                 "is_active" => $this->is_active,
                 "is_available" => $this->is_available,
             ];
@@ -42,7 +45,8 @@ class ProviderResource extends JsonResource
         });
         $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
         $data['certificates'] = $this->whenLoaded('providerCertificates');
-
+        $data['rates'] = $this->whenLoaded('rates');
+        $data['comments'] = $this->whenLoaded('comments');
         return $data;
     }
 }

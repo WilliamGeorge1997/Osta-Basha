@@ -21,7 +21,9 @@ class ShopOwnerAdminController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = ['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages'];
+            $relations = ['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'comments' => function ($q) {
+                $q->where('commentable_type', \Modules\ShopOwner\App\Models\ShopOwner::class);
+            }];
             $shopOwners = $this->shopOwnerService->findAll($data, $relations);
             return returnMessage(true, 'Shop Owners fetched successfully', ShopOwnerResource::collection($shopOwners)->response()->getData(true));
         } catch (\Exception $e) {

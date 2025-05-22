@@ -34,4 +34,5 @@ class ClientController extends Controller
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
+
 }

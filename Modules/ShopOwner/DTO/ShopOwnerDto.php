@@ -11,7 +11,7 @@ class ShopOwnerDto
     public $products_description;
     public $address;
     public $sub_category_id;
-
+    public $experience_years;
 
     public function __construct($request)
     {
@@ -23,6 +23,8 @@ class ShopOwnerDto
             $this->address = $request->get('address');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
+        if ($request->get('experience_years'))
+            $this->experience_years = $request->get('experience_years');
     }
 
 
@@ -35,7 +37,8 @@ class ShopOwnerDto
             unset($data['products_description']);
         if ($this->address == null)
             unset($data['address']);
-
+        if ($this->experience_years == null)
+            unset($data['experience_years']);
         return $data;
     }
 }

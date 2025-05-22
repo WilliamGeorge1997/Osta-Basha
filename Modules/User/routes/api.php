@@ -40,4 +40,5 @@ Route::group([
     Route::get('search', [UserController::class, 'search']);
     Route::post('toggle-available', [UserController::class, 'toggleAvailable']);
     Route::get('received-contacts', [UserController::class, 'receivedContacts']);
+    Route::post('update-location', [UserController::class, 'updateLocation']);
 });

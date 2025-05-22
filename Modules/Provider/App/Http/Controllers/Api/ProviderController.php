@@ -24,7 +24,17 @@ class ProviderController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = ['providerProfile', 'providerWorkingTimes', 'providerCertificates'];
+            $relations = [
+                'providerProfile' => function ($q) {
+                    $q->with([
+                        'subCategory' => function ($q) {
+                            $q->with('category');
+                        }
+                    ]);
+                },
+                'providerWorkingTimes',
+                'providerCertificates'
+            ];
             $providers = $this->providerService->active($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {
@@ -35,7 +45,17 @@ class ProviderController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = ['providerProfile', 'providerWorkingTimes', 'providerCertificates'];
+            $relations = [
+                'providerProfile' => function ($q) {
+                    $q->with([
+                        'subCategory' => function ($q) {
+                            $q->with('category');
+                        }
+                    ]);
+                },
+                'providerWorkingTimes',
+                'providerCertificates'
+            ];
             $providers = $this->providerService->mostContactedProviders($data, $relations);
             return returnMessage(true, 'Most Contacted Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {

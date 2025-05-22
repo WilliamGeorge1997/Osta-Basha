@@ -85,6 +85,19 @@ class ProviderService
                     }
                 ]);
             })
+            ->with([
+                'rates' => function ($q) {
+                    $q->where('rateable_type', \Modules\Provider\App\Models\Provider::class);
+                }
+            ])
+            ->withCount('rates as rates_count')
+            ->withAvg('rates as rates_avg', 'rate')
+            ->with([
+                'comments' => function ($q) {
+                    $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
+                }
+            ])
+            ->withCount('comments as comments_count')
             ->where('is_available', 1)
             ->where('is_active', 1)
             ->latest();
@@ -146,6 +159,19 @@ class ProviderService
             ->whereHas('providerProfile', function ($query) {
                 $query->where('is_active', 1);
             })
+            ->with([
+                'rates' => function ($q) {
+                    $q->where('rateable_type', \Modules\Provider\App\Models\Provider::class);
+                }
+            ])
+            ->withCount('rates as rates_count')
+            ->withAvg('rates as rates_avg', 'rate')
+            ->with([
+                'comments' => function ($q) {
+                    $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
+                }
+            ])
+            ->withCount('comments as comments_count')
             ->where('is_active', 1)
             ->where('is_available', 1)
             ->orderByDesc('contacts_count');

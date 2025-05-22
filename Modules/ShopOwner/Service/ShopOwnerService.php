@@ -63,6 +63,19 @@ class ShopOwnerService
                     }
                 ]);
             })
+            ->with([
+                'rates' => function ($q) {
+                    $q->where('rateable_type', \Modules\ShopOwner\App\Models\ShopOwner::class);
+                }
+            ])
+            ->withCount('rates as rates_count')
+            ->withAvg('rates as rates_avg', 'rate')
+            ->with([
+                'comments' => function ($q) {
+                    $q->where('commentable_type', \Modules\ShopOwner\App\Models\ShopOwner::class);
+                }
+            ])
+            ->withCount('comments as comments_count')
             ->where('is_active', 1)
             ->where('is_available', 1)
             ->latest();

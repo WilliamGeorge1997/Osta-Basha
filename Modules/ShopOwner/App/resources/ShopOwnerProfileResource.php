@@ -1,10 +1,10 @@
 <?php
 
-namespace Modules\Provider\App\resources;
+namespace Modules\ShopOwner\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProviderProfileResource extends JsonResource
+class ShopOwnerProfileResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,13 +16,10 @@ class ProviderProfileResource extends JsonResource
                 "id" => $this->id ?? null,
                 "user_id" => $this->user_id ?? null,
                 "sub_category_id" => $this->sub_category_id ?? null,
-                "card_number" => $this->card_number ?? null,
-                "card_image" => $this->card_image ?? null,
-                "address" => $this->address ?? null,
+                "shop_name" => $this->shop_name ?? null,
+                "products_description" => $this->products_description ?? null,
                 "experience_years" => $this->experience_years ?? null,
-                "experience_description" => $this->experience_description ?? null,
-                "price" => $this->price ?? null,
-                "currency" => $this->currency->title ?? null,
+                "address" => $this->address ?? null,
                 "start_date" => $this->start_date ?? null,
                 "end_date" => $this->end_date ?? null,
                 "status" => $this->status ?? null,

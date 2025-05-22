@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->foreignIdFor(SubCategory::class)->nullable()->index()->constrained()->nullOnDelete();
             $table->string('shop_name');
             $table->text('products_description');
+            $table->string('experience_years');
             $table->string('address');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();

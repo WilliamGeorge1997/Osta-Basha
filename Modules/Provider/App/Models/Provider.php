@@ -7,6 +7,7 @@ use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Common\App\Models\Currency;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Modules\Category\App\Models\SubCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Provider extends Model
@@ -64,5 +65,9 @@ class Provider extends Model
     public function currency()
     {
         return $this->belongsTo(Currency::class);
+    }
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class);
     }
 }

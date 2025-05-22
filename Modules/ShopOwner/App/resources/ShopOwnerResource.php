@@ -3,6 +3,7 @@
 namespace Modules\ShopOwner\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\ShopOwner\App\resources\ShopOwnerProfileResource;
 
 class ShopOwnerResource extends JsonResource
 {
@@ -25,6 +26,9 @@ class ShopOwnerResource extends JsonResource
                 "long" => $this->long ?? null,
                 "city" => $this->city ?? null,
                 "country" => $this->country ?? null,
+                "rates_count" => $this->rates_count ?? null,
+                "rates_avg" => $this->rates_avg ?? null,
+                "comments_count" => $this->comments_count ?? null,
                 "is_active" => $this->is_active,
                 "is_available" => $this->is_available,
             ];
@@ -33,9 +37,13 @@ class ShopOwnerResource extends JsonResource
         }
         $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
         $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');
-        $data['profile'] = $this->whenLoaded('shopOwnerProfile');
+        $data['profile'] = $this->whenLoaded('shopOwnerProfile', function ($profile) {
+            return new ShopOwnerProfileResource($profile);
+        });
         $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
         $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
+        $data['rates'] = $this->whenLoaded('rates');
+        $data['comments'] = $this->whenLoaded('comments');
 
         return $data;
     }

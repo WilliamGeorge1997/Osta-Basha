@@ -4,7 +4,6 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\App\Http\Controllers\Api\AdminController;
 use Modules\Admin\App\Http\Controllers\Api\AdminAuthController;
-
 /*
     |--------------------------------------------------------------------------
     | API Routes

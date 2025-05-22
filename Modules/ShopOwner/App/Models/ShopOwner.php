@@ -2,10 +2,12 @@
 
 namespace Modules\ShopOwner\App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\User\App\Models\User;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Modules\Category\App\Models\SubCategory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class ShopOwner extends Model
 {
@@ -14,7 +16,7 @@ class ShopOwner extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['user_id', 'sub_category_id', 'shop_name', 'products_description', 'address', 'start_date', 'end_date', 'status', 'is_active'];
+    protected $fillable = ['user_id', 'sub_category_id', 'shop_name', 'products_description', 'address', 'start_date', 'end_date', 'status', 'is_active', 'experience_years', 'price', 'currency_id'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions
@@ -52,5 +54,13 @@ class ShopOwner extends Model
         return $query->whereNotNull(['start_date', 'end_date'])
             ->whereDate('start_date', '<=', now())
             ->whereDate('end_date', '>=', now());
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+    public function subCategory()
+    {
+        return $this->belongsTo(SubCategory::class);
     }
 }

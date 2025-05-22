@@ -56,4 +56,5 @@ class ClientService
             $contactable->{$profileRelation}->save();
         }
     }
+
 }
