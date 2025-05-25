@@ -25,3 +25,4 @@ Route::group([
 
 Route::apiResource('providers', ProviderController::class)->only(['index']);
 Route::get('most-contacted-providers', [ProviderController::class, 'mostContactedProviders']);
+Route::get('related-providers/{user_id}', [ProviderController::class, 'relatedProviders']);

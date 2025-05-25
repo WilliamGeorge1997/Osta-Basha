@@ -3,7 +3,6 @@
 
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\Schema;
-use Modules\Common\App\Models\Currency;
 use Illuminate\Database\Schema\Blueprint;
 use Modules\Category\App\Models\SubCategory;
 use Illuminate\Database\Migrations\Migration;
@@ -24,7 +23,6 @@ return new class extends Migration {
             $table->string('experience_years');
             $table->text('experience_description');
             $table->string('price');
-            $table->foreignIdFor(Currency::class)->nullable()->index()->constrained()->nullOnDelete();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->enum('status', ['free_trial', 'subscribed'])->default('free_trial');

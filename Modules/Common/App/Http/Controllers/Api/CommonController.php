@@ -23,7 +23,7 @@ class CommonController extends Controller
 
     public function currencies()
     {
-        $currencies = Currency::all();
-        return returnMessage(true, 'Currencies fetched successfully', $currencies);
+        $currencies = Currency::with('country')->get();
+        return returnMessage(true, 'Currencies fetched successfully', CurrencyResource::collection($currencies));
     }
 }

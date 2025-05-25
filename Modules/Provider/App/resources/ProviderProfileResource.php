@@ -3,6 +3,7 @@
 namespace Modules\Provider\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Common\App\resources\CurrencyResource;
 
 class ProviderProfileResource extends JsonResource
 {
@@ -22,7 +23,9 @@ class ProviderProfileResource extends JsonResource
                 "experience_years" => $this->experience_years ?? null,
                 "experience_description" => $this->experience_description ?? null,
                 "price" => $this->price ?? null,
-                "currency" => $this->currency->title ?? null,
+                "currency" => $this->whenLoaded('currency', function() {
+                    return new CurrencyResource($this->currency);
+                }),
                 "start_date" => $this->start_date ?? null,
                 "end_date" => $this->end_date ?? null,
                 "status" => $this->status ?? null,

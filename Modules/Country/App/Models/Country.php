@@ -1,22 +1,23 @@
 <?php
 
-namespace Modules\Common\App\Models;
+namespace Modules\Country\App\Models;
 
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Country\App\Models\Country;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Common\App\Models\Currency;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Currency extends Model
+class Country extends Model
 {
     use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'country_id'];
-    protected $hidden = ['created_at', 'updated_at'];
+    protected $fillable = ['title', 'is_active'];
+
+
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -24,7 +25,7 @@ class Currency extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Currency')
+            ->useLogName('Country')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
 
@@ -34,9 +35,15 @@ class Currency extends Model
         return $date->format('Y-m-d h:i A');
     }
 
-    //Relations
-    public function country()
+    //Helper Functions
+    public function scopeActive($query)
     {
-        return $this->belongsTo(Country::class);
+        return $query->where('is_active', 1);
+    }
+
+    //Relations
+    public function currency()
+    {
+        return $this->hasOne(Currency::class);
     }
 }

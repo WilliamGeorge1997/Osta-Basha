@@ -6,5 +6,6 @@
     "User": true,
     "Package": true,
     "Category": true,
-    "ShopOwner": true
+    "ShopOwner": true,
+    "Country": true
 }

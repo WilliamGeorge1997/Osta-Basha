@@ -189,4 +189,24 @@ class ProviderService
         $user->providerProfile->update($data);
         return $user;
     }
+
+    function relatedProviders($data = [], $relations = [])
+    {
+        $provider_subcategory_id = User::find($data['user_id'])->providerProfile->sub_category_id;
+        if($provider_subcategory_id){
+            $providers = User::query()
+                ->where('type', 'service_provider')
+                ->where('is_active', 1)
+                ->where('is_available', 1)
+                ->whereHas('providerProfile', function ($query) use ($provider_subcategory_id) {
+                    $query->where('sub_category_id', $provider_subcategory_id);
+                })
+                ->whereHas('providerProfile', function ($query) {
+                    $query->where('is_active', 1);
+                })
+                ->with($relations)
+                ->latest();
+        }
+        return getCaseCollection($providers, $data);
+    }
 }

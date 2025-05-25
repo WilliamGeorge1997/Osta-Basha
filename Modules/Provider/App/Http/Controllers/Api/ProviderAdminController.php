@@ -30,7 +30,7 @@ class ProviderAdminController extends Controller
             $data = $request->all();
             $relations = ['providerProfile', 'providerWorkingTimes', 'providerCertificates', 'comments' => function ($q) {
                 $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
-            }];
+            }, 'currency'];
             $providers = $this->providerService->findAll($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {
