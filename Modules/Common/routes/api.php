@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Common\App\Http\Controllers\Api\PageController;
 use Modules\Common\App\Http\Controllers\Api\CommonController;
+use Modules\Common\App\Http\Controllers\Api\SliderController;
 use Modules\Common\App\Http\Controllers\Api\SettingController;
 use Modules\Common\App\Http\Controllers\Api\PageAdminController;
 use Modules\Common\App\Http\Controllers\Api\SliderAdminController;
@@ -37,3 +38,4 @@ Route::group(['prefix' => 'admin'], function () {
 
 Route::get('pages/find-page', [PageController::class, 'findPage']);
 Route::get('currencies', [CommonController::class, 'currencies']);
+Route::get('sliders', [SliderController::class, 'index']);
