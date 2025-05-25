@@ -27,6 +27,9 @@ class ClientResource extends JsonResource
             "is_active" => $this->is_active,
             "created_at" => $this->created_at->format('Y-m-d H:i:s'),
             "updated_at" => $this->updated_at->format('Y-m-d H:i:s'),
+            'client_contacts' => $this->whenLoaded('clientContacts', function () {
+                return ClientContactResource::collection($this->clientContacts);
+            }),
         ];
     }
 }

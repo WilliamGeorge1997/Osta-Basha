@@ -41,9 +41,9 @@ class ClientContact extends Model
         return $this->belongsTo(User::class, 'client_id');
     }
 
-    public function contactable()
+    public function user()
     {
-        return $this->morphTo();
+        return $this->belongsTo(User::class, 'contactable_id');
     }
 
 }

@@ -23,7 +23,7 @@ class ClientAdminController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = [];
+            $relations = ['clientContacts.user'];
             $clients = $this->clientService->findAll($data, $relations);
             return returnMessage(true, 'Clients fetched successfully', ClientResource::collection($clients)->response()->getData(true));
         } catch (\Exception $e) {

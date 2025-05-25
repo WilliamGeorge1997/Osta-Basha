@@ -35,4 +35,5 @@ Route::group([
     Route::post('comment', [CommentController::class, 'store']);
     Route::put('comment/{comment}', [CommentController::class, 'update']);
     Route::delete('comment/{comment}', [CommentController::class, 'destroy']);
+    Route::get('contact-list', [ClientController::class, 'clientContactList']);
 });

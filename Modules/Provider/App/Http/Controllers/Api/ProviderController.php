@@ -34,7 +34,7 @@ class ProviderController extends Controller
                 },
                 'providerWorkingTimes',
                 'providerCertificates',
-                'currency'
+                'providerProfile.currency'
             ];
             $providers = $this->providerService->active($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
@@ -56,7 +56,7 @@ class ProviderController extends Controller
                 },
                 'providerWorkingTimes',
                 'providerCertificates',
-                'currency'
+                'providerProfile.currency'
             ];
             $providers = $this->providerService->mostContactedProviders($data, $relations);
             return returnMessage(true, 'Most Contacted Providers', ProviderResource::collection($providers)->response()->getData(true));
@@ -80,7 +80,7 @@ class ProviderController extends Controller
                 },
                 'providerWorkingTimes',
                 'providerCertificates',
-                'currency'
+                'providerProfile.currency'
             ];
             $providers = $this->providerService->relatedProviders($data, $relations);
             return returnMessage(true, 'Related Providers', ProviderResource::collection($providers)->response()->getData(true));

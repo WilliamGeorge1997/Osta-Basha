@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
 use Modules\Common\App\Models\Currency;
 use Modules\Common\App\Emails\ContactUsEmail;
+use Modules\Common\App\resources\CurrencyResource;
 use Modules\Common\App\Http\Requests\ContactRequest;
 
 class CommonController extends Controller

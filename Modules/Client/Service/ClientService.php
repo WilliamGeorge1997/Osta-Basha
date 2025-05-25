@@ -24,6 +24,7 @@ class ClientService
             ->when($data['phone'] ?? null, function ($query) use ($data) {
                 $query->where('phone', 'like', '%' . $data['phone'] . '%');
             })
+            ->with($relations)
             ->latest();
         return getCaseCollection($clients, $data);
     }
@@ -55,6 +56,12 @@ class ClientService
             $contactable->{$profileRelation}->is_active = 0;
             $contactable->{$profileRelation}->save();
         }
+    }
+
+    public function clientContactList($relations = [])
+    {
+        $clientContact = ClientContact::query()->where('client_id', auth('user')->id())->with($relations)->get();
+        return $clientContact;
     }
 
 }

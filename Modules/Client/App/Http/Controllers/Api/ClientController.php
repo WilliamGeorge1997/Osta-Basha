@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\Client\Service\ClientService;
 use Modules\Client\App\Http\Requests\ClientContactRequest;
+use Modules\Client\App\resources\ClientContactResource;
 
 class ClientController extends Controller
 {
@@ -33,6 +34,13 @@ class ClientController extends Controller
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
+    }
+
+    public function clientContactList()
+    {
+        $relations = ['user'];
+        $clientContact = $this->clientService->clientContactList($relations);
+        return returnMessage(true, 'Client Contact List Fetched Successfully', ClientContactResource::collection($clientContact));
     }
 
 }

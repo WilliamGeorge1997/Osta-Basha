@@ -18,7 +18,7 @@ class SliderController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
-        $relations = [];
+        $relations = ['user',];
         $sliders = $this->sliderService->active($data, $relations);
         return returnMessage(true, 'Sliders Fetched Successfully', SliderResource::collection($sliders)->response()->getData(true));
     }
