@@ -5,9 +5,7 @@ namespace Modules\Common\App\Http\Controllers\Api;
 use Exception;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Mail;
-use Modules\Common\App\Models\Currency;
 use Modules\Common\App\Emails\ContactUsEmail;
-use Modules\Common\App\resources\CurrencyResource;
 use Modules\Common\App\Http\Requests\ContactRequest;
 
 class CommonController extends Controller
@@ -20,11 +18,5 @@ class CommonController extends Controller
         } catch (Exception $e) {
             return returnMessage(false, $e->getMessage(), null, 500);
         }
-    }
-
-    public function currencies()
-    {
-        $currencies = Currency::with('country')->get();
-        return returnMessage(true, 'Currencies fetched successfully', CurrencyResource::collection($currencies));
     }
 }

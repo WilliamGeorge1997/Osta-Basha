@@ -15,7 +15,7 @@ class CountryRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'currency_title' => 'required|string|max:255',
+            'currency' => 'required|string|max:255',
         ];
     }
 
@@ -23,7 +23,7 @@ class CountryRequest extends FormRequest
     {
         return [
             'title' => 'Title',
-            'currency_title' => 'Currency Title',
+            'currency' => 'Currency Title',
         ];
     }
 

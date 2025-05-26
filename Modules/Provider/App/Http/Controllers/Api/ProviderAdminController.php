@@ -38,7 +38,7 @@ class ProviderAdminController extends Controller
                 }, 'providerWorkingTimes', 'providerCertificates', 'comments' => function ($q) {
                 $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
             },
-                'providerProfile.currency'];
+                ];
             $providers = $this->providerService->findAll($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {

@@ -34,7 +34,6 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'experience_years' => ['required', 'numeric', 'min:0'],
                 'experience_description' => ['required', 'string'],
                 'price' => ['required', 'numeric', 'min:0'],
-                'currency_id' => ['required', 'exists:currencies,id'],
                 'certificates' => ['required', 'array'],
                 'certificates.*' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
@@ -87,8 +86,6 @@ class UserCompleteRegistrationRequest extends FormRequest
             'products_description' => 'Products Description',
             'shop_images' => 'Shop Images',
             'shop_images.*' => 'Shop Image',
-            'currency_id' => 'Currency',
-            'experience_years' => 'Experience Years',
         ];
     }
 

@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Modules\Admin\Database\Seeders\AdminDatabaseSeeder;
-use Modules\Common\Database\Seeders\CommonDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -15,7 +14,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AdminDatabaseSeeder::class,
-            // CommonDatabaseSeeder::class,
         ]);
     }
 }

@@ -3,7 +3,6 @@
 namespace Modules\Country\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Modules\Common\App\resources\CurrencyResource;
 
 class CountryResource extends JsonResource
 {
@@ -14,13 +13,12 @@ class CountryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
+            'title' => $this->title ?? null,
+            'currency' => $this->currency ?? null,
+            'image' => $this->image ?? null,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),
-            'currency' => $this->whenLoaded('currency', function() {
-                return new CurrencyResource($this->currency);
-            }),
         ];
     }
 }

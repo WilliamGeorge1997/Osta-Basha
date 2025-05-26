@@ -13,7 +13,6 @@ class ProviderDto
     public $experience_description;
     public $price;
     public $sub_category_id;
-    public $currency_id;
 
     public function __construct($request)
     {
@@ -30,8 +29,6 @@ class ProviderDto
             $this->price = $request->get('price');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
-        if ($request->get('currency_id'))
-            $this->currency_id = $request->get('currency_id');
     }
 
     public function dataFromRequest()
@@ -49,8 +46,6 @@ class ProviderDto
             unset($data['price']);
         if ($this->sub_category_id == null)
             unset($data['sub_category_id']);
-        if ($this->currency_id == null)
-            unset($data['currency_id']);
 
         return $data;
     }

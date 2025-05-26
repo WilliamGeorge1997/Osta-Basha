@@ -17,7 +17,7 @@ class CountryController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
-        $relations = ['currency'];
+        $relations = [];
         $countries = $this->countryService->active($data, $relations);
         return returnMessage(true, 'Countries Fetched Successfully', CountryResource::collection($countries)->response()->getData(true));
     }

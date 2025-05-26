@@ -4,7 +4,6 @@ namespace Modules\Country\App\Models;
 
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
-use Modules\Common\App\Models\Currency;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -15,7 +14,7 @@ class Country extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'is_active'];
+    protected $fillable = ['title', 'currency', 'image', 'is_active'];
 
 
     //Log Activity
@@ -35,15 +34,21 @@ class Country extends Model
         return $date->format('Y-m-d h:i A');
     }
 
+    public function getImageAttribute($value)
+    {
+        if ($value != null && $value != '') {
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return $value;
+            } else {
+                return asset('uploads/country/' . $value);
+            }
+        }
+    }
+
     //Helper Functions
     public function scopeActive($query)
     {
         return $query->where('is_active', 1);
     }
 
-    //Relations
-    public function currency()
-    {
-        return $this->hasOne(Currency::class);
-    }
 }

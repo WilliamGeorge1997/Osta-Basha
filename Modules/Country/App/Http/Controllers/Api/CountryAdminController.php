@@ -4,7 +4,6 @@ namespace Modules\Country\App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Modules\Common\DTO\CurrencyDto;
 use Modules\Country\DTO\CountryDto;
 use App\Http\Controllers\Controller;
 use Modules\Country\App\Models\Country;
@@ -28,7 +27,7 @@ class CountryAdminController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
-        $relations = ['currency'];
+        $relations = [];
         $countries = $this->countryService->findAll($data, $relations);
         return returnMessage(true, 'Countries Fetched Successfully', CountryResource::collection($countries)->response()->getData(true));
     }
@@ -38,8 +37,7 @@ class CountryAdminController extends Controller
         try {
             DB::beginTransaction();
             $data = (new CountryDto($request))->dataFromRequest();
-            $currencyData = (new CurrencyDto($request))->dataFromRequest();
-            $country = $this->countryService->create($data, $currencyData);
+            $country = $this->countryService->create($data);
             DB::commit();
             return returnMessage(true, 'Country Created Successfully', $country);
         } catch (\Exception $e) {
@@ -53,8 +51,7 @@ class CountryAdminController extends Controller
         try {
             DB::beginTransaction();
             $data = (new CountryDto($request))->dataFromRequest();
-            $currencyData = (new CurrencyDto($request))->dataFromRequest();
-            $country = $this->countryService->update($country, $data, $currencyData);
+            $country = $this->countryService->update($country, $data);
             DB::commit();
             return returnMessage(true, 'Country Updated Successfully', $country);
         } catch (\Exception $e) {

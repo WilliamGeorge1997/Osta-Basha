@@ -2,13 +2,14 @@
 
 namespace Modules\Country\Service;
 
-use Modules\Common\App\Models\Currency;
+use Modules\Common\Helpers\UploadHelper;
 use Modules\Country\App\Models\Country;
+use Illuminate\Support\Facades\File;
 
 
 class CountryService
 {
-
+    use UploadHelper;
     function findAll($data = [], $relations = [])
     {
         $countries = Country::query()
@@ -42,23 +43,28 @@ class CountryService
             ->latest();
         return getCaseCollection($countries, $data);
     }
-    public function create($data, $currencyData)
+    public function create($data)
     {
+        if (request()->hasFile('image')) {
+            $data['image'] = $this->upload(request()->file('image'), 'country');
+        }
         $country = Country::create($data);
-        $currencyData['country_id'] = $country->id;
-        Currency::create($currencyData);
         return $country;
     }
 
-    function update($country, $data, $currencyData)
+    function update($country, $data)
     {
+        if (request()->hasFile('image')) {
+            File::delete(public_path('uploads/country/' . $this->getImageName('country', $country->image)));
+            $data['image'] = $this->upload(request()->file('image'), 'country');
+        }
         $country->update($data);
-        $country->currency->update($currencyData);
         return $country->fresh();
     }
 
     function delete($country)
     {
+        File::delete(public_path('uploads/country/' . $this->getImageName('country', $country->image)));
         $country->delete();
     }
 

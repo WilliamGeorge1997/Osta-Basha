@@ -16,7 +16,7 @@ class ShopOwner extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['user_id', 'sub_category_id', 'shop_name', 'products_description', 'address', 'start_date', 'end_date', 'status', 'is_active', 'experience_years', 'price', 'currency_id'];
+    protected $fillable = ['user_id', 'sub_category_id', 'shop_name', 'products_description', 'address', 'start_date', 'end_date', 'status', 'is_active', 'experience_years', 'price'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions
