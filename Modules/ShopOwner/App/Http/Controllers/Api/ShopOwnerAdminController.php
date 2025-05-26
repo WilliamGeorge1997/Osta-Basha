@@ -21,7 +21,15 @@ class ShopOwnerAdminController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = ['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'comments' => function ($q) {
+            $relations = [
+                'shopOwnerProfile' => function ($q) {
+                    $q->with([
+                        'subCategory' => function ($q) {
+                            $q->with('category');
+                        }
+                    ]);
+                },
+                'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'comments' => function ($q) {
                 $q->where('commentable_type', \Modules\ShopOwner\App\Models\ShopOwner::class);
             }];
             $shopOwners = $this->shopOwnerService->findAll($data, $relations);

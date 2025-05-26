@@ -28,9 +28,17 @@ class ProviderAdminController extends Controller
     {
         try {
             $data = $request->all();
-            $relations = ['providerProfile', 'providerWorkingTimes', 'providerCertificates', 'comments' => function ($q) {
+            $relations = [
+                'providerProfile' => function ($q) {
+                    $q->with([
+                        'subCategory' => function ($q) {
+                            $q->with('category');
+                        }
+                    ]);
+                }, 'providerWorkingTimes', 'providerCertificates', 'comments' => function ($q) {
                 $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
-            }, 'currency'];
+            },
+                'providerProfile.currency'];
             $providers = $this->providerService->findAll($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {
