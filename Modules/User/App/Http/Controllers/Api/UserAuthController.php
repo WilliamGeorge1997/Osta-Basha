@@ -110,7 +110,7 @@ class UserAuthController extends Controller
             }
             $user = $this->userService->completeRegistration($type, $user, $userDetailsData, $profileData, $workingTimesData);
             DB::commit();
-            return returnMessage(true, 'User Completed Registration Successfully', new UserResource($user));
+            return $this->respondWithToken(auth('user')->login($user));
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
