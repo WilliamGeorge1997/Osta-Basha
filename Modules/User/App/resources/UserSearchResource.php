@@ -32,8 +32,8 @@ class UserSearchResource extends JsonResource
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
-            $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
-                return new ProviderProfileResource($profile);
+            $data['profile'] = $this->whenLoaded('providerProfile', function () {
+                return new ProviderProfileResource($this->providerProfile);
             });
             $data['working_times'] = $this->providerWorkingTimes;
             $data['certificates'] = $this->providerCertificates;

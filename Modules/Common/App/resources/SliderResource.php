@@ -13,20 +13,24 @@ class SliderResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'id' => $this->id,
-            'title' => $this->title,
-            'description' => $this->description,
-            'image' => $this->image,
-            'is_active' => $this->is_active,
-            'user_id' => $this->user_id,
-            'created_at' => $this->created_at->format('Y-m-d h:i A'),
-            'updated_at' => $this->updated_at->format('Y-m-d h:i A'),
+            'id' => $this->id ?? null,
+            'title' => $this->title ?? null,
+            'description' => $this->description ?? null,
+            'image' => $this->image ?? null,
+            'is_active' => $this->is_active ?? null,
+            'user_id' => $this->user_id ?? null,
+            'created_at' => $this->created_at->format('Y-m-d h:i A') ?? null,
+            'updated_at' => $this->updated_at->format('Y-m-d h:i A') ?? null,
             'user' => $this->whenLoaded('user', function () {
                 $user = new UserResource($this->user);
                 if ($this->user->type == 'service_provider') {
                     $user->load('providerProfile');
+                    $user->load('providerWorkingTimes');
+                    $user->load('providerCertificates');
                 } elseif ($this->user->type == 'shop_owner') {
                     $user->load('shopOwnerProfile');
+                    $user->load('shopOwnerWorkingTimes');
+                    $user->load('shopOwnerShopImages');
                 }
                 return $user;
             }),

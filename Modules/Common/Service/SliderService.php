@@ -29,7 +29,26 @@ class SliderService
 
     function active($data = [], $relations = [])
     {
-        $sliders = Slider::query()->active()->with($relations)->latest();
+        $sliders = Slider::query()
+            ->whereHas('user', function ($query) {
+                $query->where('is_active', 1)
+                    ->where('is_available', 1)
+                    ->where(function ($q) {
+                        $q->where(function ($query) {
+                            $query->where('type', 'service_provider')
+                                ->whereHas('providerProfile', function ($subquery) {
+                                    $subquery->where('is_active', 1);
+                                });
+                        })
+                        ->orWhere(function ($query) {
+                            $query->where('type', 'shop_owner')
+                                ->whereHas('shopOwnerProfile', function ($subquery) {
+                                    $subquery->where('is_active', 1);
+                                });
+                        });
+                    });
+            })
+            ->active()->with($relations)->latest();
         return getCaseCollection($sliders, $data);
     }
     public function create($data)

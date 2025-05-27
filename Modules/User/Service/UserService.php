@@ -237,43 +237,48 @@ class UserService
     function search($data)
     {
         $query = User::query()
-            ->where(function ($q) {
-                $q->where('type', User::TYPE_SERVICE_PROVIDER)
-                    ->orWhere('type', User::TYPE_SHOP_OWNER);
-            })
+            ->whereIn('type', [User::TYPE_SERVICE_PROVIDER, User::TYPE_SHOP_OWNER])
+            ->where('is_active', 1)
+            ->where('is_available', 1)
             ->when(!empty($data['query'] ?? null), function ($q) use ($data) {
                 $searchTerm = '%' . $data['query'] . '%';
-                $q->where(function ($query) use ($searchTerm) {
+                return $q->where(function ($query) use ($searchTerm) {
                     $query->where('first_name', 'like', $searchTerm)
                         ->orWhere('last_name', 'like', $searchTerm)
                         ->orWhere('email', 'like', $searchTerm)
                         ->orWhere('phone', 'like', $searchTerm);
                 });
-            });
-
-        $query->where(function ($q) {
-            $q->where(function ($query) {
-                $query->where('type', User::TYPE_SERVICE_PROVIDER)
-                    ->whereHas('providerProfile', function ($subquery) {
-                        $subquery->where('is_active', 1)
-                            ->with('subCategory', function ($q) {
-                                $q->with('category');
+            })
+            ->where(function ($q) {
+                $q->where(function ($query) {
+                    $query->where('type', User::TYPE_SERVICE_PROVIDER)
+                        ->whereHas('providerProfile', function ($subquery) {
+                            $subquery->where('is_active', 1);
+                        });
+                })
+                    ->orWhere(function ($query) {
+                        $query->where('type', User::TYPE_SHOP_OWNER)
+                            ->whereHas('shopOwnerProfile', function ($subquery) {
+                                $subquery->where('is_active', 1);
                             });
                     });
             })
-                ->orWhere(function ($query) {
-                    $query->where('type', User::TYPE_SHOP_OWNER)
-                        ->whereHas('shopOwnerProfile', function ($subquery) {
-                            $subquery->where('is_active', 1)
-                                ->with('subCategory', function ($q) {
-                                    $q->with('category');
-                                });
-                        });
-                });
-        })
-            ->where('is_active', 1)
-            ->where('is_available', 1)
+            ->with([
+                'providerProfile' => function ($q) {
+                    $q->whereHas('user', function ($query) {
+                        $query->where('type', User::TYPE_SERVICE_PROVIDER);
+                    })->with('subCategory.category');
+                }
+            ])
+            ->with([
+                'shopOwnerProfile' => function ($q) {
+                    $q->whereHas('user', function ($query) {
+                        $query->where('type', User::TYPE_SHOP_OWNER);
+                    })->with('subCategory.category');
+                }
+            ])
             ->latest();
+
         return getCaseCollection($query, $data);
     }
 
