@@ -77,7 +77,7 @@ class UserAuthController extends Controller
             $data = $request->validated();
             $user = $this->userService->chooseUserType($data, $user);
             DB::commit();
-            return returnMessage(true, 'User type set successfully', new UserResource($user));
+           return $this->respondWithToken(auth('user')->login($user));
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
@@ -110,7 +110,7 @@ class UserAuthController extends Controller
             }
             $user = $this->userService->completeRegistration($type, $user, $userDetailsData, $profileData, $workingTimesData);
             DB::commit();
-            return $this->respondWithToken(auth('user')->login($user));
+            return returnMessage(true, 'User Registered Successfully', new UserResource($user));
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
