@@ -40,8 +40,8 @@ class ProviderResource extends JsonResource
         if (isset($this->contacts_count)) {
             $data['contacts_count'] = $this->contacts_count;
         }
-        if ($request->has('country') && $request->country != null) {
-            $country = Country::select('currency')->where('title', $request->country)->first();
+        if ($this->country != null) {
+            $country = Country::select('currency')->where('title', $this->country)->first();
             if ($country) {
                 $data['currency'] = $country->currency;
             } else {
