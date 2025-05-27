@@ -236,11 +236,15 @@ class UserService
     }
     function search($data)
     {
+        if (empty($data['query'] ?? null)) {
+            return collect();
+        }
+
         $query = User::query()
             ->whereIn('type', [User::TYPE_SERVICE_PROVIDER, User::TYPE_SHOP_OWNER])
             ->where('is_active', 1)
             ->where('is_available', 1)
-            ->when(!empty($data['query'] ?? null), function ($q) use ($data) {
+            ->when(!empty($data['query']), function ($q) use ($data) {
                 $searchTerm = '%' . $data['query'] . '%';
                 return $q->where(function ($query) use ($searchTerm) {
                     $query->where('first_name', 'like', $searchTerm)
