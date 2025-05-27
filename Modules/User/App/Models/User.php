@@ -6,6 +6,7 @@ use Spatie\Activitylog\LogOptions;
 use Modules\Client\App\Models\Rate;
 use Modules\Client\App\Models\Comment;
 use Spatie\Permission\Traits\HasRoles;
+use Modules\Country\App\Models\Country;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Modules\Provider\App\Models\Provider;
 use Modules\ShopOwner\App\Models\ShopOwner;

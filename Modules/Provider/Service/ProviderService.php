@@ -5,6 +5,7 @@ namespace Modules\Provider\Service;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Modules\Country\App\Models\Country;
 use Modules\Common\Helpers\UploadHelper;
 
 class ProviderService
@@ -159,18 +160,8 @@ class ProviderService
             ->whereHas('providerProfile', function ($query) {
                 $query->where('is_active', 1);
             })
-            ->with([
-                'rates' => function ($q) {
-                    $q->where('rateable_type', \Modules\Provider\App\Models\Provider::class);
-                }
-            ])
             ->withCount('rates as rates_count')
             ->withAvg('rates as rates_avg', 'rate')
-            ->with([
-                'comments' => function ($q) {
-                    $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
-                }
-            ])
             ->withCount('comments as comments_count')
             ->where('is_active', 1)
             ->where('is_available', 1)
@@ -193,7 +184,7 @@ class ProviderService
     function relatedProviders($data = [], $relations = [])
     {
         $provider_subcategory_id = User::find($data['user_id'])->providerProfile->sub_category_id;
-        if($provider_subcategory_id){
+        if ($provider_subcategory_id) {
             $providers = User::query()
                 ->where('type', 'service_provider')
                 ->where('is_active', 1)

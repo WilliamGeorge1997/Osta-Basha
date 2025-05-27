@@ -2,11 +2,13 @@
 
 namespace Modules\Provider\App\resources;
 
+use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Provider\App\resources\ProviderProfileResource;
 
 class ProviderResource extends JsonResource
 {
+
     /**
      * Transform the resource into an array.
      */
@@ -37,6 +39,14 @@ class ProviderResource extends JsonResource
         }
         if (isset($this->contacts_count)) {
             $data['contacts_count'] = $this->contacts_count;
+        }
+        if ($request->has('country') && $request->country != null) {
+            $country = Country::select('currency')->where('title', $request->country)->first();
+            if ($country) {
+                $data['currency'] = $country->currency;
+            } else {
+                $data['currency'] = null;
+            }
         }
         $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
         $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');

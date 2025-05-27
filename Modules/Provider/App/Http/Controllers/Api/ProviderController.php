@@ -55,7 +55,12 @@ class ProviderController extends Controller
                 },
                 'providerWorkingTimes',
                 'providerCertificates',
-
+                'rates' => function ($q) {
+                    $q->where('rateable_type', \Modules\Provider\App\Models\Provider::class);
+                },
+                'comments' => function ($q) {
+                    $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
+                }
             ];
             $providers = $this->providerService->mostContactedProviders($data, $relations);
             return returnMessage(true, 'Most Contacted Providers', ProviderResource::collection($providers)->response()->getData(true));
@@ -79,7 +84,7 @@ class ProviderController extends Controller
                 },
                 'providerWorkingTimes',
                 'providerCertificates',
-        
+
             ];
             $providers = $this->providerService->relatedProviders($data, $relations);
             return returnMessage(true, 'Related Providers', ProviderResource::collection($providers)->response()->getData(true));
