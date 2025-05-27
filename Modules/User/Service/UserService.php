@@ -241,7 +241,7 @@ class UserService
                 $q->where('type', User::TYPE_SERVICE_PROVIDER)
                     ->orWhere('type', User::TYPE_SHOP_OWNER);
             })
-            ->when($data['query'] ?? null, function ($q) use ($data) {
+            ->when(!empty($data['query'] ?? null), function ($q) use ($data) {
                 $searchTerm = '%' . $data['query'] . '%';
                 $q->where(function ($query) use ($searchTerm) {
                     $query->where('first_name', 'like', $searchTerm)
@@ -255,13 +255,19 @@ class UserService
             $q->where(function ($query) {
                 $query->where('type', User::TYPE_SERVICE_PROVIDER)
                     ->whereHas('providerProfile', function ($subquery) {
-                        $subquery->where('is_active', 1);
+                        $subquery->where('is_active', 1)
+                            ->with('subCategory', function ($q) {
+                                $q->with('category');
+                            });
                     });
             })
                 ->orWhere(function ($query) {
                     $query->where('type', User::TYPE_SHOP_OWNER)
                         ->whereHas('shopOwnerProfile', function ($subquery) {
-                            $subquery->where('is_active', 1);
+                            $subquery->where('is_active', 1)
+                                ->with('subCategory', function ($q) {
+                                    $q->with('category');
+                                });
                         });
                 });
         })
