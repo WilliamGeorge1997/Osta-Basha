@@ -3,27 +3,37 @@
 namespace Modules\Client\Service;
 
 use Modules\Client\App\Models\Rate;
+use Modules\Client\App\Models\ClientContact;
 
 
 
 class RateService
 {
-    public function create($data)
+    public function findByContactId($contactId)
     {
-        $rate = Rate::create($data);
-        return $rate;
+        return ClientContact::findOrFail($contactId);
+    }
+    public function create($data, $contactId)
+    {
+        $contact = $this->findByContactId($contactId);
+        $contact->update($data);
+        return $contact;
     }
 
-    public function update($rate, $data)
+    public function update($clientContact, $data)
     {
-        $rate->update($data);
-        return $rate;
+        $clientContact->update($data);
+        return $clientContact;
     }
 
-    public function delete($rate)
+    public function delete($clientContact)
     {
-        $rate->delete();
-        return $rate;
+        $clientContact->update([
+            'rate' => null,
+            'comment' => null,
+            'updated_at' => now()
+        ]);
+        return $clientContact;
     }
 
 }

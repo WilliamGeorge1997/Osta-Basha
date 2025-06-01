@@ -196,6 +196,11 @@ class UserAuthController extends Controller
         if ($user->type == null) {
             $status = 'non_authoritative_information';
         }
+        if ($user->type == User::TYPE_SERVICE_PROVIDER) {
+            $user->load(['providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates']);
+        } elseif ($user->type == User::TYPE_SHOP_OWNER) {
+            $user->load(['shopOwnerProfile.shopCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages']);
+        }
         return returnMessage(
             true,
             'Successfully Logged in',

@@ -2,9 +2,8 @@
 
 namespace Modules\Client\App\Http\Requests;
 
-use Illuminate\Validation\Rule;
-use Modules\Client\App\Models\Rate;
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Client\App\Models\ClientContact;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
@@ -12,24 +11,11 @@ class RateRequest extends FormRequest
 {
     public function rules()
     {
-        if ($this->isMethod('post')) {
-            return [
-                'rateable_id' => [
-                    'required',
-                    'exists:users,id',
-                    Rule::exists('users', 'id')->where(function ($query) {
-                        $query->whereIn('type', ['service_provider', 'shop_owner'])->where('is_active', 1);
-                    }),
-                ],
-                'rate' => ['required', 'numeric', 'min:1', 'max:5'],
-            ];
-        } elseif ($this->isMethod('put')) {
-            return [
-                'rate' => ['required', 'numeric', 'min:1', 'max:5'],
-            ];
-        } else {
-            return [];
-        }
+        return [
+            'contact_id' => ['required', 'exists:client_contacts,id'],
+            'rating' => ['required', 'numeric', 'min:1', 'max:5'],
+            'comment' => ['required', 'string'],
+        ];
     }
 
     /**
@@ -38,8 +24,9 @@ class RateRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'rateable_id' => 'Rateable ID',
-            'rate' => 'Rate',
+            'contact_id' => 'Contact ID',
+            'rating' => 'Rating',
+            'comment' => 'Comment',
         ];
     }
 
@@ -47,25 +34,23 @@ class RateRequest extends FormRequest
     public function authorize(): bool
     {
         if ($this->isMethod('post')) {
-            $rateableId = $this->input('rateable_id');
+            $contactId = $this->input('contact_id');
 
-            $rate = Rate::where('client_id', auth()->id())
-                ->where('rateable_id', $rateableId)
-                ->exists();
+            $contact = ClientContact::findOrFail($contactId);
 
-            if ($rate) {
+            if ($contact->comment && $contact->rating) {
                 throw new HttpResponseException(
                     returnMessage(
                         false,
-                        'You have already rated this rateable before',
+                        'You have already rated and commented on this contact before',
                         null
                     )
                 );
             }
-        } else {
+        } elseif ($this->isMethod('put')) {
             $clientId = auth('user')->id();
-            $rate = $this->route('rate');
-            if ($rate->client_id != $clientId) {
+            $contact = $this->route('contact_id');
+            if ($contact->client_id != $clientId) {
                 throw new HttpResponseException(
                     returnMessage(
                         false,

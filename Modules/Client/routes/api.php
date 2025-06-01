@@ -23,17 +23,13 @@ Route::group([
 ], function ($router) {
     Route::apiResource('clients', ClientAdminController::class)->only(['index']);
 
-    Route::delete('comment/{comment}', [CommentAdminController::class, 'destroy']);
 });
 Route::group([
     'prefix' => 'client'
 ], function ($router) {
     Route::post('contact', [ClientController::class, 'clientContact']);
     Route::post('rate', [RateController::class, 'store']);
-    Route::put('rate/{rate}', [RateController::class, 'update']);
-    Route::delete('rate/{rate}', [RateController::class, 'destroy']);
-    Route::post('comment', [CommentController::class, 'store']);
-    Route::put('comment/{comment}', [CommentController::class, 'update']);
-    Route::delete('comment/{comment}', [CommentController::class, 'destroy']);
+    Route::put('rate/{clientContact}', [RateController::class, 'update']);
+    Route::delete('rate/{clientContact}', [RateController::class, 'destroy']);
     Route::get('contact-list', [ClientController::class, 'clientContactList']);
 });

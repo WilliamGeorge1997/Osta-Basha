@@ -2,6 +2,7 @@
 
 namespace Modules\User\App\resources;
 
+use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Provider\App\resources\ProviderProfileResource;
 
@@ -32,6 +33,14 @@ class UserSearchResource extends JsonResource
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
+            if ($this->country != null) {
+                $country = Country::select('currency')->where('title', $this->country)->first();
+                if ($country) {
+                    $data['currency'] = $country->currency;
+                } else {
+                    $data['currency'] = null;
+                }
+            }
             $data['profile'] = $this->whenLoaded('providerProfile', function () {
                 return new ProviderProfileResource($this->providerProfile);
             });

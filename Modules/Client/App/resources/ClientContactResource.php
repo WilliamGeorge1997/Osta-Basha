@@ -3,6 +3,7 @@
 namespace Modules\Client\App\resources;
 
 use Modules\User\App\Models\User;
+use Modules\Country\App\Models\Country;
 use Modules\User\App\resources\UserResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,9 +23,17 @@ class ClientContactResource extends JsonResource
             'user' => $this->whenLoaded('user', function () {
                 $user = new UserResource($this->user);
                 if ($this->user->type == 'service_provider') {
-                    $user->load('providerProfile', 'providerWorkingTimes', 'providerCertificates');
+                    if ($this->country != null) {
+                        $country = Country::select('currency')->where('title', $this->country)->first();
+                        if ($country) {
+                            $data['currency'] = $country->currency;
+                        } else {
+                            $data['currency'] = null;
+                        }
+                    }
+                    $user->load('providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates');
                 } elseif ($this->user->type == 'shop_owner') {
-                    $user->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
+                    $user->load('shopOwnerProfile.subCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
                 }
                 return $user;
             }),

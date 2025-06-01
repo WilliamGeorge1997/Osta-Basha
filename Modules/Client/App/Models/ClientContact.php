@@ -15,7 +15,7 @@ class ClientContact extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['client_id', 'contactable_id', 'contactable_type'];
+    protected $fillable = ['client_id', 'contactable_id', 'contactable_type', 'rating', 'comment'];
     public $incrementing = false;
     protected $primaryKey = null;
     //Log Activity

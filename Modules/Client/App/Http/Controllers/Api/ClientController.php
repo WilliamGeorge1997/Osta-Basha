@@ -5,8 +5,9 @@ namespace Modules\Client\App\Http\Controllers\Api;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Modules\Client\Service\ClientService;
-use Modules\Client\App\Http\Requests\ClientContactRequest;
+use Modules\Client\App\Http\Requests\ClientRateRequest;
 use Modules\Client\App\resources\ClientContactResource;
+use Modules\Client\App\Http\Requests\ClientContactRequest;
 
 class ClientController extends Controller
 {
@@ -42,5 +43,4 @@ class ClientController extends Controller
         $clientContact = $this->clientService->clientContactList($relations);
         return returnMessage(true, 'Client Contact List Fetched Successfully', ClientContactResource::collection($clientContact));
     }
-
 }
