@@ -22,9 +22,9 @@ class ClientContactResource extends JsonResource
             'user' => $this->whenLoaded('user', function () {
                 $user = new UserResource($this->user);
                 if ($this->user->type == 'service_provider') {
-                    $user->load('providerProfile');
+                    $user->load('providerProfile', 'providerWorkingTimes', 'providerCertificates');
                 } elseif ($this->user->type == 'shop_owner') {
-                    $user->load('shopOwnerProfile');
+                    $user->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
                 }
                 return $user;
             }),
