@@ -20,6 +20,7 @@ class ProviderResource extends JsonResource
                 "first_name" => $this->first_name ?? null,
                 "last_name" => $this->last_name ?? null,
                 "email" => $this->email ?? null,
+                "country_code" => $this->country_code ?? null,
                 "phone" => $this->phone,
                 "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
@@ -55,7 +56,7 @@ class ProviderResource extends JsonResource
         });
         $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
         $data['certificates'] = $this->whenLoaded('providerCertificates');
-        $data['rates'] = $this->whenLoaded('rates');
+        $data['rates'] = $this->whenLoaded('providerContacts.rates');
         $data['comments'] = $this->whenLoaded('comments');
         return $data;
     }

@@ -15,20 +15,24 @@ class ClientContactResource extends JsonResource
     public function toArray($request): array
     {
         return [
+            "id" => $this->id,
             "client_id" => $this->client_id,
-            'contactable_type' => $this->contactable_type  == 'Modules\Provider\App\Models\Provider' ? User::TYPE_SERVICE_PROVIDER : User::TYPE_SHOP_OWNER,
+            'contactable_type' => $this->contactable_type == 'Modules\Provider\App\Models\Provider' ? User::TYPE_SERVICE_PROVIDER : User::TYPE_SHOP_OWNER,
             "contactable_id" => $this->contactable_id,
             "created_at" => $this->created_at->format('Y-m-d H:i:s'),
             "updated_at" => $this->updated_at->format('Y-m-d H:i:s'),
+            'rates' => $this->whenLoaded('rates', function () {
+                return $this->rates;
+            }),
             'user' => $this->whenLoaded('user', function () {
                 $user = new UserResource($this->user);
                 if ($this->user->type == 'service_provider') {
                     if ($this->country != null) {
                         $country = Country::select('currency')->where('title', $this->country)->first();
                         if ($country) {
-                            $data['currency'] = $country->currency;
+                            $user['currency'] = $country->currency;
                         } else {
-                            $data['currency'] = null;
+                            $user['currency'] = null;
                         }
                     }
                     $user->load('providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates');

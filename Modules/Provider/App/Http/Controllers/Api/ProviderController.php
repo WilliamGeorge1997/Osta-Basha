@@ -36,7 +36,7 @@ class ProviderController extends Controller
                 'providerCertificates',
             ];
             $providers = $this->providerService->active($data, $relations);
-            return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
+            return returnMessage(true, 'Providers', $providers);
         } catch (\Exception $e) {
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }

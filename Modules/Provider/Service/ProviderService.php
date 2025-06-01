@@ -86,19 +86,13 @@ class ProviderService
                     }
                 ]);
             })
-            ->with([
-                'rates' => function ($q) {
-                    $q->where('rateable_type', \Modules\Provider\App\Models\Provider::class);
-                }
-            ])
-            ->withCount('rates as rates_count')
-            ->withAvg('rates as rates_avg', 'rate')
-            ->with([
-                'comments' => function ($q) {
-                    $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
-                }
-            ])
-            ->withCount('comments as comments_count')
+            ->with('providerContacts')
+            ->withCount(['providerContacts as rates_count' => function ($q) {
+                $q->whereNotNull('rate');
+            }])
+            ->withAvg(['providerContacts as rates_avg' => function ($q) {
+                $q->whereNotNull('rate');
+            }], 'rate')
             ->where('is_available', 1)
             ->where('is_active', 1)
             ->latest();

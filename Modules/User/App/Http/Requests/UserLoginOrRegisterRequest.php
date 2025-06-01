@@ -16,6 +16,7 @@ class UserLoginOrRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'country_code' => ['required'],
             'phone' => ['required'],
             'password' => ['required'],
         ];
@@ -27,6 +28,7 @@ class UserLoginOrRegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'country_code' => 'Country Code',
             'phone' => 'Phone Number',
             'password' => 'Password',
         ];

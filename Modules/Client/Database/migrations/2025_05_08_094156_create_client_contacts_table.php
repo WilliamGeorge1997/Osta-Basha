@@ -14,7 +14,6 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('client_id')->nullable()->index()->constrained('users')->nullOnDelete();
             $table->morphs('contactable');
-            // $table->unique(['client_id', 'contactable_id', 'contactable_type']);
             $table->unsignedTinyInteger('rate')->nullable();
             $table->text('comment')->nullable();
             $table->timestamps();

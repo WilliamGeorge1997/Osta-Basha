@@ -30,7 +30,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'phone', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token', 'completed_registration', 'lat', 'long', 'city', 'country', 'is_available'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'country_code', 'phone', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token', 'completed_registration', 'lat', 'long', 'city', 'country', 'is_available'];
     protected $hidden = ['password'];
 
     //Log Activity
@@ -120,10 +120,10 @@ class User extends Authenticatable implements JWTSubject
             ->where('contactable_type', ShopOwner::class);
     }
 
-    public function rates()
-    {
-        return $this->hasMany(Rate::class, 'rateable_id')->with('client');
-    }
+    // public function rates()
+    // {
+    //     return $this->hasMany(Rate::class, 'rateable_id')->with('client');
+    // }
 
     public function comments()
     {

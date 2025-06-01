@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Modules\User\App\Models\User;
 
 class Rate extends Model
 {
@@ -15,8 +14,7 @@ class Rate extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['client_id', 'rateable_id', 'rateable_type', 'rate'];
-    protected $hidden = ['rateable_id', 'rateable_type'];
+    protected $fillable = ['client_contact_id', 'rate', 'comment'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -33,12 +31,8 @@ class Rate extends Model
         return $date->format('Y-m-d h:i A');
     }
     //Relations
-    public function client()
+    public function clientContact()
     {
-        return $this->belongsTo(User::class, 'client_id');
-    }
-    public function rateable()
-    {
-        return $this->morphTo();
+        return $this->belongsTo(ClientContact::class);
     }
 }

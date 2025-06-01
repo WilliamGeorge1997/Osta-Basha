@@ -28,7 +28,7 @@ Route::group([
     'prefix' => 'client'
 ], function ($router) {
     Route::post('contact', [ClientController::class, 'clientContact']);
-    Route::post('rate', [RateController::class, 'store']);
+    Route::post('rate/{clientContact}', [RateController::class, 'store']);
     Route::put('rate/{clientContact}', [RateController::class, 'update']);
     Route::delete('rate/{clientContact}', [RateController::class, 'destroy']);
     Route::get('contact-list', [ClientController::class, 'clientContactList']);

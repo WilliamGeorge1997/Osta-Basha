@@ -4,6 +4,7 @@ namespace Modules\Client\App\Http\Controllers\Api;
 
 use Modules\Client\DTO\RateDto;
 use Illuminate\Support\Facades\DB;
+use Modules\Client\App\Models\Rate;
 use App\Http\Controllers\Controller;
 use Modules\Client\Service\RateService;
 use Modules\Client\App\Models\ClientContact;
@@ -24,12 +25,12 @@ class RateController extends Controller
         $this->rateService = $rateService;
     }
 
-    public function store(RateRequest $request)
+    public function store(RateRequest $request, ClientContact $clientContact)
     {
         DB::beginTransaction();
         try {
             $data = (new RateDto($request))->dataFromRequest();
-            $this->rateService->create($data, $request['contact_id']);
+            $this->rateService->create($data);
             DB::commit();
             return returnMessage(true, 'Rate Added Successfully');
         } catch (\Exception $e) {

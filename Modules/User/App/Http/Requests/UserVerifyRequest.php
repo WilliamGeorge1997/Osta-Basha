@@ -16,6 +16,7 @@ class UserVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'country_code' => ['required'],
             'phone' => ['required', 'exists:users,phone'],
             'otp' => ['required'],
         ];
@@ -27,6 +28,7 @@ class UserVerifyRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'country_code' => 'Country Code',
             'phone' => 'Phone Number',
             'otp' => 'OTP',
         ];

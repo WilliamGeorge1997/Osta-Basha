@@ -41,7 +41,7 @@ class UserAuthController extends Controller
     {
         DB::beginTransaction();
         try {
-            $user = User::where('phone', $request->phone)->first();
+            $user = User::where('phone', $request->phone)->where('country_code', $request->country_code)->first();
             if ($user) {
                 $credentials = $request->validated();
                 if (!$token = auth('user')->attempt($credentials)) {
