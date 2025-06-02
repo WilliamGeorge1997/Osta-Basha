@@ -25,8 +25,7 @@ class RateRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'client_contact_id' => 'Contact ID',
-            'rate' => 'Rating',
+            'rate' => 'Rate',
             'comment' => 'Comment',
         ];
     }
@@ -34,9 +33,9 @@ class RateRequest extends FormRequest
 
     public function authorize(): bool
     {
+        $clientContactRate = $this->route('clientContact');
         if ($this->isMethod('post')) {
-            $clientContactRate = $this->route('clientContact');
-            if ($clientContactRate) {
+            if ($clientContactRate->rate != null && $clientContactRate->comment != null) {
                 throw new HttpResponseException(
                     returnMessage(
                         false,
@@ -46,9 +45,8 @@ class RateRequest extends FormRequest
                 );
             }
         } elseif ($this->isMethod('put') || $this->isMethod('delete')) {
-            $rate = $this->route('rate');
             $clientId = auth('user')->id();
-            if ($rate->clientContact->client_id !== $clientId) {
+            if ($clientContactRate->client_id !== $clientId) {
                 throw new HttpResponseException(
                     returnMessage(
                         false,

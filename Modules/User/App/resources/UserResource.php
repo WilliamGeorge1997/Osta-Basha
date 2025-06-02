@@ -47,10 +47,12 @@ class UserResource extends JsonResource
             });
             $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
             $data['certificates'] = $this->whenLoaded('providerCertificates');
+            $data['package'] = $this->whenLoaded('package');
         } elseif ($this->type == 'shop_owner') {
             $data['profile'] = $this->whenLoaded('shopOwnerProfile');
             $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
             $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
+            $data['package'] = $this->whenLoaded('package');
         }
         return $data;
     }

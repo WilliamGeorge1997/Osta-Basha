@@ -35,10 +35,12 @@ class ProviderAdminController extends Controller
                             $q->with('category');
                         }
                     ]);
-                }, 'providerWorkingTimes', 'providerCertificates', 'comments' => function ($q) {
-                $q->where('commentable_type', \Modules\Provider\App\Models\Provider::class);
-            },
-                ];
+                },
+                'providerWorkingTimes',
+                'providerCertificates',
+                'providerContacts.client',
+                'package'
+            ];
             $providers = $this->providerService->findAll($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
         } catch (\Exception $e) {

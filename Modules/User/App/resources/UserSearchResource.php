@@ -47,10 +47,12 @@ class UserSearchResource extends JsonResource
             });
             $data['working_times'] = $this->providerWorkingTimes;
             $data['certificates'] = $this->providerCertificates;
+            $data['package'] = $this->package;
         } elseif ($this->type == 'shop_owner') {
             $data['profile'] = $this->shopOwnerProfile;
             $data['working_times'] = $this->shopOwnerWorkingTimes;
             $data['shop_images'] = $this->shopOwnerShopImages;
+            $data['package'] = $this->package;
         }
         return $data;
     }

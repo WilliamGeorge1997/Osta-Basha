@@ -3,6 +3,7 @@
 
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\Schema;
+use Modules\Package\App\Models\Package;
 use Illuminate\Database\Schema\Blueprint;
 use Modules\Category\App\Models\SubCategory;
 use Illuminate\Database\Migrations\Migration;
@@ -25,6 +26,7 @@ return new class extends Migration {
             $table->string('price');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
+            $table->foreignIdFor(Package::class)->nullable()->index()->constrained()->nullOnDelete();
             $table->enum('status', ['free_trial', 'subscribed'])->default('free_trial');
             $table->boolean('is_active')->default(0);
             $table->timestamps();

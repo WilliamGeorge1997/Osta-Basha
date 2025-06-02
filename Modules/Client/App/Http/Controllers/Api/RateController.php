@@ -4,7 +4,6 @@ namespace Modules\Client\App\Http\Controllers\Api;
 
 use Modules\Client\DTO\RateDto;
 use Illuminate\Support\Facades\DB;
-use Modules\Client\App\Models\Rate;
 use App\Http\Controllers\Controller;
 use Modules\Client\Service\RateService;
 use Modules\Client\App\Models\ClientContact;
@@ -30,7 +29,7 @@ class RateController extends Controller
         DB::beginTransaction();
         try {
             $data = (new RateDto($request))->dataFromRequest();
-            $this->rateService->create($data);
+            $this->rateService->create($data, $clientContact);
             DB::commit();
             return returnMessage(true, 'Rate Added Successfully');
         } catch (\Exception $e) {
@@ -63,6 +62,4 @@ class RateController extends Controller
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
-
-
 }

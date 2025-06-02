@@ -3,8 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Client\App\Http\Controllers\Api\RateController;
 use Modules\Client\App\Http\Controllers\Api\ClientController;
-use Modules\Client\App\Http\Controllers\Api\CommentController;
-use Modules\Client\App\Http\Controllers\Api\RateAdminController;
 use Modules\Client\App\Http\Controllers\Api\ClientAdminController;
 use Modules\Client\App\Http\Controllers\Api\CommentAdminController;
 /*
@@ -22,7 +20,7 @@ Route::group([
     'prefix' => 'admin'
 ], function ($router) {
     Route::apiResource('clients', ClientAdminController::class)->only(['index']);
-
+    Route::delete('comment/{clientContact}', [CommentAdminController::class, 'destroy']);
 });
 Route::group([
     'prefix' => 'client'

@@ -56,8 +56,9 @@ class ProviderResource extends JsonResource
         });
         $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
         $data['certificates'] = $this->whenLoaded('providerCertificates');
-        $data['rates'] = $this->whenLoaded('providerContacts.rates');
-        $data['comments'] = $this->whenLoaded('comments');
+        $data['provider_contacts'] = $this->whenLoaded('providerContacts');
+        $data['package'] = $this->whenLoaded('package');
+        
         return $data;
     }
 }

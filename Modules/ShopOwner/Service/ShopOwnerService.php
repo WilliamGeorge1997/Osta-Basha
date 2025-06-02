@@ -63,23 +63,34 @@ class ShopOwnerService
                     }
                 ]);
             })
-            ->with([
-                'rates' => function ($q) {
-                    $q->where('rateable_type', \Modules\ShopOwner\App\Models\ShopOwner::class);
+            ->with('shopOwnerContacts.client')
+            ->withCount([
+                'shopOwnerContacts as rates_count' => function ($q) {
+                    $q->whereNotNull('rate');
                 }
             ])
-            ->withCount('rates as rates_count')
-            ->withAvg('rates as rates_avg', 'rate')
-            ->with([
-                'comments' => function ($q) {
-                    $q->where('commentable_type', \Modules\ShopOwner\App\Models\ShopOwner::class);
+            ->withCount([
+                'shopOwnerContacts as comments_count' => function ($q) {
+                    $q->whereNotNull('comment');
                 }
             ])
-            ->withCount('comments as comments_count')
+            ->withAvg([
+                'shopOwnerContacts as rates_avg' => function ($q) {
+                    $q->whereNotNull('rate');
+                }
+            ], 'rate')
             ->where('is_active', 1)
             ->where('is_available', 1)
             ->latest();
         return getCaseCollection($shopOwners, $data);
+    }
+
+    function updateSubscription($user, $data)
+    {
+        $data['status'] = 'subscribed';
+        $data['is_active'] = 1;
+        $user->shopOwnerProfile->update($data);
+        return $user;
     }
 
 }

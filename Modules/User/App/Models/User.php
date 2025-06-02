@@ -30,7 +30,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'country_code', 'phone', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token', 'completed_registration', 'lat', 'long', 'city', 'country', 'is_available'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'country_code', 'phone', 'whatsapp_country_code', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token', 'completed_registration', 'lat', 'long', 'city', 'country', 'is_available'];
     protected $hidden = ['password'];
 
     //Log Activity

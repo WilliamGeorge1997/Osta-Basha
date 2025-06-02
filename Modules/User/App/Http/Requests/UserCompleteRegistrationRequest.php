@@ -23,6 +23,7 @@ class UserCompleteRegistrationRequest extends FormRequest
             'last_name' => ['required', 'string', 'max:255'],
             'email' => ['sometimes', 'email', 'max:255', 'unique:users,email'],
             'whatsapp' => ['required', 'string', 'max:255'],
+            'whatsapp_country_code' => ['required', 'string', 'max:255'],
         ];
 
         if ($user->type === 'service_provider') {
@@ -86,6 +87,8 @@ class UserCompleteRegistrationRequest extends FormRequest
             'products_description' => 'Products Description',
             'shop_images' => 'Shop Images',
             'shop_images.*' => 'Shop Image',
+            'whatsapp_country_code' => 'Whatsapp Country Code',
+            'whatsapp' => 'Whatsapp',
         ];
     }
 

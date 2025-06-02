@@ -1,12 +1,12 @@
 <?php
 
-namespace Modules\Provider\App\Http\Requests;
+namespace Modules\ShopOwner\App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ProviderAdminRequest extends FormRequest
+class ShopOwnerAdminRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -40,9 +40,9 @@ class ProviderAdminRequest extends FormRequest
     public function authorize(): bool
     {
         $user = $this->route('user');
-        if ($user->type !== 'service_provider') {
+        if ($user->type !== 'shop_owner') {
             throw new HttpResponseException(
-                returnUnauthorizedMessage(false, 'This action allowed only on service providers', null)
+                returnUnauthorizedMessage(false, 'This action allowed only on shop owners', null)
             );
         }
         return true;

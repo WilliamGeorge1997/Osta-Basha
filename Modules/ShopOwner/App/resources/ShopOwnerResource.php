@@ -28,7 +28,7 @@ class ShopOwnerResource extends JsonResource
                 "city" => $this->city ?? null,
                 "country" => $this->country ?? null,
                 "rates_count" => $this->rates_count ?? null,
-                "rates_avg" => $this->rates_avg ?? null,
+                "rates_avg" => $this->rates_avg ?? 0,
                 "comments_count" => $this->comments_count ?? null,
                 "is_active" => $this->is_active,
                 "is_available" => $this->is_available,
@@ -43,9 +43,8 @@ class ShopOwnerResource extends JsonResource
         });
         $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
         $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
-        $data['rates'] = $this->whenLoaded('rates');
-        $data['comments'] = $this->whenLoaded('comments');
-
+        $data['shop_owner_contacts'] = $this->whenLoaded('shopOwnerContacts');
+        $data['package'] = $this->whenLoaded('package');
         return $data;
     }
 }

@@ -2,25 +2,24 @@
 
 namespace Modules\Client\Service;
 
-use Modules\Client\App\Models\Rate;
-
 class RateService
 {
-    public function create($data)
+    public function create($data, $clientContact)
     {
-        $rate = Rate::create($data);
-        return $rate;
+        $clientContact = $clientContact->update($data);
+        return $clientContact;
     }
 
-    public function update($rate, $data)
+    public function update($clientContact, $data)
     {
-        $rate->update($data);
-        return $rate;
+        $clientContact->update($data);
+        return $clientContact;
     }
 
-    public function delete($rate)
+    public function delete($clientContact)
     {
-        $rate->delete();
+        $clientContact->update(['rate' => null, 'comment' => null]);
+        return $clientContact;
     }
 
 }

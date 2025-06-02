@@ -10,6 +10,7 @@ class UserDetailsDto
     public $last_name;
     public $email;
     public $whatsapp;
+    public $whatsapp_country_code;
 
     public function __construct($request)
     {
@@ -19,6 +20,8 @@ class UserDetailsDto
             $this->last_name = $request->get('last_name');
         if ($request->get('email'))
             $this->email = $request->get('email');
+        if ($request->get('whatsapp_country_code'))
+            $this->whatsapp_country_code = $request->get('whatsapp_country_code');
         if ($request->get('whatsapp'))
             $this->whatsapp = $request->get('whatsapp');
     }
@@ -32,6 +35,8 @@ class UserDetailsDto
             unset($data['last_name']);
         if ($this->email == null)
             unset($data['email']);
+        if ($this->whatsapp_country_code == null)
+            unset($data['whatsapp_country_code']);
         if ($this->whatsapp == null)
             unset($data['whatsapp']);
         return $data;

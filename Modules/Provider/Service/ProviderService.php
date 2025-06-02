@@ -5,7 +5,7 @@ namespace Modules\Provider\Service;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
-use Modules\Country\App\Models\Country;
+use Modules\Package\App\Models\Package;
 use Modules\Common\Helpers\UploadHelper;
 
 class ProviderService
@@ -18,6 +18,7 @@ class ProviderService
             ->where('type', 'service_provider')
             ->whereHas('providerProfile')
             ->with($relations);
+
         return getCaseCollection($providers, $data);
     }
 
@@ -86,13 +87,21 @@ class ProviderService
                     }
                 ]);
             })
-            ->with('providerContacts')
-            ->withCount(['providerContacts as rates_count' => function ($q) {
-                $q->whereNotNull('rate');
-            }])
-            ->withAvg(['providerContacts as rates_avg' => function ($q) {
-                $q->whereNotNull('rate');
-            }], 'rate')
+            ->withCount([
+                'providerContacts as rates_count' => function ($q) {
+                    $q->whereNotNull('rate');
+                }
+            ])
+            ->withCount([
+                'providerContacts as comments_count' => function ($q) {
+                    $q->whereNotNull('comment');
+                }
+            ])
+            ->withAvg([
+                'providerContacts as rates_avg' => function ($q) {
+                    $q->whereNotNull('rate');
+                }
+            ], 'rate')
             ->where('is_available', 1)
             ->where('is_active', 1)
             ->latest();
@@ -154,9 +163,21 @@ class ProviderService
             ->whereHas('providerProfile', function ($query) {
                 $query->where('is_active', 1);
             })
-            ->withCount('rates as rates_count')
-            ->withAvg('rates as rates_avg', 'rate')
-            ->withCount('comments as comments_count')
+            ->withCount([
+                'providerContacts as rates_count' => function ($q) {
+                    $q->whereNotNull('rate');
+                }
+            ])
+            ->withCount([
+                'providerContacts as comments_count' => function ($q) {
+                    $q->whereNotNull('comment');
+                }
+            ])
+            ->withAvg([
+                'providerContacts as rates_avg' => function ($q) {
+                    $q->whereNotNull('rate');
+                }
+            ], 'rate')
             ->where('is_active', 1)
             ->where('is_available', 1)
             ->orderByDesc('contacts_count');
@@ -165,12 +186,8 @@ class ProviderService
 
     function updateSubscription($user, $data)
     {
-        if (request()->has('is_active') && request()->input('is_active') == 1) {
-            $data['is_active'] = 1;
-        } else {
-            $data['is_active'] = 0;
-        }
         $data['status'] = 'subscribed';
+        $data['is_active'] = 1;
         $user->providerProfile->update($data);
         return $user;
     }
@@ -189,6 +206,21 @@ class ProviderService
                 ->whereHas('providerProfile', function ($query) {
                     $query->where('is_active', 1);
                 })
+                ->withCount([
+                    'providerContacts as rates_count' => function ($q) {
+                        $q->whereNotNull('rate');
+                    }
+                ])
+                ->withCount([
+                    'providerContacts as comments_count' => function ($q) {
+                        $q->whereNotNull('comment');
+                    }
+                ])
+                ->withAvg([
+                    'providerContacts as rates_avg' => function ($q) {
+                        $q->whereNotNull('rate');
+                    }
+                ], 'rate')
                 ->with($relations)
                 ->latest();
         }

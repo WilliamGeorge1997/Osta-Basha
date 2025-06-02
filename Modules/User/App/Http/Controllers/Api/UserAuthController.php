@@ -153,9 +153,9 @@ class UserAuthController extends Controller
         $user = auth('user')->user();
 
         if ($user->type == 'service_provider') {
-            $user->load(['providerProfile', 'providerWorkingTimes', 'providerCertificates']);
+            $user->load(['providerProfile', 'providerWorkingTimes', 'providerCertificates', 'package' , 'providerContacts.client']);
         } elseif ($user->type == 'shop_owner') {
-            $user->load(['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages']);
+            $user->load(['shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'package', 'shopOwnerContacts.client']);
         }
 
         return returnMessage(true, 'User Data', new UserResource($user));
@@ -197,9 +197,9 @@ class UserAuthController extends Controller
             $status = 'non_authoritative_information';
         }
         if ($user->type == User::TYPE_SERVICE_PROVIDER) {
-            $user->load(['providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates']);
+            $user->load(['providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'package', 'providerContacts.client']);
         } elseif ($user->type == User::TYPE_SHOP_OWNER) {
-            $user->load(['shopOwnerProfile.shopCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages']);
+            $user->load(['shopOwnerProfile.shopCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'package', 'shopOwnerContacts.client']);
         }
         return returnMessage(
             true,
