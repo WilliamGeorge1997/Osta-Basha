@@ -3,6 +3,7 @@
 namespace Modules\ShopOwner\Service;
 
 use Modules\User\App\Models\User;
+use Modules\Package\App\Models\Package;
 
 
 class ShopOwnerService
@@ -87,6 +88,10 @@ class ShopOwnerService
 
     function updateSubscription($user, $data)
     {
+        $package = Package::find($data['package_id']);
+        $startDate = \Carbon\Carbon::parse($data['start_date']);
+        $endDate = $startDate->copy()->addDays($package->duration);
+        $data['end_date'] = $endDate->toDateString();
         $data['status'] = 'subscribed';
         $data['is_active'] = 1;
         $user->shopOwnerProfile->update($data);

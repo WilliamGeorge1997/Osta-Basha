@@ -18,7 +18,6 @@ class ProviderAdminRequest extends FormRequest
         return [
             'package_id' => ['required', 'exists:packages,id'],
             'start_date' => ['required', 'date'],
-            'end_date' => ['required', 'date', 'after:start_date'],
         ];
     }
 
@@ -30,7 +29,6 @@ class ProviderAdminRequest extends FormRequest
         return [
             'package_id' => 'Package',
             'start_date' => 'Start Date',
-            'end_date' => 'End Date',
         ];
     }
 

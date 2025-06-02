@@ -27,8 +27,8 @@ class ShopOwnerController extends Controller
             $relations = ['shopOwnerProfile' => function ($q) {
                 $q->with(['subCategory' => function ($q) {
                     $q->with('category');
-                }]);
-            }, 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'package', 'shopOwnerContacts.client'];
+                }, 'package']);
+            }, 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerContacts.client'];
             $shopOwners = $this->shopOwnerService->active($data, $relations);
             return returnMessage(true, 'Shop Owners', ShopOwnerResource::collection($shopOwners)->response()->getData(true));
         } catch (\Exception $e) {

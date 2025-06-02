@@ -45,21 +45,6 @@ public function authorize(): bool
 {
     $contactableId = $this->input('contactable_id');
 
-    // Check if contact already exists
-    $contact = ClientContact::where('client_id', auth()->id())
-        ->where('contactable_id', $contactableId)
-        ->exists();
-
-    if ($contact) {
-        throw new HttpResponseException(
-            returnMessage(
-                false,
-                'You have already contacted this contactable',
-                null
-            )
-        );
-    }
-
     $contactable = User::find($contactableId);
     $contactCount = ClientContact::where('contactable_id', $contactableId)->count();
     $freeTrialContactCount = Setting::where('key', 'free_trial_contacts_count')->first();

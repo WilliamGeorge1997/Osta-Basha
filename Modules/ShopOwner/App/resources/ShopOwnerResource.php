@@ -20,6 +20,7 @@ class ShopOwnerResource extends JsonResource
                 "email" => $this->email ?? null,
                 "country_code" => $this->country_code ?? null,
                 "phone" => $this->phone,
+                "whatsapp_country_code" => $this->whatsapp_country_code ?? null,
                 "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
@@ -44,7 +45,7 @@ class ShopOwnerResource extends JsonResource
         $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
         $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
         $data['shop_owner_contacts'] = $this->whenLoaded('shopOwnerContacts');
-        $data['package'] = $this->whenLoaded('package');
+
         return $data;
     }
 }

@@ -19,5 +19,6 @@ Route::group([
     'prefix' => 'admin'
 ], function ($router) {
     Route::apiResource('shop-owners', ShopOwnerAdminController::class)->only(['index']);
+    Route::post('shop-owners/{user}', [ShopOwnerAdminController::class, 'updateSubscription']);
 });
 Route::apiResource('shop-owners', ShopOwnerController::class)->only(['index']);

@@ -5,6 +5,7 @@ namespace Modules\User\App\resources;
 use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Provider\App\resources\ProviderProfileResource;
+use Modules\ShopOwner\App\resources\ShopOwnerProfileResource;
 
 class UserSearchResource extends JsonResource
 {
@@ -21,6 +22,7 @@ class UserSearchResource extends JsonResource
                 "email" => $this->email ?? null,
                 "country_code" => $this->country_code ?? null,
                 "phone" => $this->phone,
+                "whatsapp_country_code" => $this->whatsapp_country_code ?? null,
                 "whatsapp" => $this->whatsapp ?? null,
                 "image" => $this->image ?? null,
                 "type" => $this->type ?? null,
@@ -49,10 +51,12 @@ class UserSearchResource extends JsonResource
             $data['certificates'] = $this->providerCertificates;
             $data['package'] = $this->package;
         } elseif ($this->type == 'shop_owner') {
-            $data['profile'] = $this->shopOwnerProfile;
+            $data['profile'] = $this->whenLoaded('shopOwnerProfile', function () {
+                return new ShopOwnerProfileResource($this->shopOwnerProfile);
+            });
             $data['working_times'] = $this->shopOwnerWorkingTimes;
             $data['shop_images'] = $this->shopOwnerShopImages;
-            $data['package'] = $this->package;
+
         }
         return $data;
     }

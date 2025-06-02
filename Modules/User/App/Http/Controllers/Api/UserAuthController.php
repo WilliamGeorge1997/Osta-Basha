@@ -197,9 +197,9 @@ class UserAuthController extends Controller
             $status = 'non_authoritative_information';
         }
         if ($user->type == User::TYPE_SERVICE_PROVIDER) {
-            $user->load(['providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'package', 'providerContacts.client']);
+            $user->load(['providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client']);
         } elseif ($user->type == User::TYPE_SHOP_OWNER) {
-            $user->load(['shopOwnerProfile.shopCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'package', 'shopOwnerContacts.client']);
+            $user->load(['shopOwnerProfile.shopCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerProfile.package', 'shopOwnerContacts.client']);
         }
         return returnMessage(
             true,

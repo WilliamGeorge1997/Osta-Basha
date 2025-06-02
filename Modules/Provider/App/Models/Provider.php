@@ -5,6 +5,7 @@ namespace Modules\Provider\App\Models;
 use Modules\User\App\Models\User;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Package\App\Models\Package;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Modules\Category\App\Models\SubCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -64,5 +65,9 @@ class Provider extends Model
     public function subCategory()
     {
         return $this->belongsTo(SubCategory::class);
+    }
+    public function package()
+    {
+        return $this->belongsTo(Package::class);
     }
 }

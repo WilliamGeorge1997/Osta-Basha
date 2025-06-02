@@ -29,13 +29,14 @@ class ShopOwnerAdminController extends Controller
                     $q->with([
                         'subCategory' => function ($q) {
                             $q->with('category');
-                        }
+                        },
+                        'package'
                     ]);
                 },
                 'shopOwnerWorkingTimes',
                 'shopOwnerShopImages',
                 'shopOwnerContacts.client',
-                'package'
+                
             ];
             $shopOwners = $this->shopOwnerService->findAll($data, $relations);
             return returnMessage(true, 'Shop Owners fetched successfully', ShopOwnerResource::collection($shopOwners)->response()->getData(true));

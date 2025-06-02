@@ -18,6 +18,7 @@ class ClientResource extends JsonResource
             "email" => $this->email ?? null,
             "country_code" => $this->country_code ?? null,
             "phone" => $this->phone,
+            "whatsapp_country_code" => $this->whatsapp_country_code ?? null,
             'whatsapp' => $this->whatsapp ?? null,
             "image" => $this->image ?? null,
             "type" => $this->type ?? null,

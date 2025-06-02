@@ -20,7 +20,7 @@ return new class extends Migration {
 
         DB::table('settings')->insert([
             ['key' => 'free_trial_months', 'value' => '3', 'type' => 'integer', 'created_at' => now(), 'updated_at' => now()],
-            ['key' => 'free_trial_contacts_count', 'value' => '10', 'type' => 'integer', 'created_at' => now(), 'updated_at' => now()],
+            ['key' => 'free_trial_contacts_count', 'value' => '1', 'type' => 'integer', 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 

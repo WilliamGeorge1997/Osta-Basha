@@ -34,9 +34,9 @@ class ClientContactResource extends JsonResource
                             $user['currency'] = null;
                         }
                     }
-                    $user->load('providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates');
+                    $user->load('providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client');
                 } elseif ($this->user->type == 'shop_owner') {
-                    $user->load('shopOwnerProfile.subCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages');
+                    $user->load('shopOwnerProfile.subCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerProfile.package', 'shopOwnerContacts.client');
                 }
                 return $user;
             }),

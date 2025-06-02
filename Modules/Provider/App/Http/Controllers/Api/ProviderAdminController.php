@@ -33,13 +33,14 @@ class ProviderAdminController extends Controller
                     $q->with([
                         'subCategory' => function ($q) {
                             $q->with('category');
-                        }
+                        },
+                        'package'
                     ]);
                 },
                 'providerWorkingTimes',
                 'providerCertificates',
                 'providerContacts.client',
-                'package'
+
             ];
             $providers = $this->providerService->findAll($data, $relations);
             return returnMessage(true, 'Providers', ProviderResource::collection($providers)->response()->getData(true));
