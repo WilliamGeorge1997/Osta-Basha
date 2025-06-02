@@ -13,7 +13,7 @@ class ShopOwnerAdminController extends Controller
     protected $shopOwnerService;
     public function __construct(ShopOwnerService $shopOwnerService)
     {
-        // $this->middleware('auth:admin');
+        $this->middleware('auth:admin');
         $this->shopOwnerService = $shopOwnerService;
     }
 
