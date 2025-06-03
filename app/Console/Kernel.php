@@ -12,8 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('providers:deactivate-expired')->everyMinute();
-        $schedule->command('shop-owners:deactivate-expired')->everyMinute();
+        $schedule->command('providers:deactivate-expired')->daily();
+        $schedule->command('shop-owners:deactivate-expired')->daily();
         $schedule->command('queue:restart')->everyFiveMinutes();
         $schedule->command('queue:work database --sleep=5')->everyMinute();
     }
