@@ -2,6 +2,7 @@
 
 namespace Modules\Provider\App\resources;
 
+use Modules\Common\App\Models\Setting;
 use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Provider\App\resources\ProviderProfileResource;
@@ -52,6 +53,9 @@ class ProviderResource extends JsonResource
         }
         $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
         $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');
+        if ($this->providerProfile->status === 'free_trial') {
+            $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->providerContacts->count();
+        }
         $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
             return new ProviderProfileResource($profile);
         });

@@ -155,11 +155,11 @@ class UserService
 
             case User::TYPE_SERVICE_PROVIDER:
                 $this->updateProviderProfile($user, $profileData, $workingTimesData);
-                return $user->fresh()->load('providerProfile', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client');
+                return $user->fresh()->load('providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client');
 
             case User::TYPE_SHOP_OWNER:
                 $this->updateShopOwnerProfile($user, $profileData, $workingTimesData);
-                return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerProfile.package', 'shopOwnerContacts.client');
+                return $user->fresh()->load('shopOwnerProfile.package', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerContacts.client');
 
             default:
                 return $user->fresh();

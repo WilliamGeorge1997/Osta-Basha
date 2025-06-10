@@ -2,9 +2,11 @@
 
 namespace Modules\User\App\resources;
 
+use Modules\Common\App\Models\Setting;
 use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Provider\App\resources\ProviderProfileResource;
+use Modules\ShopOwner\App\resources\ShopOwnerProfileResource;
 
 class UserResource extends JsonResource
 {
@@ -35,6 +37,9 @@ class UserResource extends JsonResource
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
+            if ($this->providerProfile->status === 'free_trial') {
+                $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->providerContacts->count();
+            }
             if ($this->country != null) {
                 $country = Country::select('currency')->where('title', $this->country)->first();
                 if ($country) {
@@ -50,7 +55,12 @@ class UserResource extends JsonResource
             $data['certificates'] = $this->whenLoaded('providerCertificates');
             $data['package'] = $this->whenLoaded('package');
         } elseif ($this->type == 'shop_owner') {
-            $data['profile'] = $this->whenLoaded('shopOwnerProfile');
+            if ($this->shopOwnerProfile->status === 'free_trial') {
+                $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->shopOwnerContacts->count();
+            }
+            $data['profile'] = $this->whenLoaded('shopOwnerProfile', function () {
+                return new ShopOwnerProfileResource($this->shopOwnerProfile);
+            });
             $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
             $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
             $data['package'] = $this->whenLoaded('package');
