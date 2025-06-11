@@ -37,7 +37,7 @@ class UserResource extends JsonResource
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
             ];
         if ($this->type == 'service_provider') {
-            if ($this->providerProfile->status === 'free_trial') {
+            if ($this->providerProfile && $this->providerProfile->status === 'free_trial') {
                 $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->providerContacts->count();
             }
             if ($this->country != null) {
@@ -55,7 +55,7 @@ class UserResource extends JsonResource
             $data['certificates'] = $this->whenLoaded('providerCertificates');
             $data['package'] = $this->whenLoaded('package');
         } elseif ($this->type == 'shop_owner') {
-            if ($this->shopOwnerProfile->status === 'free_trial') {
+            if ($this->shopOwnerProfile && $this->shopOwnerProfile->status === 'free_trial') {
                 $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->shopOwnerContacts->count();
             }
             $data['profile'] = $this->whenLoaded('shopOwnerProfile', function () {

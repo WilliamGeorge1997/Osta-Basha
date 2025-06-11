@@ -40,7 +40,7 @@ class ShopOwnerResource extends JsonResource
         }
         $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
         $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');
-        if ($this->shopOwnerProfile->status === 'free_trial') {
+        if ($this->shopOwnerProfile && $this->shopOwnerProfile->status === 'free_trial') {
             $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->shopOwnerContacts->count();
         }
         $data['profile'] = $this->whenLoaded('shopOwnerProfile', function ($profile) {

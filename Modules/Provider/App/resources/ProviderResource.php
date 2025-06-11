@@ -53,7 +53,7 @@ class ProviderResource extends JsonResource
         }
         $data['created_at'] = $this->created_at->format('Y-m-d h:i A');
         $data['updated_at'] = $this->updated_at->format('Y-m-d h:i A');
-        if ($this->providerProfile->status === 'free_trial') {
+        if ($this->providerProfile && $this->providerProfile->status === 'free_trial') {
             $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->providerContacts->count();
         }
         $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
