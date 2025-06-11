@@ -36,7 +36,7 @@ Route::group([
     });
     Route::post('change-password', [UserController::class, 'changePassword']);
     Route::post('update-profile', [UserController::class, 'updateProfile']);
-    Route::delete('delete-image/{id}', [UserController::class, 'deleteImage']);
+    Route::post('delete-image/{id}', [UserController::class, 'deleteImage']);
     Route::get('search', [UserController::class, 'search']);
     Route::post('toggle-available', [UserController::class, 'toggleAvailable']);
     Route::get('received-contacts', [UserController::class, 'receivedContacts']);

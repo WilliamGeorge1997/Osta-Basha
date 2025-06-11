@@ -19,7 +19,7 @@ class SubCategoryController extends Controller
      */
     public function __construct(SubCategoryService $subCategoryService)
     {
-        $this->middleware('auth:user');
+        // $this->middleware('auth:user');
         $this->subCategoryService = $subCategoryService;
     }
     public function index(Request $request, Category $category)
