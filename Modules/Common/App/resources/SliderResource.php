@@ -24,11 +24,11 @@ class SliderResource extends JsonResource
             'user' => $this->whenLoaded('user', function () {
                 $user = new UserResource($this->user);
                 if ($this->user->type == 'service_provider') {
-                    $user->load('providerProfile');
+                    $user->load('providerProfile.subCategory.category');
                     $user->load('providerWorkingTimes');
                     $user->load('providerCertificates');
                 } elseif ($this->user->type == 'shop_owner') {
-                    $user->load('shopOwnerProfile');
+                    $user->load('shopOwnerProfile.subCategory.category');
                     $user->load('shopOwnerWorkingTimes');
                     $user->load('shopOwnerShopImages');
                 }
