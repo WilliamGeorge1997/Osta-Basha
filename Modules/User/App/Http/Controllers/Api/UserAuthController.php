@@ -56,6 +56,10 @@ class UserAuthController extends Controller
                 DB::commit();
                 return $this->respondWithToken($token);
             }
+            $existingUser = User::where('phone', $request->phone)->first();
+            if ($existingUser) {
+                return returnValidationMessage(false, trans('validation.rules_failed'), ['phone' => 'This phone number is already registered'], 'unprocessable_entity');
+            }
             $data = (new UserDto($request))->dataFromRequest();
             $this->userService->create($data);
             DB::commit();
@@ -77,7 +81,7 @@ class UserAuthController extends Controller
             $data = $request->validated();
             $user = $this->userService->chooseUserType($data, $user);
             DB::commit();
-           return $this->respondWithToken(auth('user')->login($user));
+            return $this->respondWithToken(auth('user')->login($user));
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
@@ -155,7 +159,7 @@ class UserAuthController extends Controller
         if ($user->type == 'service_provider') {
             $user->load(['providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client']);
         } elseif ($user->type == 'shop_owner') {
-            $user->load(['shopOwnerProfile.package', 'shopOwnerWorkingTimes', 'shopOwnerShopImages','shopOwnerContacts.client']);
+            $user->load(['shopOwnerProfile.package', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerContacts.client']);
         }
 
         return returnMessage(true, 'User Data', new UserResource($user));
