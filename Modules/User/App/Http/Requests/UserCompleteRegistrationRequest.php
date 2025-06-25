@@ -17,6 +17,28 @@ class UserCompleteRegistrationRequest extends FormRequest
         'price',
         'working_times'
     ];
+   protected function prepareForValidation()
+    {
+        if ($this->has('working_times')) {
+            $processedWorkingTimes = [];
+
+            foreach ($this->working_times as $workingTime) {
+                if (isset($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
+                    $days = explode(',', $workingTime['day']);
+                    foreach ($days as $day) {
+                        $processedWorkingTimes[] = [
+                            'day' => trim($day),
+                            'start_at' => $workingTime['start_at'] ?? null,
+                            'end_at' => $workingTime['end_at'] ?? null,
+                        ];
+                    }
+                } else {
+                    $processedWorkingTimes[] = $workingTime;
+                }
+            }
+            $this->merge(['working_times' => $processedWorkingTimes]);
+        }
+    }
 
     /**
      * Get the validation rules that apply to the request.
