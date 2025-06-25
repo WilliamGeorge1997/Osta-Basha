@@ -5,11 +5,15 @@ namespace Modules\User\App\resources;
 use Modules\Common\App\Models\Setting;
 use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 use Modules\Provider\App\resources\ProviderProfileResource;
 use Modules\ShopOwner\App\resources\ShopOwnerProfileResource;
+use Modules\Provider\App\resources\ProviderWorkingTimeResource;
+use Modules\ShopOwner\App\resources\ShopOwnerWorkingTimeResource;
 
 class UserSearchResource extends JsonResource
 {
+    use ArabicNumeralsConverterTrait;
     /**
      * Transform the resource into an array.
      */
@@ -51,7 +55,10 @@ class UserSearchResource extends JsonResource
             $data['profile'] = $this->whenLoaded('providerProfile', function () {
                 return new ProviderProfileResource($this->providerProfile);
             });
-            $data['working_times'] = $this->providerWorkingTimes;
+            $data['working_times'] = $this->whenLoaded('providerWorkingTimes', function ($workingTimes) {
+                return ProviderWorkingTimeResource::collection($workingTimes);
+            });
+
             $data['certificates'] = $this->providerCertificates;
             $data['package'] = $this->package;
         } elseif ($this->type == 'shop_owner') {
@@ -61,10 +68,17 @@ class UserSearchResource extends JsonResource
             $data['profile'] = $this->whenLoaded('shopOwnerProfile', function () {
                 return new ShopOwnerProfileResource($this->shopOwnerProfile);
             });
-            $data['working_times'] = $this->shopOwnerWorkingTimes;
+            $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes', function ($workingTimes) {
+                return ShopOwnerWorkingTimeResource::collection($workingTimes);
+            });
             $data['shop_images'] = $this->shopOwnerShopImages;
 
         }
-        return $data;
+        return $this->convertNumericToArabic($data, [
+
+            'whatsapp',
+            'whatsapp_country_code',
+            'free_trial_remaining_times',
+        ]);
     }
 }

@@ -4,10 +4,13 @@ namespace Modules\ShopOwner\App\resources;
 
 use Modules\Common\App\Models\Setting;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 use Modules\ShopOwner\App\resources\ShopOwnerProfileResource;
+use Modules\ShopOwner\App\resources\ShopOwnerWorkingTimeResource;
 
 class ShopOwnerResource extends JsonResource
 {
+    use ArabicNumeralsConverterTrait;
     /**
      * Transform the resource into an array.
      */
@@ -46,10 +49,14 @@ class ShopOwnerResource extends JsonResource
         $data['profile'] = $this->whenLoaded('shopOwnerProfile', function ($profile) {
             return new ShopOwnerProfileResource($profile);
         });
-        $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes');
+        $data['working_times'] = $this->whenLoaded('shopOwnerWorkingTimes', function ($workingTimes) {
+            return ShopOwnerWorkingTimeResource::collection($workingTimes);
+        });
         $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
         $data['shop_owner_contacts'] = $this->whenLoaded('shopOwnerContacts');
 
-        return $data;
+        return $this->convertNumericToArabic($data, [
+             'whatsapp', 'whatsapp_country_code', 'free_trial_remaining_times',
+        ]);
     }
 }

@@ -6,9 +6,11 @@ use Modules\Common\App\Models\Setting;
 use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Modules\Provider\App\resources\ProviderProfileResource;
+use Modules\Provider\App\resources\ProviderWorkingTimeResource;
 
 class ProviderResource extends JsonResource
 {
+    use ArabicNumeralsConverterTrait;
 
     /**
      * Transform the resource into an array.
@@ -59,9 +61,13 @@ class ProviderResource extends JsonResource
         $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
             return new ProviderProfileResource($profile);
         });
-        $data['working_times'] = $this->whenLoaded('providerWorkingTimes');
+        $data['working_times'] = $this->whenLoaded('providerWorkingTimes', function ($workingTimes) {
+            return ProviderWorkingTimeResource::collection($workingTimes);
+        });
         $data['certificates'] = $this->whenLoaded('providerCertificates');
         $data['provider_contacts'] = $this->whenLoaded('providerContacts');
-        return $data;
+        return $this->convertNumericToArabic($data, [
+            'whatsapp', 'whatsapp_country_code', 'free_trial_remaining_times',
+        ]);
     }
 }

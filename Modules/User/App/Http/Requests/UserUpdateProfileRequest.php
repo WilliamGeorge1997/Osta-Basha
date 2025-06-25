@@ -5,9 +5,18 @@ namespace Modules\User\App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class UserUpdateProfileRequest extends FormRequest
 {
+    use ArabicNumeralsConverterTrait;
+
+    protected $fieldsToConvert = [
+        'whatsapp',
+        'experience_years',
+        'price',
+        'working_times'
+    ];
     /**
      * Get the validation rules that apply to the request.
      *

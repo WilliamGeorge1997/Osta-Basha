@@ -5,15 +5,25 @@ namespace Modules\User\App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class UserCompleteRegistrationRequest extends FormRequest
 {
+    use ArabicNumeralsConverterTrait;
+
+    protected $fieldsToConvert = [
+        'whatsapp',
+        'experience_years',
+        'price',
+        'working_times'
+    ];
+
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array<string, mixed>
      */
-  public function rules(): array
+    public function rules(): array
     {
 
         $user = auth('user')->user();
@@ -30,13 +40,13 @@ class UserCompleteRegistrationRequest extends FormRequest
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'card_number' => ['required', 'string', 'max:255'],
-                'card_image' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'card_image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'address' => ['required', 'string', 'max:255'],
                 'experience_years' => ['required', 'numeric', 'min:0'],
                 'experience_description' => ['required', 'string'],
                 'price' => ['required', 'numeric', 'min:0'],
-                'certificates' => ['required', 'array'],
-                'certificates.*' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'certificates' => ['sometimes', 'array'],
+                'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
                 'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
                 'working_times.*.start_at' => ['required', 'date_format:H:i'],
