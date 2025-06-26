@@ -5,6 +5,7 @@ namespace Modules\Provider\App\resources;
 use Modules\Common\App\Models\Setting;
 use Modules\Country\App\Models\Country;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 use Modules\Provider\App\resources\ProviderProfileResource;
 use Modules\Provider\App\resources\ProviderWorkingTimeResource;
 
