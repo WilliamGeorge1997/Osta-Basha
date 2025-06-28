@@ -30,6 +30,7 @@ class UserCompleteRegistrationRequest extends FormRequest
         }
         if (isset($data['working_times']) && is_array($data['working_times'])) {
             $processedWorkingTimes = [];
+
             foreach ($data['working_times'] as $index => $workingTime) {
                 if (!is_array($workingTime)) {
                     continue;
@@ -56,7 +57,11 @@ class UserCompleteRegistrationRequest extends FormRequest
             $data['working_times'] = $processedWorkingTimes;
         }
         $this->replace($data);
+        foreach ($data as $key => $value) {
+            $this->request->set($key, $value);
+        }
     }
+
 
     /**
      * Get the validation rules that apply to the request.
@@ -71,7 +76,7 @@ class UserCompleteRegistrationRequest extends FormRequest
         $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['sometimes', 'nullable', 'email', 'max:255', 'unique:users,email'],
             'whatsapp' => ['required', 'string', 'max:255'],
             'whatsapp_country_code' => ['required', 'string', 'max:255'],
         ];
@@ -79,7 +84,7 @@ class UserCompleteRegistrationRequest extends FormRequest
         if ($user->type === 'service_provider') {
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
-                'card_number' => ['required', 'string', 'max:255'],
+                'card_number' => ['nullable', 'string', 'max:255'],
                 'card_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'address' => ['required', 'string', 'max:255'],
                 'experience_years' => ['required', 'numeric', 'min:0'],

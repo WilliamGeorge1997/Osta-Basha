@@ -30,6 +30,7 @@ class UserUpdateProfileRequest extends FormRequest
         }
         if (isset($data['working_times']) && is_array($data['working_times'])) {
             $processedWorkingTimes = [];
+
             foreach ($data['working_times'] as $index => $workingTime) {
                 if (!is_array($workingTime)) {
                     continue;
@@ -56,6 +57,9 @@ class UserUpdateProfileRequest extends FormRequest
             $data['working_times'] = $processedWorkingTimes;
         }
         $this->replace($data);
+        foreach ($data as $key => $value) {
+            $this->request->set($key, $value);
+        }
     }
 
     /**

@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(User::class)->unique()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(SubCategory::class)->nullable()->index()->constrained()->nullOnDelete();
-            $table->string('card_number');
+            $table->string('card_number')->nullable();
             $table->string('card_image')->nullable();
             $table->string('address');
             $table->string('experience_years');
