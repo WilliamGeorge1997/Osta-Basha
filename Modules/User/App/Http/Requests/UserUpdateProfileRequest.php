@@ -16,27 +16,31 @@ class UserUpdateProfileRequest extends FormRequest
     protected function prepareForValidation()
     {
         $data = $this->all();
-        $fieldsToConvert = ['whatsapp', 'experience_years', 'price', 'card_number'];
-        foreach ($fieldsToConvert as $field) {
-            if (isset($data[$field])) {
-                $data[$field] = $this->convertToWestern($data[$field]);
-            }
+        if (isset($data['whatsapp'])) {
+            $data['whatsapp'] = $this->convertToWestern($data['whatsapp']);
+        }
+        if (isset($data['experience_years'])) {
+            $data['experience_years'] = $this->convertToWestern($data['experience_years']);
+        }
+        if (isset($data['price'])) {
+            $data['price'] = $this->convertToWestern($data['price']);
+        }
+        if (isset($data['card_number'])) {
+            $data['card_number'] = $this->convertToWestern($data['card_number']);
         }
         if (isset($data['working_times']) && is_array($data['working_times'])) {
-            foreach ($data['working_times'] as $key => $workingTime) {
+            $processedWorkingTimes = [];
+            foreach ($data['working_times'] as $index => $workingTime) {
+                if (!is_array($workingTime)) {
+                    continue;
+                }
                 if (isset($workingTime['start_at'])) {
-                    $data['working_times'][$key]['start_at'] = $this->convertToWestern($workingTime['start_at']);
+                    $workingTime['start_at'] = $this->convertToWestern($workingTime['start_at']);
                 }
                 if (isset($workingTime['end_at'])) {
-                    $data['working_times'][$key]['end_at'] = $this->convertToWestern($workingTime['end_at']);
+                    $workingTime['end_at'] = $this->convertToWestern($workingTime['end_at']);
                 }
-            }
-        }
-        $this->replace($data);
-        if ($this->has('working_times')) {
-            $processedWorkingTimes = [];
-            foreach ($this->working_times as $workingTime) {
-                if (isset($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
+                if (isset($workingTime['day']) && is_string($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
                     $days = explode(',', $workingTime['day']);
                     foreach ($days as $day) {
                         $processedWorkingTimes[] = [
@@ -49,8 +53,9 @@ class UserUpdateProfileRequest extends FormRequest
                     $processedWorkingTimes[] = $workingTime;
                 }
             }
-            $this->merge(['working_times' => $processedWorkingTimes]);
+            $data['working_times'] = $processedWorkingTimes;
         }
+        $this->replace($data);
     }
 
     /**
