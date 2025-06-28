@@ -9,14 +9,50 @@ use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class UserUpdateProfileRequest extends FormRequest
 {
-    use ArabicNumeralsConverterTrait;
+    use ArabicNumeralsConverterTrait {
+        prepareForValidation as private traitPrepareForValidation;
+    }
 
-    protected $fieldsToConvert = [
-        'whatsapp',
-        'experience_years',
-        'price',
-        'working_times'
-    ];
+    protected function prepareForValidation()
+    {
+        $data = $this->all();
+        $fieldsToConvert = ['whatsapp', 'experience_years', 'price', 'card_number'];
+        foreach ($fieldsToConvert as $field) {
+            if (isset($data[$field])) {
+                $data[$field] = $this->convertToWestern($data[$field]);
+            }
+        }
+        if (isset($data['working_times']) && is_array($data['working_times'])) {
+            foreach ($data['working_times'] as $key => $workingTime) {
+                if (isset($workingTime['start_at'])) {
+                    $data['working_times'][$key]['start_at'] = $this->convertToWestern($workingTime['start_at']);
+                }
+                if (isset($workingTime['end_at'])) {
+                    $data['working_times'][$key]['end_at'] = $this->convertToWestern($workingTime['end_at']);
+                }
+            }
+        }
+        $this->replace($data);
+        if ($this->has('working_times')) {
+            $processedWorkingTimes = [];
+            foreach ($this->working_times as $workingTime) {
+                if (isset($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
+                    $days = explode(',', $workingTime['day']);
+                    foreach ($days as $day) {
+                        $processedWorkingTimes[] = [
+                            'day' => trim($day),
+                            'start_at' => $workingTime['start_at'] ?? null,
+                            'end_at' => $workingTime['end_at'] ?? null,
+                        ];
+                    }
+                } else {
+                    $processedWorkingTimes[] = $workingTime;
+                }
+            }
+            $this->merge(['working_times' => $processedWorkingTimes]);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
