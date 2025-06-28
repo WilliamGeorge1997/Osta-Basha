@@ -19,11 +19,11 @@ return new class extends Migration {
             $table->foreignIdFor(User::class)->unique()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(SubCategory::class)->nullable()->index()->constrained()->nullOnDelete();
             $table->string('card_number');
-            $table->string('card_image');
+            $table->string('card_image')->nullable();
             $table->string('address');
             $table->string('experience_years');
             $table->text('experience_description');
-            $table->string('price');
+            $table->string('price')->nullable();
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->foreignIdFor(Package::class)->nullable()->index()->constrained()->nullOnDelete();

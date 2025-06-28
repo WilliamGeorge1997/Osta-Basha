@@ -71,7 +71,7 @@ class UserCompleteRegistrationRequest extends FormRequest
         $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email'],
+            'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
             'whatsapp' => ['required', 'string', 'max:255'],
             'whatsapp_country_code' => ['required', 'string', 'max:255'],
         ];
@@ -80,11 +80,11 @@ class UserCompleteRegistrationRequest extends FormRequest
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'card_number' => ['required', 'string', 'max:255'],
-                'card_image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'card_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'address' => ['required', 'string', 'max:255'],
                 'experience_years' => ['required', 'numeric', 'min:0'],
                 'experience_description' => ['required', 'string'],
-                'price' => ['required', 'numeric', 'min:0'],
+                'price' => ['nullable', 'numeric', 'min:0'],
                 'certificates' => ['sometimes', 'array'],
                 'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
