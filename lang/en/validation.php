@@ -178,6 +178,9 @@ return [
     'unauthorized' => 'You are not authorized to perform this action.',
     'user_type_not_set' => 'User type not set',
     'user_already_completed_registration' => 'User already completed registration',
+    'invalid_user_type' => 'Invalid user type',
+    'image_not_found' => 'Image not found',
+    'user_not_verified' => 'User is not verified',
     /*
     |--------------------------------------------------------------------------
     | Custom Validation Attributes

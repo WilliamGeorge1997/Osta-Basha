@@ -35,11 +35,11 @@ class UserUpdateLocation extends FormRequest
     public function attributes(): array
     {
         return [
-            'type' => 'User Type',
-            'long' => 'Longitude',
-            'lat' => 'Latitude',
-            'city' => 'City',
-            'country' => 'Country',
+            'type' => trans('attributes.type'),
+            'long' => trans('attributes.long'),
+            'lat' => trans('attributes.lat'),
+            'city' => trans('attributes.city'),
+            'country' => trans('attributes.country'),
         ];
     }
 

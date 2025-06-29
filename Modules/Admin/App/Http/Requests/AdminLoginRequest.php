@@ -27,8 +27,8 @@ class AdminLoginRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'phone' => 'Phone Number',
-            'password' => 'Password',
+            'phone' => trans('attributes.phone'),
+            'password' => trans('attributes.password'),
         ];
     }
 

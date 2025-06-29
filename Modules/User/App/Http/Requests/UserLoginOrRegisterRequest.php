@@ -30,9 +30,9 @@ class UserLoginOrRegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'country_code' => 'Country Code',
-            'phone' => 'Phone Number',
-            'password' => 'Password',
+            'country_code' => trans('attributes.country_code'),
+            'phone' => trans('attributes.phone'),
+            'password' => trans('attributes.password'),
         ];
     }
 

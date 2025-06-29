@@ -22,8 +22,8 @@ class CountryRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => 'Title',
-            'currency' => 'Currency Title',
+            'title' => trans('attributes.title'),
+            'currency' => trans('attributes.currency'),
         ];
     }
 

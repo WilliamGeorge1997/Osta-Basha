@@ -20,6 +20,17 @@ class PackageRequest extends FormRequest
         ];
     }
 
+    public function attributes(): array
+    {
+        return [
+            'title' => trans('attributes.title'),
+            'description' => trans('attributes.description'),
+            'image' => trans('attributes.image'),
+            'price' => trans('attributes.price'),
+            'duration' => trans('attributes.duration'),
+        ];
+    }
+
     public function authorize(): bool
     {
         return true;

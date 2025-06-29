@@ -77,9 +77,12 @@ class UserController extends Controller
     {
         DB::beginTransaction();
         try {
-            $result = $this->userService->deleteImage($id);
+            $user = $this->userService->deleteImage($id);
             DB::commit();
-            return returnMessage($result, $result ? 'Image deleted successfully' : 'Image not found', null);
+            if (!$user) {
+                return returnMessage(false, 'Image not found', null);
+            }
+            return returnMessage(true, 'Image deleted successfully', new UserResource($user));
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');

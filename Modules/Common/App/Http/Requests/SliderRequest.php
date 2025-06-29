@@ -42,10 +42,10 @@ class SliderRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => 'Title',
-            'description' => 'Description',
-            'image' => 'Image',
-            'user_id' => 'User',
+            'title' => trans('attributes.title'),
+            'description' => trans('attributes.description'),
+            'image' => trans('attributes.image'),
+            'user_id' => trans('attributes.user_id'),
         ];
     }
 

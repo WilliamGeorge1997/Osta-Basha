@@ -23,7 +23,8 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
-        $categories = $this->categoryService->active($data);
+        $relations = ['localizations.country'];
+        $categories = $this->categoryService->active($data, $relations);
         return returnMessage(true, 'Categories Fetched Successfully', CategoryResource::collection($categories)->response()->getData(true));
     }
 

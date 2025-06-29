@@ -1,0 +1,32 @@
+<?php
+
+use Illuminate\Support\Facades\Schema;
+use Modules\Country\App\Models\Country;
+use Illuminate\Database\Schema\Blueprint;
+use Modules\Category\App\Models\Category;
+use Illuminate\Database\Migrations\Migration;
+
+return new class extends Migration {
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('category_localizations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(Category::class)->index()->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(Country::class)->index()->constrained()->cascadeOnDelete();
+            $table->string('title');
+            $table->unique(['category_id', 'country_id']);
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('category_localizations');
+    }
+};

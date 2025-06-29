@@ -4,7 +4,7 @@ namespace Modules\Category\App\resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class CategoryLocalizationResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -14,13 +14,9 @@ class CategoryResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title ?? null,
-            'description' => $this->description ?? null,
-            'image' => $this->image ?? null,
-            'is_active' => $this->is_active,
+            'country' => $this->whenLoaded('country'),
             "created_at" => $this->created_at?->format('Y-m-d h:i A') ?? null,
             "updated_at" => $this->updated_at?->format('Y-m-d h:i A') ?? null,
-            'sub_categories' => $this->whenLoaded('subCategories'),
-            'localizations' => $this->whenLoaded('localizations'),
         ];
     }
 }

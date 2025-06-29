@@ -26,7 +26,7 @@ class CategoryAdminController extends Controller
     public function index(Request $request)
     {
         $data = $request->all();
-        $relations = [];
+        $relations = ['localizations.country'];
         $categories = $this->categoryService->findAll($data, $relations);
         return returnMessage(true, 'Categories Fetched Successfully', CategoryResource::collection($categories)->response()->getData(true));
     }
@@ -34,7 +34,7 @@ class CategoryAdminController extends Controller
     public function subCategories(Request $request, Category $category)
     {
         $data = $request->all();
-        $relations = ['subCategories'];
+        $relations = ['subCategories', 'localizations.country'];
         $subCategories = $this->categoryService->findSubCategories($category, $data, $relations);
         return returnMessage(true, 'Category and Sub-Categories Fetched Successfully', CategoryResource::collection($subCategories)->response()->getData(true));
     }

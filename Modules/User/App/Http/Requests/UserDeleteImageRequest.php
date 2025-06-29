@@ -34,7 +34,7 @@ class UserDeleteImageRequest extends FormRequest
                 throw new HttpResponseException(
                     returnUnauthorizedMessage(
                         false,
-                        'Invalid user type',
+                        trans('validation.invalid_user_type'),
                         null
                     )
                 );
@@ -44,7 +44,7 @@ class UserDeleteImageRequest extends FormRequest
             throw new HttpResponseException(
                 returnUnauthorizedMessage(
                     false,
-                    'Image not found',
+                    trans('validation.image_not_found'),
                     null
                 )
             );

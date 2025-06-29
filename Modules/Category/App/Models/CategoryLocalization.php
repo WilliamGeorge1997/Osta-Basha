@@ -2,19 +2,20 @@
 
 namespace Modules\Category\App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Spatie\Activitylog\LogOptions;
+use Illuminate\Database\Eloquent\Model;
+use Modules\Country\App\Models\Country;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Category extends Model
+class CategoryLocalization extends Model
 {
     use HasFactory, LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'image', 'is_active'];
+    protected $fillable = ['category_id', 'country_id', 'title'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions
@@ -23,30 +24,16 @@ class Category extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Category')
+            ->useLogName('CategoryLocalization')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
+
     //Serialize Dates
     protected function serializeDate(\DateTimeInterface $date)
     {
         return $date->format('Y-m-d h:i A');
     }
 
-    //Get FullImage Path
-    public function getImageAttribute($value)
-    {
-        if ($value != null && $value != '') {
-            if (filter_var($value, FILTER_VALIDATE_URL)) {
-                return $value;
-            } else {
-                return asset('uploads/category/' . $value);
-            }
-        }
-    }
-    public function localizations()
-    {
-        return $this->hasMany(CategoryLocalization::class);
-    }
     //Helper
     public function scopeActive($query)
     {
@@ -54,8 +41,13 @@ class Category extends Model
     }
 
     //Relations
-    public function subCategories()
+    public function category()
     {
-        return $this->hasMany(SubCategory::class);
+        return $this->belongsTo(Category::class);
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class);
     }
 }

@@ -27,8 +27,8 @@ class ProviderAdminRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'package_id' => 'Package',
-            'start_date' => 'Start Date',
+            'package_id' => trans('attributes.package_id'),
+            'start_date' => trans('attributes.start_date'),
         ];
     }
 

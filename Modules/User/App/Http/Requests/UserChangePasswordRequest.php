@@ -28,9 +28,9 @@ class UserChangePasswordRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'current_password' => 'Old Password',
-            'new_password' => 'New Password',
-            'new_password_confirmation' => 'New Password Confirmation',
+            'current_password' => trans('attributes.current_password'),
+            'new_password' => trans('attributes.new_password'),
+            'new_password_confirmation' => trans('attributes.new_password_confirmation'),
         ];
     }
 

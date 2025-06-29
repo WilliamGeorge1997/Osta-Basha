@@ -30,10 +30,10 @@ class AdminUpdateProfileRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name' => 'Name',
-            'phone' => 'Phone',
-            'image' => 'Image',
-            'email' => 'Email',
+            'name' => trans('attributes.name'),
+            'phone' => trans('attributes.phone'),
+            'image' => trans('attributes.image'),
+            'email' => trans('attributes.email'),
         ];
     }
 

@@ -28,9 +28,9 @@ class UserVerifyRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'country_code' => 'Country Code',
-            'phone' => 'Phone Number',
-            'otp' => 'OTP',
+            'country_code' => trans('attributes.country_code'),
+            'phone' => trans('attributes.phone'),
+            'otp' => trans('attributes.otp'),
         ];
     }
 

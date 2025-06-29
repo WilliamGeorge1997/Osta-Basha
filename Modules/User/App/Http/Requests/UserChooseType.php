@@ -50,11 +50,11 @@ class UserChooseType extends FormRequest
     public function attributes(): array
     {
         return [
-            'type' => 'User Type',
-            'long' => 'Longitude',
-            'lat' => 'Latitude',
-            'city' => 'City',
-            'country' => 'Country',
+            'type' => trans('attributes.type'),
+            'long' => trans('attributes.long'),
+            'lat' => trans('attributes.lat'),
+            'city' => trans('attributes.city'),
+            'country' => trans('attributes.country'),
         ];
     }
 
@@ -68,7 +68,7 @@ class UserChooseType extends FormRequest
             throw new HttpResponseException(
                 returnUnauthorizedMessage(
                     false,
-                    "User is not verified",
+                    trans('validation.user_not_verified'),
                     null
                 )
             );

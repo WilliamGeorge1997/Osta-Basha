@@ -5,27 +5,36 @@ namespace Modules\Category\App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-class CategoryRequest extends FormRequest
+use Modules\Category\App\Models\SubCategoryLocalization;
+
+class SubCategoryLocalizationRequest extends FormRequest
 {
 
     public function rules(): array
     {
         return [
             'title' => 'required|string|max:255',
-            'description' => 'sometimes|string',
-            'image' => 'sometimes|image|mimes:jpeg,png,jpg,webp|max:1024',
-            'sub_title' => 'sometimes|string|max:255',
-            'country_ids' => 'required_with:sub_title|array',
-            'country_ids.*' => 'exists:countries,id',
+            'sub_category_id' => 'required|exists:sub_categories,id',
+            'country_ids' => 'required|array',
+            'country_ids.*' => [
+                'exists:countries,id',
+                function ($attribute, $value, $fail) {
+                    $subCategoryId = $this->input('sub_category_id');
+                    $exists = SubCategoryLocalization::where('sub_category_id', $subCategoryId)
+                        ->where('country_id', $value)
+                        ->exists();
+                    if ($exists) {
+                        $fail(trans('validation.unique', ['attribute' => trans('attributes.country_ids.*')]));
+                    }
+                }
+            ],
         ];
     }
     public function attributes(): array
     {
         return [
             'title' => trans('attributes.title'),
-            'description' => trans('attributes.description'),
-            'category_id' => trans('attributes.category_id'),
-            'sub_title' => trans('attributes.sub_title'),
+            'sub_category_id' => trans('attributes.sub_category_id'),
             'country_ids' => trans('attributes.country_ids'),
             'country_ids.*' => trans('attributes.country_ids.*'),
         ];

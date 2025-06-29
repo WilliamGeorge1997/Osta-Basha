@@ -5,6 +5,8 @@ use Modules\Category\App\Http\Controllers\Api\CategoryController;
 use Modules\Category\App\Http\Controllers\Api\SubCategoryController;
 use Modules\Category\App\Http\Controllers\Api\CategoryAdminController;
 use Modules\Category\App\Http\Controllers\Api\SubCategoryAdminController;
+use Modules\Category\App\Http\Controllers\Api\CategoryLocalizationAdminController;
+use Modules\Category\App\Http\Controllers\Api\SubCategoryLocalizationAdminController;
 
 
 /*
@@ -28,6 +30,12 @@ Route::group(['prefix' => 'admin'], function () {
     Route::apiResource('sub-categories', SubCategoryAdminController::class)->except('update');
     Route::post('sub-categories/{subCategory}', [SubCategoryAdminController::class, 'update']);
     Route::post('sub-categories/{subCategory}/toggle-activate', [SubCategoryAdminController::class, 'toggleActivate']);
+
+    Route::apiResource('category-localizations', CategoryLocalizationAdminController::class)->except('update');
+    Route::post('category-localizations/{categoryLocalization}', [CategoryLocalizationAdminController::class, 'update']);
+    Route::apiResource('sub-category-localizations', SubCategoryLocalizationAdminController::class)->except('update');
+    Route::post('sub-category-localizations/{subCategoryLocalization}', [SubCategoryLocalizationAdminController::class, 'update']);
+    // Route::get('categories/{categoryId}/localizations', [CategoryLocalizationAdminController::class, 'byCategoryId']);
 });
 
 Route::get('categories', [CategoryController::class, 'index']);

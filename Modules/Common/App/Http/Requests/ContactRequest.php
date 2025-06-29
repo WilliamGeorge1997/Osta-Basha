@@ -25,11 +25,11 @@ class ContactRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'first_name' => 'First Name',
-            'last_name' => 'Last Name',
-            'email' => 'Email',
-            'phone' => 'Phone',
-            'message' => 'Message',
+            'first_name' => trans('attributes.first_name'),
+            'last_name' => trans('attributes.last_name'),
+            'email' => trans('attributes.email'),
+            'phone' => trans('attributes.phone'),
+            'message' => trans('attributes.message'),
         ];
     }
 
@@ -42,7 +42,7 @@ class ContactRequest extends FormRequest
     }
 
 
-    
+
     /**
      * Handle a failed validation attempt for API requests.
      *

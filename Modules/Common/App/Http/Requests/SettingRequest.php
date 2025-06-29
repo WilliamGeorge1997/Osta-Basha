@@ -47,9 +47,9 @@ class SettingRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'settings' => 'Settings',
-            'settings.*.key' => 'Key',
-            'settings.*.value' => 'Value',
+            'settings' => trans('attributes.settings'),
+            'settings.*.key' => trans('attributes.key'),
+            'settings.*.value' => trans('attributes.value'),
         ];
     }
 

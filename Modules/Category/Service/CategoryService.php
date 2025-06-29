@@ -45,7 +45,15 @@ class CategoryService
             $data['image'] = $this->upload(request()->file('image'), 'category');
         }
         $category = Category::create($data);
-        return $category;
+        if (isset($data['country_ids']) && !empty($data['sub_title'])) {
+            foreach ($data['country_ids'] as $countryId) {
+                $category->localizations()->create([
+                    'country_id' => $countryId,
+                    'title' => $data['sub_title'],
+                ]);
+            }
+        }
+        return $category->fresh()->load('localizations');
     }
 
     function update($category, $data)

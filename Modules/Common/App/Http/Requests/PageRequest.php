@@ -23,9 +23,9 @@ class PageRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'page' => 'Page',
-            'title' => 'Title',
-            'description' => 'Description',
+            'page' => trans('attributes.page'),
+            'title' => trans('attributes.title'),
+            'description' => trans('attributes.description'),
         ];
     }
 
