@@ -36,7 +36,9 @@ class AdminAuthController extends Controller
             if (auth('admin')->user()['is_active'] == 0) {
                 return returnMessage(false, 'In-Active Admin Verification Required', null, 'temporary_redirect');
             }
-
+            if ($request['fcm_token'] ?? null) {
+                auth('admin')->user()->update(['fcm_token' => $request->fcm_token]);
+            }
             return $this->respondWithToken($token);
 
         }catch(\Exception $e){
