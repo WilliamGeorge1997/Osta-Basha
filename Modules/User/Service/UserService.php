@@ -66,10 +66,27 @@ class UserService
 
             case User::TYPE_SERVICE_PROVIDER:
                 $this->completeProviderRegistration($user, $profileData, $workingTimesData);
+                // Dispatch job to notify clients in the same area
+                if (!empty($user->city) && !empty($user->country)) {
+                    \Modules\User\App\Jobs\NotifyClientsAboutNewServiceJob::dispatch(
+                        $user->id,
+                        User::TYPE_SERVICE_PROVIDER,
+                        $user->city,
+                        $user->country
+                    )->onConnection('database');
+                }
                 return $user->fresh()->load('providerProfile', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client');
 
             case User::TYPE_SHOP_OWNER:
                 $this->completeShopOwnerRegistration($user, $profileData, $workingTimesData);
+                if (!empty($user->city) && !empty($user->country)) {
+                    \Modules\User\App\Jobs\NotifyClientsAboutNewServiceJob::dispatch(
+                        $user->id,
+                        User::TYPE_SHOP_OWNER,
+                        $user->city,
+                        $user->country
+                    )->onConnection('database');
+                }
                 return $user->fresh()->load('shopOwnerProfile', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerProfile.package', 'shopOwnerContacts.client');
 
             default:
@@ -286,50 +303,50 @@ class UserService
         return getCaseCollection($query, $data);
     }
 
-  function deleteImage($id)
-{
-    $user = auth('user')->user();
-    $type = $user->type;
-    $deleted = false;
+    function deleteImage($id)
+    {
+        $user = auth('user')->user();
+        $type = $user->type;
+        $deleted = false;
 
-    if ($type == User::TYPE_SERVICE_PROVIDER) {
-        $image = $user->providerCertificates()->find($id);
-        if (!$image) {
-            return false;
-        }
-        File::delete(public_path('uploads/provider/certificates/' . $this->getImageName('provider/certificates', $image->image)));
-        $image->delete();
-        $deleted = true;
-    } elseif ($type == User::TYPE_SHOP_OWNER) {
-        $image = $user->shopOwnerShopImages()->find($id);
-        if (!$image) {
-            return false;
-        }
-        File::delete(public_path('uploads/shop_owner/shop_images/' . $this->getImageName('shop_owner/shop_images', $image->image)));
-        $image->delete();
-        $deleted = true;
-    }
-    if ($deleted) {
-        $relations = ['userDetails'];
         if ($type == User::TYPE_SERVICE_PROVIDER) {
-            $relations = array_merge($relations, [
-                'providerDetails',
-                'providerCertificates',
-                'providerWorkingTimes'
-            ]);
+            $image = $user->providerCertificates()->find($id);
+            if (!$image) {
+                return false;
+            }
+            File::delete(public_path('uploads/provider/certificates/' . $this->getImageName('provider/certificates', $image->image)));
+            $image->delete();
+            $deleted = true;
         } elseif ($type == User::TYPE_SHOP_OWNER) {
-            $relations = array_merge($relations, [
-                'shopOwnerDetails',
-                'shopOwnerShopImages',
-                'shopOwnerWorkingTimes'
-            ]);
+            $image = $user->shopOwnerShopImages()->find($id);
+            if (!$image) {
+                return false;
+            }
+            File::delete(public_path('uploads/shop_owner/shop_images/' . $this->getImageName('shop_owner/shop_images', $image->image)));
+            $image->delete();
+            $deleted = true;
         }
-        $user = User::with($relations)->find($user->id);
-        return $user;
-    }
+        if ($deleted) {
+            $relations = ['userDetails'];
+            if ($type == User::TYPE_SERVICE_PROVIDER) {
+                $relations = array_merge($relations, [
+                    'providerDetails',
+                    'providerCertificates',
+                    'providerWorkingTimes'
+                ]);
+            } elseif ($type == User::TYPE_SHOP_OWNER) {
+                $relations = array_merge($relations, [
+                    'shopOwnerDetails',
+                    'shopOwnerShopImages',
+                    'shopOwnerWorkingTimes'
+                ]);
+            }
+            $user = User::with($relations)->find($user->id);
+            return $user;
+        }
 
-    return false;
-}
+        return false;
+    }
 
     function toggleActivate($user)
     {
@@ -362,5 +379,10 @@ class UserService
         $user = auth('user')->user();
         $user->update($data);
         return $user->fresh();
+    }
+
+    function findToken($id)
+    {
+        return User::where('id', $id)->first()['fcm_token'];
     }
 }

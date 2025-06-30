@@ -20,8 +20,10 @@ class SliderRequest extends FormRequest
 
 
         return [
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'description_ar' => 'nullable|string',
+            'description_en' => 'nullable|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
             'user_id' => [
                 'sometimes',
@@ -42,8 +44,10 @@ class SliderRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => trans('attributes.title'),
-            'description' => trans('attributes.description'),
+            'title_ar' => trans('attributes.title_ar'),
+            'title_en' => trans('attributes.title_en'),
+            'description_ar' => trans('attributes.description_ar'),
+            'description_en' => trans('attributes.description_en'),
             'image' => trans('attributes.image'),
             'user_id' => trans('attributes.user_id'),
         ];

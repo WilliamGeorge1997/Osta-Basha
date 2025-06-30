@@ -7,5 +7,6 @@
     "Package": true,
     "Category": true,
     "ShopOwner": true,
-    "Country": true
+    "Country": true,
+    "Notification": true
 }

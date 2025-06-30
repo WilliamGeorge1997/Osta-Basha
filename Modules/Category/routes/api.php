@@ -35,7 +35,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('category-localizations/{categoryLocalization}', [CategoryLocalizationAdminController::class, 'update']);
     Route::apiResource('sub-category-localizations', SubCategoryLocalizationAdminController::class)->except('update');
     Route::post('sub-category-localizations/{subCategoryLocalization}', [SubCategoryLocalizationAdminController::class, 'update']);
-    // Route::get('categories/{categoryId}/localizations', [CategoryLocalizationAdminController::class, 'byCategoryId']);
 });
 
 Route::get('categories', [CategoryController::class, 'index']);

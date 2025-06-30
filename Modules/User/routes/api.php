@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\User\App\Http\Controllers\Api\UserController;
 use Modules\User\App\Http\Controllers\Api\UserAuthController;
 use Modules\User\App\Http\Controllers\Api\UserAdminController;
+use Modules\User\App\Http\Controllers\Api\NotificationController;
 
 /*
     |--------------------------------------------------------------------------
@@ -41,4 +42,13 @@ Route::group([
     Route::post('toggle-available', [UserController::class, 'toggleAvailable']);
     Route::get('received-contacts', [UserController::class, 'receivedContacts']);
     Route::post('update-location', [UserController::class, 'updateLocation']);
+});
+
+Route::group([
+    'prefix' => 'notification',
+], function ($router) {
+    Route::get('all', [NotificationController::class, 'index']);
+    Route::post('read', [NotificationController::class, 'readNotification']);
+    Route::post('allow_notification', [NotificationController::class, 'allow_notification']);
+    Route::get('unReadNotificationsCount', [NotificationController::class, 'unReadNotificationsCount']);
 });

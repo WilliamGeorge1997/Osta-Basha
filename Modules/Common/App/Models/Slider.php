@@ -15,7 +15,7 @@ class Slider extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'image', 'is_active', 'user_id'];
+    protected $fillable = ['title_ar', 'title_en', 'description_ar', 'description_en', 'image', 'is_active', 'user_id'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions

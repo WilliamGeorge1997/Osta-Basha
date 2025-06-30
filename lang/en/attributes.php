@@ -69,4 +69,8 @@ return [
     'day' => 'Day',
     'country_code' => 'Country Code',
     'otp' => 'OTP',
+    'title_ar' => 'Title Arabic',
+    'title_en' => 'Title English',
+    'description_ar' => 'Description Arabic',
+    'description_en' => 'Description English',
 ];

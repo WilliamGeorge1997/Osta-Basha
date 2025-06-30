@@ -12,6 +12,7 @@ use Modules\Provider\App\Models\Provider;
 use Modules\ShopOwner\App\Models\ShopOwner;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Modules\Client\App\Models\ClientContact;
+use Modules\Notification\App\Models\Notification;
 use Modules\Provider\App\Models\ProviderCertificate;
 use Modules\Provider\App\Models\ProviderWorkingTime;
 use Modules\ShopOwner\App\Models\ShopOwnerShopImage;
@@ -128,6 +129,12 @@ class User extends Authenticatable implements JWTSubject
     public function comments()
     {
         return $this->hasMany(Comment::class, 'commentable_id')->with('client');
+    }
+
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->orWhere('notifiable_id', null);
     }
 
     //JWT

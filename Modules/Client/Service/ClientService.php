@@ -6,6 +6,7 @@ use Modules\User\App\Models\User;
 use Modules\Provider\App\Models\Provider;
 use Modules\ShopOwner\App\Models\ShopOwner;
 use Modules\Client\App\Models\ClientContact;
+use Modules\Notification\Service\NotificationService;
 
 
 class ClientService
@@ -37,7 +38,7 @@ class ClientService
 
             $data['client_id'] = auth('user')->id();
             $contact = ClientContact::create($data);
-
+            (new NotificationService())->sendNotification('تواصل جديد', 'يوجد طلب تواصل جديد من قبل عميل', $contactable->id, User::class);
         if (in_array($contactable->type, ['service_provider', 'shop_owner'])) {
             $profileRelation = $contactable->type === 'service_provider' ? 'providerProfile' : 'shopOwnerProfile';
             $contactable->load($profileRelation);
@@ -55,6 +56,7 @@ class ClientService
         if ($contactCount >= $freeTrialContactCount->value) {
             $contactable->{$profileRelation}->is_active = 0;
             $contactable->{$profileRelation}->save();
+            (new NotificationService())->sendNotification('انتهت الفترة التجريبية', 'تم تعطيل التواصل لانتهاء الفترة التجريبية', $contactable->id, User::class);
         }
     }
 

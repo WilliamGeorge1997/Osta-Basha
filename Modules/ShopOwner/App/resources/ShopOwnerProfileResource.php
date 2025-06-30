@@ -7,7 +7,7 @@ use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class ShopOwnerProfileResource extends JsonResource
 {
-    use ArabicNumeralsConverterTrait;
+    // use ArabicNumeralsConverterTrait;
     /**
      * Transform the resource into an array.
      */
@@ -31,8 +31,9 @@ class ShopOwnerProfileResource extends JsonResource
                 "sub_category" => $this->whenLoaded('subCategory'),
                 "package" => $this->whenLoaded('package')
             ];
-        return $this->convertNumericToArabic($data, [
-            'experience_years'
-        ]);
+        return $data;
+        // return $this->convertNumericToArabic($data, [
+        //     'experience_years'
+        // ]);
     }
 }

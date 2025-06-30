@@ -27,6 +27,7 @@ return new class extends Migration {
             $table->string('city')->nullable();
             $table->string('country')->nullable();
             $table->string('verify_code');
+            $table->string('fcm_token')->nullable();
             $table->boolean('completed_registration')->default(0);
             $table->boolean('is_active')->default(0);
             $table->boolean('is_available')->default(1);

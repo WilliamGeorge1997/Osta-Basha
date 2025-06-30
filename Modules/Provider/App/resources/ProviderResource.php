@@ -11,7 +11,7 @@ use Modules\Provider\App\resources\ProviderWorkingTimeResource;
 
 class ProviderResource extends JsonResource
 {
-    use ArabicNumeralsConverterTrait;
+    // use ArabicNumeralsConverterTrait;
 
     /**
      * Transform the resource into an array.
@@ -67,8 +67,9 @@ class ProviderResource extends JsonResource
         });
         $data['certificates'] = $this->whenLoaded('providerCertificates');
         $data['provider_contacts'] = $this->whenLoaded('providerContacts');
-        return $this->convertNumericToArabic($data, [
-            'whatsapp', 'whatsapp_country_code', 'free_trial_remaining_times',
-        ]);
+        return $data;
+        // return $this->convertNumericToArabic($data, [
+        //     'whatsapp', 'whatsapp_country_code', 'free_trial_remaining_times',
+        // ]);
     }
 }

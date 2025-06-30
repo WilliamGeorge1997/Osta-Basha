@@ -7,6 +7,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Modules\Restaurant\App\Models\Restaurant;
+use Modules\Notification\App\Models\Notification;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -17,7 +18,7 @@ class Admin extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['name', 'email', 'phone', 'password', 'image', 'is_active', 'restaurant_id', 'branch_id'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'image', 'is_active', 'restaurant_id', 'branch_id', 'fcm_token'];
     protected $hidden = ['password', 'remember_token'];
 
 
@@ -50,7 +51,10 @@ class Admin extends Authenticatable implements JWTSubject
         }
     }
 
-
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable')->orWhere('notifiable_id', null);
+    }
     //JWT
 
     /**

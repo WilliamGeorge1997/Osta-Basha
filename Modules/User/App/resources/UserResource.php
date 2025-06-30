@@ -13,7 +13,7 @@ use Modules\ShopOwner\App\resources\ShopOwnerWorkingTimeResource;
 
 class UserResource extends JsonResource
 {
-    use ArabicNumeralsConverterTrait;
+    // use ArabicNumeralsConverterTrait;
 
     /**
      * Transform the resource into an array.
@@ -74,9 +74,10 @@ class UserResource extends JsonResource
             $data['shop_images'] = $this->whenLoaded('shopOwnerShopImages');
             $data['package'] = $this->whenLoaded('package');
         }
-        return $this->convertNumericToArabic($data, [
-            'whatsapp', 'whatsapp_country_code', 'free_trial_remaining_times',
-            'working_times'
-        ]);
+        return $data;
+        // return $this->convertNumericToArabic($data, [
+        //     'whatsapp', 'whatsapp_country_code', 'free_trial_remaining_times',
+        //     'working_times'
+        // ]);
     }
 }

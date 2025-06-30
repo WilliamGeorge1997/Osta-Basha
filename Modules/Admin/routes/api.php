@@ -1,9 +1,9 @@
-
 <?php
 
 use Illuminate\Support\Facades\Route;
 use Modules\Admin\App\Http\Controllers\Api\AdminController;
 use Modules\Admin\App\Http\Controllers\Api\AdminAuthController;
+use Modules\Admin\App\Http\Controllers\Api\NotificationController;
 /*
     |--------------------------------------------------------------------------
     | API Routes
@@ -26,4 +26,16 @@ Route::group([
     });
     Route::post('change-password', [AdminController::class, 'changePassword']);
     Route::post('update-profile', [AdminController::class, 'updateProfile']);
+
+    Route::group([
+        'prefix' => 'notification',
+    ], function ($router) {
+        Route::get('all', [NotificationController::class, 'index']);
+        Route::post('read', [NotificationController::class, 'readNotification']);
+        Route::post('allow_notification', [NotificationController::class, 'allow_notification']);
+        Route::get('unReadNotificationsCount', [NotificationController::class, 'unReadNotificationsCount']);
+    });
 });
+
+
+

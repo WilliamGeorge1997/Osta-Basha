@@ -1,10 +1,8 @@
 <?php
 
-use Modules\Branch\App\Models\Branch;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Modules\Restaurant\App\Models\Restaurant;
 
 return new class extends Migration {
     /**
@@ -20,6 +18,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('image')->nullable();
             $table->rememberToken();
+            $table->string('fcm_token')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });

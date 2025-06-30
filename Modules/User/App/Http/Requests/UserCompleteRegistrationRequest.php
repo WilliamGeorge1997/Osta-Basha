@@ -9,58 +9,58 @@ use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class UserCompleteRegistrationRequest extends FormRequest
 {
-    use ArabicNumeralsConverterTrait {
-        prepareForValidation as private traitPrepareForValidation;
-    }
+    // use ArabicNumeralsConverterTrait {
+    //     prepareForValidation as private traitPrepareForValidation;
+    // }
 
-    protected function prepareForValidation()
-    {
-        $data = $this->all();
-        if (isset($data['whatsapp'])) {
-            $data['whatsapp'] = $this->convertToWestern($data['whatsapp']);
-        }
-        if (isset($data['experience_years'])) {
-            $data['experience_years'] = $this->convertToWestern($data['experience_years']);
-        }
-        if (isset($data['price'])) {
-            $data['price'] = $this->convertToWestern($data['price']);
-        }
-        if (isset($data['card_number'])) {
-            $data['card_number'] = $this->convertToWestern($data['card_number']);
-        }
-        if (isset($data['working_times']) && is_array($data['working_times'])) {
-            $processedWorkingTimes = [];
+    // protected function prepareForValidation()
+    // {
+    //     $data = $this->all();
+    //     if (isset($data['whatsapp'])) {
+    //         $data['whatsapp'] = $this->convertToWestern($data['whatsapp']);
+    //     }
+    //     if (isset($data['experience_years'])) {
+    //         $data['experience_years'] = $this->convertToWestern($data['experience_years']);
+    //     }
+    //     if (isset($data['price'])) {
+    //         $data['price'] = $this->convertToWestern($data['price']);
+    //     }
+    //     if (isset($data['card_number'])) {
+    //         $data['card_number'] = $this->convertToWestern($data['card_number']);
+    //     }
+    //     if (isset($data['working_times']) && is_array($data['working_times'])) {
+    //         $processedWorkingTimes = [];
 
-            foreach ($data['working_times'] as $index => $workingTime) {
-                if (!is_array($workingTime)) {
-                    continue;
-                }
-                if (isset($workingTime['start_at'])) {
-                    $workingTime['start_at'] = $this->convertToWestern($workingTime['start_at']);
-                }
-                if (isset($workingTime['end_at'])) {
-                    $workingTime['end_at'] = $this->convertToWestern($workingTime['end_at']);
-                }
-                if (isset($workingTime['day']) && is_string($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
-                    $days = explode(',', $workingTime['day']);
-                    foreach ($days as $day) {
-                        $processedWorkingTimes[] = [
-                            'day' => trim($day),
-                            'start_at' => $workingTime['start_at'] ?? null,
-                            'end_at' => $workingTime['end_at'] ?? null,
-                        ];
-                    }
-                } else {
-                    $processedWorkingTimes[] = $workingTime;
-                }
-            }
-            $data['working_times'] = $processedWorkingTimes;
-        }
-        $this->replace($data);
-        foreach ($data as $key => $value) {
-            $this->request->set($key, $value);
-        }
-    }
+    //         foreach ($data['working_times'] as $index => $workingTime) {
+    //             if (!is_array($workingTime)) {
+    //                 continue;
+    //             }
+    //             if (isset($workingTime['start_at'])) {
+    //                 $workingTime['start_at'] = $this->convertToWestern($workingTime['start_at']);
+    //             }
+    //             if (isset($workingTime['end_at'])) {
+    //                 $workingTime['end_at'] = $this->convertToWestern($workingTime['end_at']);
+    //             }
+    //             if (isset($workingTime['day']) && is_string($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
+    //                 $days = explode(',', $workingTime['day']);
+    //                 foreach ($days as $day) {
+    //                     $processedWorkingTimes[] = [
+    //                         'day' => trim($day),
+    //                         'start_at' => $workingTime['start_at'] ?? null,
+    //                         'end_at' => $workingTime['end_at'] ?? null,
+    //                     ];
+    //                 }
+    //             } else {
+    //                 $processedWorkingTimes[] = $workingTime;
+    //             }
+    //         }
+    //         $data['working_times'] = $processedWorkingTimes;
+    //     }
+    //     $this->replace($data);
+    //     foreach ($data as $key => $value) {
+    //         $this->request->set($key, $value);
+    //     }
+    // }
 
 
     /**
@@ -87,15 +87,15 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'card_number' => ['nullable', 'string', 'max:255'],
                 'card_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'address' => ['required', 'string', 'max:255'],
-                'experience_years' => ['required', 'numeric', 'min:0'],
+                'experience_years' => ['required', 'string'],
                 'experience_description' => ['required', 'string'],
-                'price' => ['nullable', 'numeric', 'min:0'],
+                'price' => ['nullable', 'string'],
                 'certificates' => ['sometimes', 'array'],
                 'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
                 'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
-                'working_times.*.start_at' => ['required', 'date_format:H:i'],
-                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+                'working_times.*.start_at' => ['required', 'string'],
+                'working_times.*.end_at' => ['required', 'string', 'after:working_times.*.start_at'],
             ]);
         } elseif ($user->type === 'shop_owner') {
             $rules = array_merge($rules, [
@@ -103,13 +103,13 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'address' => ['required', 'string', 'max:255'],
                 'shop_name' => ['required', 'string', 'max:255'],
                 'products_description' => ['required', 'string'],
-                'experience_years' => ['required', 'numeric', 'min:0'],
+                'experience_years' => ['required', 'string'],
                 'shop_images' => ['required', 'array'],
                 'shop_images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
                 'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
-                'working_times.*.start_at' => ['required', 'date_format:H:i'],
-                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+                'working_times.*.start_at' => ['required', 'string'],
+                'working_times.*.end_at' => ['required', 'string', 'after:working_times.*.start_at'],
             ]);
         }
 

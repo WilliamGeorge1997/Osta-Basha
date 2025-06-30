@@ -7,7 +7,7 @@ use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class ShopOwnerWorkingTimeResource extends JsonResource
 {
-    use ArabicNumeralsConverterTrait;
+    // use ArabicNumeralsConverterTrait;
     /**
      * Transform the resource into an array.
      */
@@ -20,9 +20,10 @@ class ShopOwnerWorkingTimeResource extends JsonResource
             "end_at" => $this->end_at
         ];
 
-        return $this->convertNumericToArabic($data, [
-            'start_at',
-            'end_at'
-        ]);
+        return $data;
+        // return $this->convertNumericToArabic($data, [
+        //     'start_at',
+        //     'end_at'
+        // ]);
     }
 }

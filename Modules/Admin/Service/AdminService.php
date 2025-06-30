@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\Service;
 
+use Modules\Admin\App\Models\Admin;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Modules\Common\Helpers\UploadHelper;
@@ -27,6 +28,10 @@ class AdminService
             }
             $data['image'] = $this->upload(request()->file('image'), 'admin');
         }
-            $admin->update($data);
+        $admin->update($data);
+    }
+    function findToken($id)
+    {
+        return Admin::where('id', $id)->first()['fcm_token'];
     }
 }

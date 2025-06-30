@@ -7,7 +7,7 @@ use Modules\Common\Helpers\ArabicNumeralsConverterTrait;
 
 class ProviderProfileResource extends JsonResource
 {
-    use ArabicNumeralsConverterTrait;
+    // use ArabicNumeralsConverterTrait;
     /**
      * Transform the resource into an array.
      */
@@ -33,10 +33,11 @@ class ProviderProfileResource extends JsonResource
                 "sub_category" => $this->whenLoaded('subCategory'),
                 "package" => $this->whenLoaded('package')
             ];
-        return $this->convertNumericToArabic($data, [
-            'experience_years',
-            'price',
-            'card_number'
-        ]);
+        return $data;
+        // return $this->convertNumericToArabic($data, [
+        //     'experience_years',
+        //     'price',
+        //     'card_number'
+        // ]);
     }
 }
