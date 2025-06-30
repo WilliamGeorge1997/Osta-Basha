@@ -66,7 +66,6 @@ class UserService
 
             case User::TYPE_SERVICE_PROVIDER:
                 $this->completeProviderRegistration($user, $profileData, $workingTimesData);
-                // Dispatch job to notify clients in the same area
                 if (!empty($user->city) && !empty($user->country)) {
                     \Modules\User\App\Jobs\NotifyClientsAboutNewServiceJob::dispatch(
                         $user->id,
