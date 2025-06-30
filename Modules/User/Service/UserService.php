@@ -327,18 +327,23 @@ class UserService
             $deleted = true;
         }
         if ($deleted) {
-            $relations = ['userDetails'];
+            $relations = [];
             if ($type == User::TYPE_SERVICE_PROVIDER) {
                 $relations = array_merge($relations, [
                     'providerDetails',
                     'providerCertificates',
-                    'providerWorkingTimes'
+                    'providerWorkingTimes',
+                    'providerProfile.package',
+                    'providerContacts.client',
+
                 ]);
             } elseif ($type == User::TYPE_SHOP_OWNER) {
                 $relations = array_merge($relations, [
                     'shopOwnerDetails',
                     'shopOwnerShopImages',
-                    'shopOwnerWorkingTimes'
+                    'shopOwnerWorkingTimes',
+                    'shopOwnerProfile.package',
+                    'shopOwnerContacts.client'
                 ]);
             }
             $user = User::with($relations)->find($user->id);
