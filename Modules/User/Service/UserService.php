@@ -286,50 +286,55 @@ class UserService
         return getCaseCollection($query, $data);
     }
 
-  function deleteImage($id)
-{
-    $user = auth('user')->user();
-    $type = $user->type;
-    $deleted = false;
+    function deleteImage($id)
+    {
+        $user = auth('user')->user();
+        $type = $user->type;
+        $deleted = false;
 
-    if ($type == User::TYPE_SERVICE_PROVIDER) {
-        $image = $user->providerCertificates()->find($id);
-        if (!$image) {
-            return false;
-        }
-        File::delete(public_path('uploads/provider/certificates/' . $this->getImageName('provider/certificates', $image->image)));
-        $image->delete();
-        $deleted = true;
-    } elseif ($type == User::TYPE_SHOP_OWNER) {
-        $image = $user->shopOwnerShopImages()->find($id);
-        if (!$image) {
-            return false;
-        }
-        File::delete(public_path('uploads/shop_owner/shop_images/' . $this->getImageName('shop_owner/shop_images', $image->image)));
-        $image->delete();
-        $deleted = true;
-    }
-    if ($deleted) {
-        $relations = ['userDetails'];
         if ($type == User::TYPE_SERVICE_PROVIDER) {
-            $relations = array_merge($relations, [
-                'providerDetails',
-                'providerCertificates',
-                'providerWorkingTimes'
-            ]);
+            $image = $user->providerCertificates()->find($id);
+            if (!$image) {
+                return false;
+            }
+            File::delete(public_path('uploads/provider/certificates/' . $this->getImageName('provider/certificates', $image->image)));
+            $image->delete();
+            $deleted = true;
         } elseif ($type == User::TYPE_SHOP_OWNER) {
-            $relations = array_merge($relations, [
-                'shopOwnerDetails',
-                'shopOwnerShopImages',
-                'shopOwnerWorkingTimes'
-            ]);
+            $image = $user->shopOwnerShopImages()->find($id);
+            if (!$image) {
+                return false;
+            }
+            File::delete(public_path('uploads/shop_owner/shop_images/' . $this->getImageName('shop_owner/shop_images', $image->image)));
+            $image->delete();
+            $deleted = true;
         }
-        $user = User::with($relations)->find($user->id);
-        return $user;
-    }
+        if ($deleted) {
+            $relations = [];
+            if ($type == User::TYPE_SERVICE_PROVIDER) {
+                $relations = array_merge($relations, [
+                    'providerDetails',
+                    'providerCertificates',
+                    'providerWorkingTimes',
+                    'providerProfile.package',
+                    'providerContacts.client',
 
-    return false;
-}
+                ]);
+            } elseif ($type == User::TYPE_SHOP_OWNER) {
+                $relations = array_merge($relations, [
+                    'shopOwnerDetails',
+                    'shopOwnerShopImages',
+                    'shopOwnerWorkingTimes',
+                    'shopOwnerProfile.package',
+                    'shopOwnerContacts.client'
+                ]);
+            }
+            $user = User::with($relations)->find($user->id);
+            return $user;
+        }
+
+        return false;
+    }
 
     function toggleActivate($user)
     {
