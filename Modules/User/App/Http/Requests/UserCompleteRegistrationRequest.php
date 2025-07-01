@@ -13,9 +13,9 @@ class UserCompleteRegistrationRequest extends FormRequest
     //     prepareForValidation as private traitPrepareForValidation;
     // }
 
-    // protected function prepareForValidation()
-    // {
-    //     $data = $this->all();
+    protected function prepareForValidation()
+    {
+        $data = $this->all();
     //     if (isset($data['whatsapp'])) {
     //         $data['whatsapp'] = $this->convertToWestern($data['whatsapp']);
     //     }
@@ -28,39 +28,39 @@ class UserCompleteRegistrationRequest extends FormRequest
     //     if (isset($data['card_number'])) {
     //         $data['card_number'] = $this->convertToWestern($data['card_number']);
     //     }
-    //     if (isset($data['working_times']) && is_array($data['working_times'])) {
-    //         $processedWorkingTimes = [];
+        if (isset($data['working_times']) && is_array($data['working_times'])) {
+            $processedWorkingTimes = [];
 
-    //         foreach ($data['working_times'] as $index => $workingTime) {
-    //             if (!is_array($workingTime)) {
-    //                 continue;
-    //             }
+            foreach ($data['working_times'] as $index => $workingTime) {
+                if (!is_array($workingTime)) {
+                    continue;
+                }
     //             if (isset($workingTime['start_at'])) {
     //                 $workingTime['start_at'] = $this->convertToWestern($workingTime['start_at']);
     //             }
     //             if (isset($workingTime['end_at'])) {
     //                 $workingTime['end_at'] = $this->convertToWestern($workingTime['end_at']);
     //             }
-    //             if (isset($workingTime['day']) && is_string($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
-    //                 $days = explode(',', $workingTime['day']);
-    //                 foreach ($days as $day) {
-    //                     $processedWorkingTimes[] = [
-    //                         'day' => trim($day),
-    //                         'start_at' => $workingTime['start_at'] ?? null,
-    //                         'end_at' => $workingTime['end_at'] ?? null,
-    //                     ];
-    //                 }
-    //             } else {
-    //                 $processedWorkingTimes[] = $workingTime;
-    //             }
-    //         }
-    //         $data['working_times'] = $processedWorkingTimes;
-    //     }
-    //     $this->replace($data);
-    //     foreach ($data as $key => $value) {
-    //         $this->request->set($key, $value);
-    //     }
-    // }
+                if (isset($workingTime['day']) && is_string($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
+                    $days = explode(',', $workingTime['day']);
+                    foreach ($days as $day) {
+                        $processedWorkingTimes[] = [
+                            'day' => trim($day),
+                            'start_at' => $workingTime['start_at'] ?? null,
+                            'end_at' => $workingTime['end_at'] ?? null,
+                        ];
+                    }
+                } else {
+                    $processedWorkingTimes[] = $workingTime;
+                }
+            }
+            $data['working_times'] = $processedWorkingTimes;
+        }
+        $this->replace($data);
+        // foreach ($data as $key => $value) {
+        //     $this->request->set($key, $value);
+        // }
+    }
 
 
     /**
