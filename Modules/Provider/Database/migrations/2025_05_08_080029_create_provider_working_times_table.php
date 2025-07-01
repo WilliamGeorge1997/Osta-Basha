@@ -14,7 +14,7 @@ return new class extends Migration {
         Schema::create('provider_working_times', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class)->index()->constrained()->cascadeOnDelete();
-            $table->enum('day', ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']);
+            $table->string('day')->nullable();
             $table->string('start_at')->nullable();
             $table->string('end_at')->nullable();
             $table->timestamps();

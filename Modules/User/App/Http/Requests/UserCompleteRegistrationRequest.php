@@ -93,7 +93,7 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'certificates' => ['sometimes', 'array'],
                 'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
-                'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
+                'working_times.*.day' => ['required', 'string'],
                 'working_times.*.start_at' => ['required', 'string'],
                 'working_times.*.end_at' => ['required', 'string', 'after:working_times.*.start_at'],
             ]);
@@ -107,7 +107,7 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'shop_images' => ['required', 'array'],
                 'shop_images.*' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],
-                'working_times.*.day' => ['required', 'string', 'in:Saturday,Sunday,Monday,Tuesday,Wednesday,Thursday,Friday'],
+                'working_times.*.day' => ['required', 'string'],
                 'working_times.*.start_at' => ['required', 'string'],
                 'working_times.*.end_at' => ['required', 'string', 'after:working_times.*.start_at'],
             ]);
