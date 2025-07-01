@@ -75,4 +75,8 @@ return [
     'description_en' => 'الوصف الانجليزي',
     'sub_title_ar' => 'العنوان الفرعي العربي',
     'sub_title_en' => 'العنوان الفرعي الانجليزي',
-];
+    'localizations' => 'الترجمات',
+    'localizations.*.title_ar' => 'العنوان العربي',
+    'localizations.*.title_en' => 'العنوان الانجليزي',
+    'localizations.*.country_id' => 'الدولة',
+    ];

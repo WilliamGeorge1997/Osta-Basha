@@ -14,7 +14,7 @@ class SubCategoryDto
     public $sub_title_en;
     public $image;
     public $category_id;
-
+    public $localizations;
     public function __construct($request)
     {
         if ($request->get('title_ar'))
@@ -33,6 +33,8 @@ class SubCategoryDto
             $this->image = $request->get('image');
         if ($request->get('category_id'))
             $this->category_id = $request->get('category_id');
+        if ($request->get('localizations'))
+            $this->localizations = $request->get('localizations');
     }
 
     public function dataFromRequest()
@@ -54,6 +56,8 @@ class SubCategoryDto
             unset($data['sub_title_ar']);
         if ($this->sub_title_en == null)
             unset($data['sub_title_en']);
+        if ($this->localizations == null)
+            unset($data['localizations']);
         return $data;
     }
 }

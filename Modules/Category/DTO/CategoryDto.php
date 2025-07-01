@@ -13,7 +13,7 @@ class CategoryDto
     public $sub_title_ar;
     public $sub_title_en;
     public $country_ids;
-
+    public $localizations;
     public function __construct($request)
     {
         if ($request->get('title_ar'))
@@ -32,6 +32,8 @@ class CategoryDto
             $this->sub_title_en = $request->get('sub_title_en');
         if ($request->get('country_ids'))
             $this->country_ids = $request->get('country_ids');
+        if ($request->get('localizations'))
+            $this->localizations = $request->get('localizations');
     }
 
     public function dataFromRequest()
@@ -53,6 +55,8 @@ class CategoryDto
             unset($data['sub_title_en']);
         if ($this->country_ids == null)
             unset($data['country_ids']);
+        if ($this->localizations == null)
+            unset($data['localizations']);
         return $data;
     }
 }

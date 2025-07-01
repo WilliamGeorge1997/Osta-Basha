@@ -75,4 +75,8 @@ return [
     'description_en' => 'Description English',
     'sub_title_ar' => 'Subtitle Arabic',
     'sub_title_en' => 'Subtitle English',
+    'localizations' => 'Localizations',
+    'localizations.*.title_ar' => 'Title Arabic',
+    'localizations.*.title_en' => 'Title English',
+    'localizations.*.country_id' => 'Country',
 ];

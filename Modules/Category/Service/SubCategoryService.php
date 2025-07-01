@@ -57,6 +57,11 @@ class SubCategoryService
             $data['image'] = $this->upload(request()->file('image'), 'sub_category');
         }
         $subCategory->update($data);
+        if (isset($data['localizations']) && !empty($data['localizations'])) {
+            foreach ($data['localizations'] as $localization) {
+                $subCategory->localizations()->updateOrCreate(['country_id' => $localization['country_id']], $localization);
+            }
+        }
         return $subCategory->fresh()->load('localizations');
     }
 
