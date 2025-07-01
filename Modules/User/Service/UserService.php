@@ -190,44 +190,51 @@ class UserService
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
         }
         $user->providerProfile()->update($profileData);
-        foreach ($workingTimesData as $workingTime) {
-            if (isset($workingTime['id'])) {
-                $user->providerWorkingTimes()->where('id', $workingTime['id'])->update([
-                    'day' => $workingTime['day'],
-                    'start_at' => $workingTime['start_at'],
-                    'end_at' => $workingTime['end_at']
-                ]);
-            } else {
-                $user->providerWorkingTimes()->create([
-                    'user_id' => $workingTime['user_id'],
-                    'day' => $workingTime['day'],
-                    'start_at' => $workingTime['start_at'],
-                    'end_at' => $workingTime['end_at']
-                ]);
-            }
-        }
+        $user->providerWorkingTimes()->delete();
+        $user->providerWorkingTimes()->createMany($workingTimesData);
+
+        // foreach ($workingTimesData as $workingTime) {
+        //     if (isset($workingTime['id'])) {
+        //         $user->providerWorkingTimes()->where('id', $workingTime['id'])->update([
+        //             'day' => $workingTime['day'],
+        //             'start_at' => $workingTime['start_at'],
+        //             'end_at' => $workingTime['end_at']
+        //         ]);
+        //     } else {
+        //         $user->providerWorkingTimes()->create([
+        //             'user_id' => $workingTime['user_id'],
+        //             'day' => $workingTime['day'],
+        //             'start_at' => $workingTime['start_at'],
+        //             'end_at' => $workingTime['end_at']
+        //         ]);
+        //     }
+        // }
         $this->processUpdateImages($user, 'certificates', 'provider/certificates', 'providerCertificates');
     }
 
     private function updateShopOwnerProfile($user, $profileData, $workingTimesData)
     {
         $user->shopOwnerProfile()->update($profileData);
-        foreach ($workingTimesData as $workingTime) {
-            if (isset($workingTime['id'])) {
-                $user->shopOwnerWorkingTimes()->where('id', $workingTime['id'])->update([
-                    'day' => $workingTime['day'],
-                    'start_at' => $workingTime['start_at'],
-                    'end_at' => $workingTime['end_at']
-                ]);
-            } else {
-                $user->shopOwnerWorkingTimes()->create([
-                    'user_id' => $workingTime['user_id'],
-                    'day' => $workingTime['day'],
-                    'start_at' => $workingTime['start_at'],
-                    'end_at' => $workingTime['end_at']
-                ]);
-            }
-        }
+        $user->shopOwnerWorkingTimes()->delete();
+        $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
+
+
+        // foreach ($workingTimesData as $workingTime) {
+        //     if (isset($workingTime['id'])) {
+        //         $user->shopOwnerWorkingTimes()->where('id', $workingTime['id'])->update([
+        //             'day' => $workingTime['day'],
+        //             'start_at' => $workingTime['start_at'],
+        //             'end_at' => $workingTime['end_at']
+        //         ]);
+        //     } else {
+        //         $user->shopOwnerWorkingTimes()->create([
+        //             'user_id' => $workingTime['user_id'],
+        //             'day' => $workingTime['day'],
+        //             'start_at' => $workingTime['start_at'],
+        //             'end_at' => $workingTime['end_at']
+        //         ]);
+        //     }
+        // }
         $this->processUpdateImages($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
     }
 
