@@ -73,4 +73,6 @@ return [
     'title_en' => 'Title English',
     'description_ar' => 'Description Arabic',
     'description_en' => 'Description English',
+    'sub_title_ar' => 'Subtitle Arabic',
+    'sub_title_en' => 'Subtitle English',
 ];

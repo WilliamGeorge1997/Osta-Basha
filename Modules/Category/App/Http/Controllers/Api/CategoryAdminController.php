@@ -34,7 +34,7 @@ class CategoryAdminController extends Controller
     public function subCategories(Request $request, Category $category)
     {
         $data = $request->all();
-        $relations = ['subCategories', 'localizations.country'];
+        $relations = ['subCategories.localizations.country', 'localizations.country'];
         $subCategories = $this->categoryService->findSubCategories($category, $data, $relations);
         return returnMessage(true, 'Category and Sub-Categories Fetched Successfully', CategoryResource::collection($subCategories)->response()->getData(true));
     }

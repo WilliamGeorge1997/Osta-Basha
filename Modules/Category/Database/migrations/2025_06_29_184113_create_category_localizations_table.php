@@ -16,7 +16,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignIdFor(Category::class)->index()->constrained()->cascadeOnDelete();
             $table->foreignIdFor(Country::class)->index()->constrained()->cascadeOnDelete();
-            $table->string('title');
+            $table->string('title_ar');
+            $table->string('title_en');
             $table->unique(['category_id', 'country_id']);
             $table->timestamps();
         });

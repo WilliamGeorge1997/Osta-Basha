@@ -25,7 +25,7 @@ class SubCategoryController extends Controller
     public function index(Request $request, Category $category)
     {
         $data = $request->all();
-        $relations = [];
+        $relations = ['localizations.country'];
         $subCategories = $this->subCategoryService->active($category, $data, $relations);
         return returnMessage(true, 'Sub-Categories Fetched Successfully', SubCategoryResource::collection($subCategories)->response()->getData(true));
     }

@@ -13,7 +13,8 @@ class CategoryLocalizationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'country_ids' => 'required|array',
             'country_ids.*' => [
@@ -33,7 +34,8 @@ class CategoryLocalizationRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title' => trans('attributes.title'),
+            'title_ar' => trans('attributes.title_ar'),
+            'title_en' => trans('attributes.title_en'),
             'category_id' => trans('attributes.category_id'),
             'country_ids' => trans('attributes.country_ids'),
             'country_ids.*' => trans('attributes.country_ids.*'),

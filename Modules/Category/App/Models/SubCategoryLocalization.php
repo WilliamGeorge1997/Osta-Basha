@@ -15,7 +15,7 @@ class SubCategoryLocalization extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['sub_category_id', 'country_id', 'title'];
+    protected $fillable = ['sub_category_id', 'country_id', 'title_ar', 'title_en'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions

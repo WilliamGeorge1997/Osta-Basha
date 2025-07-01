@@ -33,7 +33,16 @@ class SubCategoryService
             $data['image'] = $this->upload(request()->file('image'), 'sub_category');
         }
         $subCategory = SubCategory::create($data);
-        return $subCategory;
+        if (isset($data['country_ids']) && !empty($data['sub_title_ar']) && !empty($data['sub_title_en'])) {
+            foreach ($data['country_ids'] as $countryId) {
+                $subCategory->localizations()->create([
+                    'country_id' => $countryId,
+                    'title_ar' => $data['sub_title_ar'],
+                    'title_en' => $data['sub_title_en'],
+                ]);
+            }
+        }
+        return $subCategory->fresh()->load('localizations');
     }
 
     public function active($category, $data = [], $relations = [])
@@ -48,7 +57,7 @@ class SubCategoryService
             $data['image'] = $this->upload(request()->file('image'), 'sub_category');
         }
         $subCategory->update($data);
-        return $subCategory->fresh();
+        return $subCategory->fresh()->load('localizations');
     }
 
     function delete($subCategory)

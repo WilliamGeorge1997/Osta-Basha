@@ -15,7 +15,7 @@ class CategoryLocalization extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['category_id', 'country_id', 'title'];
+    protected $fillable = ['category_id', 'country_id', 'title_ar', 'title_en'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions

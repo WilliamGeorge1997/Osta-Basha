@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Modules\Category\App\Models\Category;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Category\App\Models\SubCategoryLocalization;
 
 class SubCategory extends Model
 {
@@ -15,7 +16,7 @@ class SubCategory extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'description', 'image', 'category_id', 'is_active'];
+    protected $fillable = ['title_ar', 'title_en', 'description_ar', 'description_en', 'image', 'category_id', 'is_active'];
     //Log Activity
     public function getActivitylogOptions(): LogOptions
     {
@@ -54,5 +55,9 @@ class SubCategory extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+    public function localizations()
+    {
+        return $this->hasMany(SubCategoryLocalization::class);
     }
 }

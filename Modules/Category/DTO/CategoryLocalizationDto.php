@@ -4,14 +4,17 @@ namespace Modules\Category\DTO;
 
 class CategoryLocalizationDto
 {
-    public $title;
+    public $title_ar;
+    public $title_en;
     public $category_id;
     public $country_ids = [];
 
     public function __construct($request)
     {
-        if ($request->get('title'))
-            $this->title = $request->get('title');
+        if ($request->get('title_ar'))
+            $this->title_ar = $request->get('title_ar');
+        if ($request->get('title_en'))
+            $this->title_en = $request->get('title_en');
         if ($request->get('category_id'))
             $this->category_id = $request->get('category_id');
         if ($request->get('country_ids'))
@@ -21,8 +24,10 @@ class CategoryLocalizationDto
     public function dataFromRequest()
     {
         $data = json_decode(json_encode($this), true);
-        if ($this->title == null)
-            unset($data['title']);
+        if ($this->title_ar == null)
+            unset($data['title_ar']);
+        if ($this->title_en == null)
+            unset($data['title_en']);
         if ($this->category_id == null)
             unset($data['category_id']);
         if (empty($this->country_ids))

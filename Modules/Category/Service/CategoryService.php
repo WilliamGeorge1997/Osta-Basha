@@ -45,11 +45,12 @@ class CategoryService
             $data['image'] = $this->upload(request()->file('image'), 'category');
         }
         $category = Category::create($data);
-        if (isset($data['country_ids']) && !empty($data['sub_title'])) {
+        if (isset($data['country_ids']) && !empty($data['sub_title_ar']) && !empty($data['sub_title_en'])) {
             foreach ($data['country_ids'] as $countryId) {
                 $category->localizations()->create([
                     'country_id' => $countryId,
-                    'title' => $data['sub_title'],
+                    'title_ar' => $data['sub_title_ar'],
+                    'title_en' => $data['sub_title_en'],
                 ]);
             }
         }
