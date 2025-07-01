@@ -329,7 +329,7 @@ class UserService
             $relations = [];
             if ($type == User::TYPE_SERVICE_PROVIDER) {
                 $relations = array_merge($relations, [
-                    'providerDetails',
+                    'providerProfile',
                     'providerCertificates',
                     'providerWorkingTimes',
                     'providerProfile.package',
@@ -338,7 +338,7 @@ class UserService
                 ]);
             } elseif ($type == User::TYPE_SHOP_OWNER) {
                 $relations = array_merge($relations, [
-                    'shopOwnerDetails',
+                    'shopOwnerProfile',
                     'shopOwnerShopImages',
                     'shopOwnerWorkingTimes',
                     'shopOwnerProfile.package',
