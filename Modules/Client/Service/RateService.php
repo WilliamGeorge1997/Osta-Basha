@@ -9,9 +9,9 @@ class RateService
 {
     public function create($data, $clientContact)
     {
-        $clientContact = $clientContact->update($data);
+        $updatedClientContact = $clientContact->update($data);
         (new NotificationService())->sendNotification('تقييم جديد', 'يوجد تقييم جديد من قبل عميل', $clientContact->contactable_id, User::class);
-        return $clientContact;
+        return $updatedClientContact;
     }
 
     public function update($clientContact, $data)
