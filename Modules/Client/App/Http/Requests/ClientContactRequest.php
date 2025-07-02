@@ -41,30 +41,40 @@ class ClientContactRequest extends FormRequest
     }
 
 
-public function authorize(): bool
-{
-    $contactableId = $this->input('contactable_id');
-
-    $contactable = User::find($contactableId);
-    $contactCount = ClientContact::where('contactable_id', $contactableId)->count();
-    $freeTrialContactCount = Setting::where('key', 'free_trial_contacts_count')->first();
-
-    if (($contactable->type == 'service_provider' && $contactable->providerProfile->status == 'free_trial') ||
-        ($contactable->type == 'shop_owner' && $contactable->shopOwnerProfile->status == 'free_trial')) {
-
-        if ($contactCount >= $freeTrialContactCount->value) {
+    public function authorize(): bool
+    {
+        $contactableId = $this->input('contactable_id');
+        $contactable = User::find($contactableId);
+        if (!$contactable) {
             throw new HttpResponseException(
                 returnMessage(
                     false,
-                    'This contactable free trial has ended',
+                    'This contactable not found',
                     null
                 )
             );
         }
-    }
+        $contactCount = ClientContact::where('contactable_id', $contactableId)->count();
+        $freeTrialContactCount = Setting::where('key', 'free_trial_contacts_count')->first();
 
-    return true;
-}
+        if (
+            ($contactable->type == 'service_provider' && $contactable->providerProfile->status == 'free_trial') ||
+            ($contactable->type == 'shop_owner' && $contactable->shopOwnerProfile->status == 'free_trial')
+        ) {
+
+            if ($contactCount >= $freeTrialContactCount->value) {
+                throw new HttpResponseException(
+                    returnMessage(
+                        false,
+                        'This contactable free trial has ended',
+                        null
+                    )
+                );
+            }
+        }
+
+        return true;
+    }
 
     /**
      * Handle a failed validation attempt.
