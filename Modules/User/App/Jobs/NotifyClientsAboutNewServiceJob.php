@@ -6,7 +6,7 @@ use Illuminate\Bus\Queueable;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Modules\Common\Helper\FCMService;
+use Modules\Common\Helpers\FCMService;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;

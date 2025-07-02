@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Common\Helper;
+namespace Modules\Common\Helpers;
 
 use Illuminate\Support\Facades\Log;
 use Kreait\Firebase\Factory;
