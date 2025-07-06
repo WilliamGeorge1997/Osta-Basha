@@ -42,6 +42,12 @@ Route::group([
     Route::post('toggle-available', [UserController::class, 'toggleAvailable']);
     Route::get('received-contacts', [UserController::class, 'receivedContacts']);
     Route::post('update-location', [UserController::class, 'updateLocation']);
+
+    //Forget Password
+    Route::post('forget-password', [UserAuthController::class, 'forgetPassword']);
+    Route::post('verify-forget-password', [UserAuthController::class, 'verifyForgetPassword']);
+    Route::post('new-password', [UserAuthController::class, 'newPassword']);
+    Route::post('resend-otp', [UserAuthController::class, 'resendOtp']);
 });
 
 Route::group([

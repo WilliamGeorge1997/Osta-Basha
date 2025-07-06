@@ -17,6 +17,8 @@ use Modules\Provider\DTO\ProviderWorkingTimeDto;
 use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
 use Modules\User\App\Http\Requests\UserChooseType;
 use Modules\User\App\Http\Requests\UserVerifyRequest;
+use Modules\User\App\Http\Requests\UserResendOtpRequest;
+use Modules\User\App\Http\Requests\UserForgetPasswordRequest;
 use Modules\User\App\Http\Requests\UserLoginOrRegisterRequest;
 use Modules\User\App\Http\Requests\UserCompleteRegistrationRequest;
 
@@ -32,7 +34,7 @@ class UserAuthController extends Controller
      */
     public function __construct(UserService $userService)
     {
-        $this->middleware('auth:user', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists', 'loginOrRegister', 'chooseUserType']]);
+        $this->middleware('auth:user', ['except' => ['login', 'register', 'verifyOtp', 'checkPhoneExists', 'loginOrRegister', 'chooseUserType', 'resendOtp', 'forgetPassword', 'verifyForgetPassword', 'newPassword']]);
         $this->userService = $userService;
 
     }
@@ -146,7 +148,46 @@ class UserAuthController extends Controller
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
+    public function resendOtp(UserResendOtpRequest $request, UserService $userService)
+    {
+        $data = $request->all();
+        $user = $userService->findBy('phone', $request['phone'])[0];
+        // $verify_code = rand(1000, 9999);
+        $verify_code = 9999;
+        $userService->update($user->id, ['verify_code' => $verify_code]);
+        // $smsService = new SMSService();
+        // $smsService->sendSMS($client->phone, $verify_code);
+        return returnMessage(true, 'OTP Sent Successfully', null);
+    }
+    public function forgetPassword(UserForgetPasswordRequest $request, UserService $userService)
+    {
+        $data = $request->all();
+        $user = $userService->findBy('phone', $data['phone'])[0];
+        // $verify_code = rand(1000, 9999);
+        $verify_code = 9999;
+        $userService->update($user->id, ['verify_code' => $verify_code]);
+        // $smsService = new SMSService();
+        // $smsService->sendSMS($client->phone, $verify_code);
+        return returnMessage(true, 'OTP Sent Successfully', null);
+    }
 
+    public function verifyForgetPassword(UserVerifyRequest $request, UserService $userService)
+    {
+        $data = $request->all();
+        $user = $userService->findBy('phone', $data['phone'])[0];
+        if ($user && $user['verify_code'] == $data['otp']) {
+            return returnMessage(true, 'OTP is correct');
+        }
+        return returnMessage(false, 'OTP is incorrect', null, 'unauthorized');
+    }
+
+    public function newPassword(UserLoginOrRegisterRequest $request, UserService $userService)
+    {
+        $data = $request->all();
+        $user = $userService->findBy('phone', $data['phone'])[0];
+        $userService->update($user->id, ['password' => bcrypt($data['password'])]);
+        return returnMessage(true, 'Password Updated Successfully');
+    }
     /**
      * Get the authenticated User.
      *

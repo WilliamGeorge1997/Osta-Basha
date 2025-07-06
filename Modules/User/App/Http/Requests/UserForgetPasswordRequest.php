@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserLoginOrRegisterRequest extends FormRequest
+class UserForgetPasswordRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -17,9 +18,7 @@ class UserLoginOrRegisterRequest extends FormRequest
     {
         return [
             'country_code' => ['required'],
-            'phone' => ['required'],
-            'password' => ['required'],
-            'fcm_token' => ['sometimes', 'nullable', 'string'],
+            'phone' => ['required', 'exists:users,phone'],
         ];
     }
 
@@ -31,8 +30,6 @@ class UserLoginOrRegisterRequest extends FormRequest
         return [
             'country_code' => trans('attributes.country_code'),
             'phone' => trans('attributes.phone'),
-            'password' => trans('attributes.password'),
-            'fcm_token' => trans('attributes.fcm_token'),
         ];
     }
 
