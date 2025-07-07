@@ -12,6 +12,7 @@ class ProviderDto
     public $experience_years;
     public $experience_description;
     public $price;
+    public $unit;
     public $sub_category_id;
 
     public function __construct($request)
@@ -27,6 +28,8 @@ class ProviderDto
             $this->experience_description = $request->get('experience_description');
         if ($request->get('price'))
             $this->price = $request->get('price');
+        if ($request->get('unit'))
+            $this->unit = $request->get('unit');
         if ($request->get('sub_category_id'))
             $this->sub_category_id = $request->get('sub_category_id');
     }
@@ -44,6 +47,8 @@ class ProviderDto
             unset($data['experience_description']);
         if ($this->price == null)
             unset($data['price']);
+        if ($this->unit == null)
+            unset($data['unit']);
         if ($this->sub_category_id == null)
             unset($data['sub_category_id']);
 

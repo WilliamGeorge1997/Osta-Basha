@@ -11,10 +11,11 @@ class CountryResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $locale = app()->getLocale();
         return [
             'id' => $this->id,
-            'title' => $this->title ?? null,
-            'currency' => $this->currency ?? null,
+            'title' => $locale == 'en' ? $this->title_en : $this->title_ar ?? null,
+            'currency' => $locale == 'en' ? $this->currency_en : $this->currency_ar ?? null,
             'image' => $this->image ?? null,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),

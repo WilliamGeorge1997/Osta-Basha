@@ -14,16 +14,20 @@ class CountryRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
-            'currency' => 'required|string|max:255',
+            'title_ar' => 'required|string|max:255',
+            'title_en' => 'required|string|max:255',
+            'currency_ar' => 'required|string|max:255',
+            'currency_en' => 'required|string|max:255',
         ];
     }
 
     public function attributes(): array
     {
         return [
-            'title' => trans('attributes.title'),
-            'currency' => trans('attributes.currency'),
+            'title_ar' => trans('attributes.title_ar'),
+            'title_en' => trans('attributes.title_en'),
+            'currency_ar' => trans('attributes.currency_ar'),
+            'currency_en' => trans('attributes.currency_en'),
         ];
     }
 

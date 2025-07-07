@@ -14,7 +14,7 @@ class Country extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title', 'currency', 'image', 'is_active'];
+    protected $fillable = ['title_ar', 'title_en', 'currency_ar','currency_en', 'image', 'is_active'];
 
 
     //Log Activity

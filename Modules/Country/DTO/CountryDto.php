@@ -4,24 +4,34 @@ namespace Modules\Country\DTO;
 
 class CountryDto
 {
-    public $title;
-    public $currency;
+    public $title_ar;
+    public $title_en;
+    public $currency_ar;
+    public $currency_en;
 
     public function __construct($request)
     {
-        if ($request->get('title'))
-            $this->title = $request->get('title');
-        if ($request->get('currency'))
-            $this->currency = $request->get('currency');
+        if ($request->get('title_ar'))
+            $this->title_ar = $request->get('title_ar');
+        if ($request->get('title_en'))
+            $this->title_en = $request->get('title_en');
+        if ($request->get('currency_ar'))
+            $this->currency_ar = $request->get('currency_ar');
+        if ($request->get('currency_en'))
+            $this->currency_en = $request->get('currency_en');
     }
 
     public function dataFromRequest()
     {
         $data = json_decode(json_encode($this), true);
-        if ($this->title == null)
-            unset($data['title']);
-        if ($this->currency == null)
-            unset($data['currency']);
+        if ($this->title_ar == null)
+            unset($data['title_ar']);
+         if ($this->title_en == null)
+            unset($data['title_en']);
+        if ($this->currency_ar == null)
+            unset($data['currency_ar']);
+          if ($this->currency_en == null)
+            unset($data['currency_en']);
         return $data;
     }
 }

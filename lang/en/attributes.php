@@ -79,4 +79,7 @@ return [
     'localizations.*.title_ar' => 'Title Arabic',
     'localizations.*.title_en' => 'Title English',
     'localizations.*.country_id' => 'Country',
+    'currency_ar' => 'Currency Arabic',
+    'currency_en' => 'Currency English',
+    'unit' => 'Unit',
 ];
