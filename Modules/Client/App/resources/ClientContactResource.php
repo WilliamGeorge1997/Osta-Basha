@@ -27,11 +27,13 @@ class ClientContactResource extends JsonResource
                 $user = new UserResource($this->user);
                 if ($this->user->type == 'service_provider') {
                     if ($this->country != null) {
-                        $country = Country::select('currency')->where('title', $this->country)->first();
+                        $country = Country::select(['currency_ar','currency_en'])->where('title_ar', $this->country)->orWhere('title_en', $this->country)->first();
                         if ($country) {
-                            $user['currency'] = $country->currency;
+                            $data['currency'] = $locale === 'en'
+                                    ? ($country->currency_en ?? null)
+                                    : ($country->currency_ar ?? null);
                         } else {
-                            $user['currency'] = null;
+                            $data['currency'] = null;
                         }
                     }
                     $user->load('providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client');
