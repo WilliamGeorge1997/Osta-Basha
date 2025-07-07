@@ -24,6 +24,7 @@ class ProviderProfileResource extends JsonResource
                 "experience_years" => $this->experience_years ?? null,
                 "experience_description" => $this->experience_description ?? null,
                 "price" => $this->price ?? null,
+                "unit" => $this->unit ?? null,
                 "start_date" => $this->start_date ?? null,
                 "end_date" => $this->end_date ?? null,
                 "status" => $this->status ?? null,
