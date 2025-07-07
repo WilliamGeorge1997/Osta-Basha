@@ -8,7 +8,7 @@ class CountryDto
     public $title_en;
     public $currency_ar;
     public $currency_en;
-
+    public $country_code;
     public function __construct($request)
     {
         if ($request->get('title_ar'))
@@ -19,6 +19,8 @@ class CountryDto
             $this->currency_ar = $request->get('currency_ar');
         if ($request->get('currency_en'))
             $this->currency_en = $request->get('currency_en');
+        if ($request->get('country_code'))
+            $this->country_code = $request->get('country_code');
     }
 
     public function dataFromRequest()
@@ -26,12 +28,14 @@ class CountryDto
         $data = json_decode(json_encode($this), true);
         if ($this->title_ar == null)
             unset($data['title_ar']);
-         if ($this->title_en == null)
+        if ($this->title_en == null)
             unset($data['title_en']);
         if ($this->currency_ar == null)
             unset($data['currency_ar']);
-          if ($this->currency_en == null)
+        if ($this->currency_en == null)
             unset($data['currency_en']);
+        if ($this->country_code == null)
+            unset($data['country_code']);
         return $data;
     }
 }

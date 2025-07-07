@@ -18,6 +18,7 @@ class CountryRequest extends FormRequest
             'title_en' => 'required|string|max:255',
             'currency_ar' => 'required|string|max:255',
             'currency_en' => 'required|string|max:255',
+            'country_code' => 'sometimes|nullable|string|max:255',
         ];
     }
 
@@ -28,6 +29,7 @@ class CountryRequest extends FormRequest
             'title_en' => trans('attributes.title_en'),
             'currency_ar' => trans('attributes.currency_ar'),
             'currency_en' => trans('attributes.currency_en'),
+            'country_code' => trans('attributes.country_code'),
         ];
     }
 

@@ -17,6 +17,7 @@ class CountryResource extends JsonResource
             'title' => $locale == 'en' ? $this->title_en : $this->title_ar ?? null,
             'currency' => $locale == 'en' ? $this->currency_en : $this->currency_ar ?? null,
             'image' => $this->image ?? null,
+            'country_code' => $this->country_code ?? null,
             'is_active' => $this->is_active,
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'updated_at' => $this->updated_at->format('Y-m-d H:i:s'),

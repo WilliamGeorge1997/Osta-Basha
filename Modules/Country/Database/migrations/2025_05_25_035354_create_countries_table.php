@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('title_en');
             $table->string('currency_ar');
             $table->string('currency_en');
+            $table->string('country_code')->nullable();
             $table->string('image')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
