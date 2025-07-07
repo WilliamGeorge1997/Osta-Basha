@@ -14,6 +14,7 @@ class ClientContactResource extends JsonResource
      */
     public function toArray($request): array
     {
+         $locale = app()->getLocale();
         return [
             "id" => $this->id,
             "client_id" => $this->client_id,
