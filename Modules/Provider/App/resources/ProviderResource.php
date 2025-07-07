@@ -18,6 +18,7 @@ class ProviderResource extends JsonResource
      */
     public function toArray($request): array
     {
+        $locale = app()->getLocale();
         $data =
             [
                 "id" => $this->id,
@@ -47,9 +48,11 @@ class ProviderResource extends JsonResource
             $data['contacts_count'] = $this->contacts_count;
         }
         if ($this->country != null) {
-            $country = Country::select('currency')->where('title', $this->country)->first();
+            $country = Country::select(['currency_ar','currency_en'])->where('title_ar', $this->country)->orWhere('title_en', $this->country)->first();
             if ($country) {
-                $data['currency'] = $country->currency;
+                $data['currency'] = $locale === 'en'
+                        ? ($country->currency_en ?? null)
+                        : ($country->currency_ar ?? null);
             } else {
                 $data['currency'] = null;
             }
@@ -60,7 +63,7 @@ class ProviderResource extends JsonResource
             $data['free_trial_remaining_times'] = Setting::where('key', 'free_trial_contacts_count')->first()->value - $this->providerContacts->count();
         }
         $data['profile'] = $this->whenLoaded('providerProfile', function ($profile) {
-            return new ProviderProfileResource($profile);
+        return new ProviderProfileResource($profile);
         });
         $data['working_times'] = $this->whenLoaded('providerWorkingTimes', function ($workingTimes) {
             return ProviderWorkingTimeResource::collection($workingTimes);
