@@ -19,6 +19,7 @@ class UserSearchResource extends JsonResource
      */
     public function toArray($request): array
     {
+         $locale = app()->getLocale();
         $data =
             [
                 "id" => $this->id,
