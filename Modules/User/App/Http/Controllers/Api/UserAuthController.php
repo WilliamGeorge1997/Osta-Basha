@@ -77,9 +77,9 @@ class UserAuthController extends Controller
         DB::beginTransaction();
         try {
             $user = auth('user')->user();
-            if ($user && $user->type !== null) {
-                return returnMessage(false, 'User type already set', null, 'unprocessable_entity');
-            }
+            // if ($user && $user->type !== null) {
+            //     return returnMessage(false, 'User type already set', null, 'unprocessable_entity');
+            // }
             $data = $request->validated();
             $user = $this->userService->chooseUserType($data, $user);
             DB::commit();
