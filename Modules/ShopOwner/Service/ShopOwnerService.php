@@ -3,6 +3,7 @@
 namespace Modules\ShopOwner\Service;
 
 use Modules\User\App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Modules\Package\App\Models\Package;
 
 
@@ -44,7 +45,16 @@ class ShopOwnerService
                 $query->where('city', $data['city']);
             })
             ->when($data['country'] ?? null, function ($query) use ($data) {
-                $query->where('country', $data['country']);
+                $query->whereExists(function ($subquery) use ($data) {
+                    $subquery->select(DB::raw(1))
+                        ->from('countries')
+                        ->whereColumn('users.country', 'countries.title_en')
+                        ->orWhereColumn('users.country', 'countries.title_ar')
+                        ->where(function ($q) use ($data) {
+                            $q->where('countries.title_en', $data['country'])
+                                ->orWhere('countries.title_ar', $data['country']);
+                        });
+                });
             })
             ->where('type', 'shop_owner')
             ->whereHas('shopOwnerProfile', function ($query) use ($data) {
