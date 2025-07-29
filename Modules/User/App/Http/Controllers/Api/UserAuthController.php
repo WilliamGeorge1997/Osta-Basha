@@ -12,6 +12,7 @@ use Modules\Provider\DTO\ProviderDto;
 use Modules\User\Service\UserService;
 use Modules\Common\App\Models\Setting;
 use Modules\ShopOwner\DTO\ShopOwnerDto;
+use Modules\Common\Helpers\WhatsAppService;
 use Modules\User\App\resources\UserResource;
 use Modules\Provider\DTO\ProviderWorkingTimeDto;
 use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
@@ -64,6 +65,8 @@ class UserAuthController extends Controller
             }
             $data = (new UserDto($request))->dataFromRequest();
             $this->userService->create($data);
+            $whatsappService = new WhatsAppService();
+            $whatsappService->sendMessage($data['phone'], 'Your OTP verification code is: ' . $data['verify_code']);
             DB::commit();
             return returnMessage(true, 'User Registered Successfully', null);
         } catch (\Exception $e) {
@@ -152,9 +155,11 @@ class UserAuthController extends Controller
     {
         $data = $request->all();
         $user = $userService->findBy('phone', $request['phone'])[0];
-        // $verify_code = rand(1000, 9999);
-        $verify_code = 9999;
+        $verify_code = rand(1000, 9999);
+        // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
+        $whatsappService = new WhatsAppService();
+        $whatsappService->sendMessage($data['phone'], 'Your OTP verification code is: ' . $verify_code);
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
         return returnMessage(true, 'OTP Sent Successfully', null);
@@ -163,9 +168,11 @@ class UserAuthController extends Controller
     {
         $data = $request->all();
         $user = $userService->findBy('phone', $data['phone'])[0];
-        // $verify_code = rand(1000, 9999);
-        $verify_code = 9999;
+        $verify_code = rand(1000, 9999);
+        // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
+        $whatsappService = new WhatsAppService();
+        $whatsappService->sendMessage($data['phone'], 'Your OTP verification code is: ' . $verify_code);
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
         return returnMessage(true, 'OTP Sent Successfully', null);
