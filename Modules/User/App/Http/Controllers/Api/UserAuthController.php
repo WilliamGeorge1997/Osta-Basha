@@ -159,7 +159,7 @@ class UserAuthController extends Controller
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
-        $whatsappService->sendMessage($data['phone'], 'Your OTP verification code is: ' . $verify_code);
+        $whatsappService->sendMessage($user->phone, 'Your OTP verification code is: ' . $verify_code);
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
         return returnMessage(true, 'OTP Sent Successfully', null);
@@ -172,7 +172,7 @@ class UserAuthController extends Controller
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
-        $whatsappService->sendMessage($data['phone'], 'Your OTP verification code is: ' . $verify_code);
+        $whatsappService->sendMessage($user->phone, 'Your OTP verification code is: ' . $verify_code);
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
         return returnMessage(true, 'OTP Sent Successfully', null);
