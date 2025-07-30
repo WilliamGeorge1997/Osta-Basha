@@ -168,7 +168,7 @@ class UserAuthController extends Controller
     {
         $data = $request->all();
         $user = $userService->findBy('phone', $data['phone'])[0];
-        $verify_code = rand(1000, 9999);
+         $verify_code = rand(1000, 9999);
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
