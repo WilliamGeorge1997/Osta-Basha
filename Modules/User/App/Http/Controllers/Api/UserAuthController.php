@@ -71,7 +71,7 @@ class UserAuthController extends Controller
             $data = (new UserDto($request))->dataFromRequest();
             $this->userService->create($data);
             $whatsappService = new WhatsAppService();
-            $whatsappService->sendMessage($data['phone'], 'Your OTP verification code is: ' . $data['verify_code']);
+            $whatsappService->sendMessage($data['country_code'] . $data['phone'], 'Your OTP verification code is: ' . $data['verify_code']);
             DB::commit();
             return returnMessage(true, 'User Registered Successfully', null);
         } catch (\Exception $e) {
@@ -164,7 +164,7 @@ class UserAuthController extends Controller
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
-        $whatsappService->sendMessage($user->phone, 'Your OTP verification code is: ' . $verify_code);
+        $whatsappService->sendMessage($user->country_code . $user->phone, 'Your OTP verification code is: ' . $verify_code);
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
         return returnMessage(true, 'OTP Sent Successfully', null);
@@ -177,7 +177,7 @@ class UserAuthController extends Controller
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
-        $whatsappService->sendMessage($user->phone, 'Your OTP verification code is: ' . $verify_code);
+        $whatsappService->sendMessage($user->country_code . $user->phone, 'Your OTP verification code is: ' . $verify_code);
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
         return returnMessage(true, 'OTP Sent Successfully', null);

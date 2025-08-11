@@ -53,8 +53,11 @@ class SliderService
     }
     public function create($data)
     {
-        if (request()->hasFile('image')) {
-            $data['image'] = $this->upload(request()->file('image'), 'slider');
+        if (request()->hasFile('image_ar')) {
+            $data['image_ar'] = $this->upload(request()->file('image_ar'), 'slider');
+        }
+        if (request()->hasFile('image_en')) {
+            $data['image_en'] = $this->upload(request()->file('image_en'), 'slider');
         }
         $slider = Slider::create($data);
         return $slider;
@@ -62,9 +65,13 @@ class SliderService
 
     function update($slider, $data)
     {
-        if (request()->hasFile('image')) {
-            File::delete(public_path('uploads/slider/' . $this->getImageName('slider', $slider->image)));
-            $data['image'] = $this->upload(request()->file('image'), 'slider');
+        if (request()->hasFile('image_ar')) {
+            File::delete(public_path('uploads/slider/' . $this->getImageName('slider', $slider->image_ar)));
+            $data['image_ar'] = $this->upload(request()->file('image_ar'), 'slider');
+        }
+        if (request()->hasFile('image_en')) {
+            File::delete(public_path('uploads/slider/' . $this->getImageName('slider', $slider->image_en)));
+            $data['image_en'] = $this->upload(request()->file('image_en'), 'slider');
         }
         $slider->update($data);
         return $slider->fresh();

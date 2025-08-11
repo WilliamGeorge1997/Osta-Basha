@@ -17,14 +17,25 @@ class SliderRequest extends FormRequest
      */
     public function rules(): array
     {
-
-
+        if ($this->route('slider')) {
+            return [
+                'image_ar' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:1024',
+                'image_en' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:1024',
+                'user_id' => [
+                    'sometimes',
+                    'exists:users,id,is_active,1',
+                    function ($attribute, $value, $fail) {
+                        $user = User::find($value);
+                        if (!$user || $user->type == User::TYPE_CLIENT) {
+                            $fail('The selected user must be a service provider or shop owner.');
+                        }
+                    }
+                ],
+            ];
+        }
         return [
-            'title_ar' => 'required|string|max:255',
-            'title_en' => 'required|string|max:255',
-            'description_ar' => 'nullable|string',
-            'description_en' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
+            'image_ar' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
+            'image_en' => 'required|image|mimes:jpeg,png,jpg,webp|max:1024',
             'user_id' => [
                 'sometimes',
                 'exists:users,id,is_active,1',
@@ -44,11 +55,8 @@ class SliderRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'title_ar' => trans('attributes.title_ar'),
-            'title_en' => trans('attributes.title_en'),
-            'description_ar' => trans('attributes.description_ar'),
-            'description_en' => trans('attributes.description_en'),
-            'image' => trans('attributes.image'),
+            'image_ar' => trans('attributes.image_ar'),
+            'image_en' => trans('attributes.image_en'),
             'user_id' => trans('attributes.user_id'),
         ];
     }

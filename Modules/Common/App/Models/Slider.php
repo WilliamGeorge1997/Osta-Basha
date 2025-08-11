@@ -15,7 +15,7 @@ class Slider extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['title_ar', 'title_en', 'description_ar', 'description_en', 'image', 'is_active', 'user_id'];
+    protected $fillable = ['image_ar', 'image_en', 'is_active', 'user_id'];
 
     //Log Activity
     public function getActivitylogOptions(): LogOptions
@@ -24,7 +24,7 @@ class Slider extends Model
             ->logAll()
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs()
-            ->useLogName('Category')
+            ->useLogName('Slider')
             ->dontLogIfAttributesChangedOnly(['updated_at']);
     }
     //Serialize Dates
@@ -34,7 +34,17 @@ class Slider extends Model
     }
 
     //Get FullImage Path
-    public function getImageAttribute($value)
+    public function getImageArAttribute($value)
+    {
+        if ($value != null && $value != '') {
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return $value;
+            } else {
+                return asset('uploads/slider/' . $value);
+            }
+        }
+    }
+    public function getImageEnAttribute($value)
     {
         if ($value != null && $value != '') {
             if (filter_var($value, FILTER_VALIDATE_URL)) {

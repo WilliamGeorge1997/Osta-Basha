@@ -82,4 +82,6 @@ return [
     'currency_ar' => 'Currency Arabic',
     'currency_en' => 'Currency English',
     'unit' => 'Unit',
+    'image_ar' => 'Image Arabic',
+    'image_en' => 'Image English',
 ];

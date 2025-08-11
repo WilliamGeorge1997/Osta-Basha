@@ -13,12 +13,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('sliders', function (Blueprint $table) {
-            $table->id();
-            $table->string('title_en');
-            $table->string('title_ar');
-            $table->text('description_en')->nullable();
-            $table->text('description_ar')->nullable();
-            $table->string('image');
+            $table->id();;
+            $table->string('image_ar');
+            $table->string('image_en');
             $table->foreignIdFor(User::class)->nullable()->index()->constrained()->cascadeOnDelete();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
