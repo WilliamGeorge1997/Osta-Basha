@@ -51,6 +51,11 @@ class UserAuthController extends Controller
                     return returnMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'created');
                 }
                 if (auth('user')->user()['is_active'] == 0) {
+                    $user = auth('user')->user();
+                    $user->update(['verify_code' => rand(1000, 9999)]);
+                    $whatsappService = new WhatsAppService();
+                    $whatsappService->sendMessage($user['country_code'] . $user['phone'], 'Your OTP verification code is: ' . $user['verify_code']);
+                    DB::commit();
                     return returnMessage(false, 'In-Active User Verification Required', null);
                 }
                 if ($request['fcm_token'] ?? null) {
