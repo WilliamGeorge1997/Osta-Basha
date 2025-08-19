@@ -2,6 +2,7 @@
 
 namespace Modules\Admin\App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -18,7 +19,7 @@ class Admin extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['name', 'email', 'phone', 'password', 'image', 'is_active', 'restaurant_id', 'branch_id', 'fcm_token'];
+    protected $fillable = ['name', 'email', 'phone', 'password', 'image', 'is_active', 'expo_token'];
     protected $hidden = ['password', 'remember_token'];
 
 
@@ -50,7 +51,24 @@ class Admin extends Authenticatable implements JWTSubject
             }
         }
     }
+    public function routeNotificationForExpoPushNotifications()
+    {
+        $tableName = config('exponent-push-notifications.interests.database.table_name');
 
+        $token = DB::table($tableName)
+            ->where('model', self::class)
+            ->where('key', (string) $this->id)
+            ->value('value');
+
+        return $token ?: $this->expo_token;
+    }
+    public function routeNotificationFor($driver)
+    {
+        if ($driver === 'ExpoPushNotifications') {
+            return (string) $this->id;
+        }
+        return null;
+    }
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable')->orWhere('notifiable_id', null);

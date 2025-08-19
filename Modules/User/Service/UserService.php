@@ -394,6 +394,6 @@ class UserService
 
     function findToken($id)
     {
-        return User::where('id', $id)->first()['fcm_token'];
+        return User::where('id', $id)->first()['expo_token'];
     }
 }

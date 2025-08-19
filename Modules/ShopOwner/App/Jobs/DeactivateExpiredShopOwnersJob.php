@@ -56,7 +56,7 @@ class DeactivateExpiredShopOwnersJob implements ShouldQueue
                 );
                 $admins = Admin::where('is_active', 1)->get();
                 foreach ($admins as $admin) {
-                    if ($admin->fcm_token) {
+                    if ($admin->expo_token) {
                         $notificationService->sendNotification(
                             'انتهاء اشتراك صاحب متجر',
                             'انتهى اشتراك صاحب المتجر ' . ($shopOwner->user->name ?? 'صاحب المتجر'),

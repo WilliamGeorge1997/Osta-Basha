@@ -19,7 +19,7 @@ class UserLoginOrRegisterRequest extends FormRequest
             'country_code' => ['required'],
             'phone' => ['required'],
             'password' => ['required'],
-            'fcm_token' => ['sometimes', 'nullable', 'string'],
+            'expo_token' => ['sometimes', 'nullable', 'string'],
         ];
     }
 
@@ -32,7 +32,7 @@ class UserLoginOrRegisterRequest extends FormRequest
             'country_code' => trans('attributes.country_code'),
             'phone' => trans('attributes.phone'),
             'password' => trans('attributes.password'),
-            'fcm_token' => trans('attributes.fcm_token'),
+            'expo_token' => trans('attributes.expo_token'),
         ];
     }
 

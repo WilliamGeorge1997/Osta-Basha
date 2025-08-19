@@ -2,12 +2,14 @@
 
 namespace Modules\User\App\Models;
 
+use Illuminate\Support\Facades\DB;
 use Spatie\Activitylog\LogOptions;
 use Modules\Client\App\Models\Rate;
 use Modules\Client\App\Models\Comment;
 use Spatie\Permission\Traits\HasRoles;
 use Modules\Country\App\Models\Country;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
 use Modules\Provider\App\Models\Provider;
 use Modules\ShopOwner\App\Models\ShopOwner;
 use Spatie\Activitylog\Traits\LogsActivity;
@@ -22,7 +24,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, LogsActivity, HasRoles;
+    use HasFactory, LogsActivity, HasRoles, Notifiable;
 
     const TYPE_CLIENT = 'client';
     const TYPE_SERVICE_PROVIDER = 'service_provider';
@@ -31,7 +33,7 @@ class User extends Authenticatable implements JWTSubject
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['first_name', 'last_name', 'email', 'country_code', 'phone', 'whatsapp_country_code', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'fcm_token', 'completed_registration', 'lat', 'long', 'city', 'country', 'is_available'];
+    protected $fillable = ['first_name', 'last_name', 'email', 'country_code', 'phone', 'whatsapp_country_code', 'whatsapp', 'type', 'password', 'image', 'verify_code', 'is_active', 'expo_token', 'completed_registration', 'lat', 'long', 'city', 'country', 'is_available'];
     protected $hidden = ['password'];
 
     //Log Activity
@@ -63,6 +65,24 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function routeNotificationForExpoPushNotifications()
+    {
+        $tableName = config('exponent-push-notifications.interests.database.table_name');
+
+        $token = DB::table($tableName)
+            ->where('model', self::class)
+            ->where('key', (string) $this->id)
+            ->value('value');
+
+        return $token ?: $this->expo_token;
+    }
+    public function routeNotificationFor($driver)
+    {
+        if ($driver === 'ExpoPushNotifications') {
+            return (string) $this->id;
+        }
+        return null;
+    }
     //Helper
 
     public function scopeActive($query)

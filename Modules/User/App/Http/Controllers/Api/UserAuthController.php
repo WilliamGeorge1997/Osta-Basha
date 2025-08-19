@@ -22,6 +22,7 @@ use Modules\User\App\Http\Requests\UserResendOtpRequest;
 use Modules\User\App\Http\Requests\UserForgetPasswordRequest;
 use Modules\User\App\Http\Requests\UserLoginOrRegisterRequest;
 use Modules\User\App\Http\Requests\UserCompleteRegistrationRequest;
+use NotificationChannels\ExpoPushNotifications\Repositories\ExpoDatabaseDriver;
 
 
 class UserAuthController extends Controller
@@ -46,7 +47,11 @@ class UserAuthController extends Controller
         try {
             $user = User::where('phone', $request->phone)->where('country_code', $request->country_code)->first();
             if ($user) {
-                $credentials = $request->validated();
+                $credentials = [
+                    'phone' => $request->phone,
+                    'password' => $request->password,
+                    'country_code' => $request->country_code,
+                ];
                 if (!$token = auth('user')->attempt($credentials)) {
                     return returnMessage(false, 'Unauthorized', ['password' => 'Wrong Credentials'], 'created');
                 }
@@ -58,8 +63,33 @@ class UserAuthController extends Controller
                     DB::commit();
                     return returnMessage(false, 'In-Active User Verification Required', null);
                 }
-                if ($request['fcm_token'] ?? null) {
-                    auth('user')->user()->update(['fcm_token' => $request->fcm_token]);
+                if ($request['expo_token'] ?? null) {
+                    auth('user')->user()->update(['expo_token' => $request->expo_token]);
+                    try {
+                        $tableName = config('exponent-push-notifications.interests.database.table_name');
+
+                        DB::table($tableName)
+                            ->where('key', (string) $user->id)
+                            ->where('model', User::class)
+                            ->delete();
+
+                        DB::table($tableName)->insert([
+                            'model' => User::class,
+                            'key' => (string) $user->id,
+                            'value' => $request->expo_token,
+                        ]);
+
+                        \Illuminate\Support\Facades\Log::info('Expo token registered for client', [
+                            'user_id' => $user->id,
+                            'token' => $request->expo_token
+                        ]);
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to register Expo token', [
+                            'error' => $e->getMessage(),
+                            'stack' => $e->getTraceAsString(),
+                            'user_id' => $user->id
+                        ]);
+                    }
                 }
                 DB::commit();
                 return $this->respondWithToken($token);
@@ -146,8 +176,33 @@ class UserAuthController extends Controller
                 return returnMessage(false, 'Wrong OTP', null, 'unprocessable_entity');
             }
             $token = auth('user')->login($user);
-            if ($request['fcm_token'] ?? null) {
-                auth('user')->user()->update(['fcm_token' => $request->fcm_token]);
+            if ($request['expo_token'] ?? null) {
+                auth('user')->user()->update(['expo_token' => $request->expo_token]);
+                try {
+                    $tableName = config('exponent-push-notifications.interests.database.table_name');
+
+                    DB::table($tableName)
+                        ->where('key', (string) $user->id)
+                        ->where('model', User::class)
+                        ->delete();
+
+                    DB::table($tableName)->insert([
+                        'model' => User::class,
+                        'key' => (string) $user->id,
+                        'value' => $request->expo_token,
+                    ]);
+
+                    \Illuminate\Support\Facades\Log::info('Expo token registered for client', [
+                        'user_id' => $user->id,
+                        'token' => $request->expo_token
+                    ]);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to register Expo token', [
+                        'error' => $e->getMessage(),
+                        'stack' => $e->getTraceAsString(),
+                        'user_id' => $user->id
+                    ]);
+                }
             }
             DB::commit();
             return $this->respondWithToken($token);
@@ -173,7 +228,7 @@ class UserAuthController extends Controller
     {
         $data = $request->all();
         $user = $userService->findBy('phone', $data['phone'])[0];
-         $verify_code = rand(1000, 9999);
+        $verify_code = rand(1000, 9999);
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();

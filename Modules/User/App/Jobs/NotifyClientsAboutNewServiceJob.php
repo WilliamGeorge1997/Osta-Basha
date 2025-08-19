@@ -63,7 +63,7 @@ class NotifyClientsAboutNewServiceJob implements ShouldQueue
                 ->where('is_active', 1)
                 ->where('city', $this->city)
                 ->where('country', $this->country)
-                ->whereNotNull('fcm_token')
+                ->whereNotNull('expo_token')
                 ->where('id', '!=', $this->userId)
                 ->chunkById($this->chunkSize, function ($clients) use ($notificationService, $title, $description) {
                     try {
@@ -76,7 +76,7 @@ class NotifyClientsAboutNewServiceJob implements ShouldQueue
                             $notificationService->save($data, User::class);
                         }
                         $fcm = new FCMService();
-                        $clientTokens = $clients->pluck('fcm_token')->filter()->all();
+                        $clientTokens = $clients->pluck('expo_token')->filter()->all();
                         if (count($clientTokens) > 0) {
                             $data = [
                                 'title' => $title,

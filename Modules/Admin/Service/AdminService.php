@@ -11,6 +11,10 @@ class AdminService
 {
     use UploadHelper;
 
+    public function findById($id)
+    {
+        return Admin::find($id);
+    }
     public function changePassword($data)
     {
         $admin = auth('admin')->user();
@@ -32,6 +36,6 @@ class AdminService
     }
     function findToken($id)
     {
-        return Admin::where('id', $id)->first()['fcm_token'];
+        return Admin::where('id', $id)->first()['expo_token'];
     }
 }

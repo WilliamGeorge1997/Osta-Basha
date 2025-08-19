@@ -90,7 +90,7 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'experience_years' => ['required', 'string'],
                 'experience_description' => ['required', 'string'],
                 'price' => ['nullable', 'string'],
-                'unit' => ['nullable', 'string'],
+                'unit' => ['sometimes', 'nullable', 'string'],
                 'certificates' => ['sometimes', 'array'],
                 'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
                 'working_times' => ['required', 'array'],

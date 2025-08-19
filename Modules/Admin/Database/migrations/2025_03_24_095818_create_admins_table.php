@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->string('password');
             $table->string('image')->nullable();
             $table->rememberToken();
-            $table->string('fcm_token')->nullable();
+            $table->string('expo_token')->nullable();
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });

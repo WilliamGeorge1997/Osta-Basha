@@ -56,7 +56,7 @@ class DeactivateExpiredProvidersJob implements ShouldQueue
                 );
                 $admins = Admin::where('is_active', 1)->get();
                 foreach ($admins as $admin) {
-                    if ($admin->fcm_token) {
+                    if ($admin->expo_token) {
                         $notificationService->sendNotification(
                             'انتهاء اشتراك مزود خدمة',
                             'انتهى اشتراك مزود الخدمة ' . ($provider->user->name ?? 'الحرفي'),

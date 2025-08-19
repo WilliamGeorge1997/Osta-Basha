@@ -2,9 +2,11 @@
 
 namespace Modules\Admin\App\Http\Controllers\Api;
 
+use Illuminate\Support\Facades\DB;
+use Modules\Admin\App\Models\Admin;
 use App\Http\Controllers\Controller;
-use Modules\Admin\App\Http\Requests\AdminLoginRequest;
 use Modules\Admin\App\resources\AdminResource;
+use Modules\Admin\App\Http\Requests\AdminLoginRequest;
 
 
 class AdminAuthController extends Controller
@@ -36,8 +38,33 @@ class AdminAuthController extends Controller
             if (auth('admin')->user()['is_active'] == 0) {
                 return returnMessage(false, 'In-Active Admin Verification Required', null, 'temporary_redirect');
             }
-            if ($request['fcm_token'] ?? null) {
-                auth('admin')->user()->update(['fcm_token' => $request->fcm_token]);
+            if ($request['expo_token'] ?? null) {
+                auth('admin')->user()->update(['expo_token' => $request->expo_token]);
+                try {
+                    $tableName = config('exponent-push-notifications.interests.database.table_name');
+                    $adminId = auth('admin')->id();
+                    DB::table($tableName)
+                        ->where('key', (string) $adminId)
+                        ->where('model', Admin::class)
+                        ->delete();
+
+                    DB::table($tableName)->insert([
+                        'model' => Admin::class,
+                        'key' => (string) $adminId,
+                        'value' => $request->expo_token,
+                    ]);
+
+                    \Illuminate\Support\Facades\Log::info('Expo token registered for admin', [
+                        'admin_id' => $adminId,
+                        'token' => $request->expo_token
+                    ]);
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to register Expo token', [
+                        'error' => $e->getMessage(),
+                        'stack' => $e->getTraceAsString(),
+                        'admin_id' => $adminId
+                    ]);
+                }
             }
             return $this->respondWithToken($token);
 

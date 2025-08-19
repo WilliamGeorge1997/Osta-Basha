@@ -45,16 +45,19 @@ class ShopOwnerService
                 $query->where('city', $data['city']);
             })
             ->when($data['country'] ?? null, function ($query) use ($data) {
-                $query->whereExists(function ($subquery) use ($data) {
-                    $subquery->select(DB::raw(1))
-                        ->from('countries')
-                        ->whereColumn('users.country', 'countries.title_en')
-                        ->orWhereColumn('users.country', 'countries.title_ar')
-                        ->where(function ($q) use ($data) {
-                            $q->where('countries.title_en', $data['country'])
-                                ->orWhere('countries.title_ar', $data['country']);
-                        });
-                });
+                $country = DB::table('countries')
+                    ->where(function ($q) use ($data) {
+                        $q->where('title_en', $data['country'])
+                            ->orWhere('title_ar', $data['country']);
+                    })
+                    ->first(['title_en', 'title_ar']);
+
+                if ($country) {
+                    $query->where(function ($q) use ($country) {
+                        $q->where('country', $country->title_en)
+                            ->orWhere('country', $country->title_ar);
+                    });
+                }
             })
             ->where('type', 'shop_owner')
             ->whereHas('shopOwnerProfile', function ($query) use ($data) {
