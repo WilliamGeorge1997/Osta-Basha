@@ -19,6 +19,7 @@ class UserVerifyRequest extends FormRequest
             'country_code' => ['required'],
             'phone' => ['required', 'exists:users,phone'],
             'otp' => ['required'],
+            'expo_token' => ['sometimes', 'nullable', 'string'],
         ];
     }
 
@@ -31,6 +32,7 @@ class UserVerifyRequest extends FormRequest
             'country_code' => trans('attributes.country_code'),
             'phone' => trans('attributes.phone'),
             'otp' => trans('attributes.otp'),
+            'expo_token' => 'Expo Token',
         ];
     }
 

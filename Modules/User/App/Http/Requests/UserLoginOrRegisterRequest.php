@@ -32,7 +32,7 @@ class UserLoginOrRegisterRequest extends FormRequest
             'country_code' => trans('attributes.country_code'),
             'phone' => trans('attributes.phone'),
             'password' => trans('attributes.password'),
-            'expo_token' => trans('attributes.expo_token'),
+            'expo_token' => 'Expo Token',
         ];
     }
 

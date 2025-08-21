@@ -58,17 +58,18 @@ class NotificationService
 
     function sendNotification($title, $description, $user_id, $model)
     {
-        $data = [
-            'title' => $title,
-            'description' => $description,
-            'user_id' => $user_id,
-        ];
-        $this->save($data, $model);
         $user = $model === User::class ?
             (new UserService())->findById($user_id) :
             (new AdminService())->findById($user_id);
 
         if ($user->expo_token) {
+            $data = [
+                'title' => $title,
+                'description' => $description,
+                'user_id' => $user_id,
+            ];
+            $this->save($data, $model);
+
             $user->notify(new ExpoNotification($title, $description, $data));
         }
         // $fcm = new FCMService;

@@ -34,6 +34,8 @@ Route::group([
         Route::post('read', [NotificationController::class, 'readNotification']);
         Route::post('allow_notification', [NotificationController::class, 'allow_notification']);
         Route::get('unReadNotificationsCount', [NotificationController::class, 'unReadNotificationsCount']);
+        Route::post('create', [NotificationController::class, 'createNotification']);
+        Route::get('test-query', [NotificationController::class, 'testQuery']);
     });
 });
 

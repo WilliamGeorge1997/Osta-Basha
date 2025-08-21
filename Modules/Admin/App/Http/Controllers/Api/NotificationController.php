@@ -4,13 +4,18 @@ namespace Modules\Admin\App\Http\Controllers\Api;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\DB;
 use Modules\Admin\App\Models\Admin;
+use Illuminate\Support\Facades\Auth;
+use Modules\Common\Helpers\UploadHelper;
+use Modules\Admin\App\Jobs\SendNotificationJob;
 use Modules\Notification\App\Models\Notification;
+use Modules\Admin\App\Http\Requests\CreateNotificationRequest;
 
 class NotificationController extends Controller
 {
+    use UploadHelper;
 
     public function __construct()
     {
@@ -43,4 +48,38 @@ class NotificationController extends Controller
         })->count();
         return returnMessage(true, 'Unread Notifications Count', $unReadCount);
     }
+
+    public function createNotification(CreateNotificationRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $data = $request->validated();
+            $image = null;
+
+            if ($request->hasFile('image')) {
+                $image = $this->upload($request->file('image'), 'notification');
+            }
+            SendNotificationJob::dispatch(
+                $data['title'],
+                $data['description'],
+                $image,
+                $data['target_type'] ?? null,
+                $data['target_ids'] ?? []
+            )->onConnection('database');
+
+            DB::commit();
+
+            $targetInfo = isset($data['target_type'])
+                ? "user group: {$data['target_type']}"
+                : count($data['target_ids'] ?? []) . " specific users";
+
+            return returnMessage(true, "Notification sent successfully to {$targetInfo}. Users will receive it shortly.");
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
 }
