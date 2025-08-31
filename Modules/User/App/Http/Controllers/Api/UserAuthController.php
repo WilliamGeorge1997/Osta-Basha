@@ -174,7 +174,7 @@ class UserAuthController extends Controller
             $data = $request->all();
             $user = $this->userService->verifyOtp($data);
             if ($user == false) {
-                return returnMessage(false, 'Wrong OTP', null, 'unprocessable_entity');
+                return returnMessage(false, trans('messages.wrong_otp'), null, 'unprocessable_entity');
             }
             $token = auth('user')->login($user);
             if ($request['expo_token'] ?? null) {

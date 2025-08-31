@@ -14,5 +14,6 @@ return [
     */
 
     "verify_code" => "Your OTP verification code is: :code",
+    "wrong_otp" => "Your OTP verification code is wrong",
 
 ];
