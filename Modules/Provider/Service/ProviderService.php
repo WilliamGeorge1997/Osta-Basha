@@ -41,7 +41,11 @@ class ProviderService
                 $query->where('email', 'like', '%' . $data['email'] . '%');
             })
             ->when($data['phone'] ?? null, function ($query) use ($data) {
-                $query->where('phone', 'like', '%' . $data['phone'] . '%');
+                $phone = $data['phone'];
+                $query->where(function ($q) use ($phone) {
+                    $q->where('phone', 'like', '%' . $phone . '%')
+                        ->orWhereRaw("CONCAT(country_code, phone) LIKE ?", ['%' . $phone . '%']);
+                });
             })
             ->when($data['city'] ?? null, function ($query) use ($data) {
                 $query->where('city', $data['city']);
@@ -154,7 +158,11 @@ class ProviderService
                 $query->where('email', 'like', '%' . $data['email'] . '%');
             })
             ->when($data['phone'] ?? null, function ($query) use ($data) {
-                $query->where('phone', 'like', '%' . $data['phone'] . '%');
+                $phone = $data['phone'];
+                $query->where(function ($q) use ($phone) {
+                    $q->where('phone', 'like', '%' . $phone . '%')
+                        ->orWhereRaw("CONCAT(country_code, phone) LIKE ?", ['%' . $phone . '%']);
+                });
             })
             ->when($data['city'] ?? null, function ($query) use ($data) {
                 $query->where('city', $data['city']);

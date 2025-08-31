@@ -273,7 +273,8 @@ class UserService
                     $query->where('first_name', 'like', $searchTerm)
                         ->orWhere('last_name', 'like', $searchTerm)
                         ->orWhere('email', 'like', $searchTerm)
-                        ->orWhere('phone', 'like', $searchTerm);
+                        ->orWhere('phone', 'like', $searchTerm)
+                        ->orWhereRaw("CONCAT(country_code, phone) LIKE ?", ['%' . $searchTerm . '%']);
                 });
             })
             ->where(function ($q) {
