@@ -75,7 +75,7 @@ class UserUpdateProfileRequest extends FormRequest
         $rules = [
             'first_name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
-            'email' => ['sometimes', 'email', 'max:255', 'unique:users,email,' . $user->id],
+            'email' => ['sometimes', 'nullable', 'email', 'max:255', 'unique:users,email,' . $user->id],
             'whatsapp' => ['required', 'string', 'max:255'],
             'whatsapp_country_code' => ['required', 'string', 'max:255'],
         ];
@@ -88,7 +88,7 @@ class UserUpdateProfileRequest extends FormRequest
                 'address' => ['required', 'string', 'max:255'],
                 'experience_years' => ['required', 'numeric', 'min:0'],
                 'experience_description' => ['required', 'string'],
-                'price' => ['required', 'numeric', 'min:0'],
+                'price' => ['required', 'string'],
                 'unit' => ['sometimes','nullable', 'string'],
                 'certificates' => ['sometimes', 'array'],
                 'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
