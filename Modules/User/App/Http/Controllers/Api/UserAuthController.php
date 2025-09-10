@@ -57,8 +57,8 @@ class UserAuthController extends Controller
                 }
                 if (auth('user')->user()['is_active'] == 0) {
                     $user = auth('user')->user();
-                    // $user->update(['verify_code' => rand(1000, 9999)]);
-                    $user->update(['verify_code' => 9999]);
+                    $user->update(['verify_code' => rand(1000, 9999)]);
+                    // $user->update(['verify_code' => 9999]);
                     $whatsappService = new WhatsAppService();
                     $whatsappService->sendMessage($user['country_code'] . $user['phone'], 'Your OTP verification code is: ' . $user['verify_code']);
                     DB::commit();
@@ -216,8 +216,8 @@ class UserAuthController extends Controller
     {
         $data = $request->all();
         $user = $userService->findBy('phone', $request['phone'])[0];
-        // $verify_code = rand(1000, 9999);
-        $verify_code = 9999;
+        $verify_code = rand(1000, 9999);
+        // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
         $whatsappService->sendMessage($user->country_code . $user->phone, trans('messages.verify_code', ['code' => $verify_code]));
@@ -229,8 +229,8 @@ class UserAuthController extends Controller
     {
         $data = $request->all();
         $user = $userService->findBy('phone', $data['phone'])[0];
-        // $verify_code = rand(1000, 9999);
-        $verify_code = 9999;
+        $verify_code = rand(1000, 9999);
+        // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
         $whatsappService = new WhatsAppService();
         $whatsappService->sendMessage($user->country_code . $user->phone, trans('messages.verify_code', ['code' => $verify_code]));

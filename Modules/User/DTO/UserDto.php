@@ -30,8 +30,8 @@ class UserDto
             unset($data['phone']);
         if ($this->password == null)
             unset($data['password']);
-        // $data['verify_code'] = rand(1000,9999);
-        $data['verify_code'] = 9999;
+        $data['verify_code'] = rand(1000, 9999);
+        // $data['verify_code'] = 9999;
         return $data;
     }
 }
