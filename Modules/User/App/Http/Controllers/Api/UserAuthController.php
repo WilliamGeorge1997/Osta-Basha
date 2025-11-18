@@ -100,9 +100,10 @@ class UserAuthController extends Controller
                 return returnValidationMessage(false, trans('validation.rules_failed'), ['phone' => 'This phone number is already registered'], 'unprocessable_entity');
             }
             $data = (new UserDto($request))->dataFromRequest();
+            $data['is_active'] = 1;
             $this->userService->create($data);
-            $whatsappService = new WhatsAppService();
-            $whatsappService->sendMessage($data['country_code'] . $data['phone'], trans('messages.verify_code', ['code' => $data['verify_code']]));
+            // $whatsappService = new WhatsAppService();
+            // $whatsappService->sendMessage($data['country_code'] . $data['phone'], trans('messages.verify_code', ['code' => $data['verify_code']]));
             DB::commit();
             return returnMessage(true, 'User Registered Successfully', null);
         } catch (\Exception $e) {
