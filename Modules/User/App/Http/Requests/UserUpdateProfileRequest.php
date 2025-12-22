@@ -80,7 +80,7 @@ class UserUpdateProfileRequest extends FormRequest
             'whatsapp_country_code' => ['required', 'string', 'max:255'],
         ];
 
-        if ($user->type === 'service_provider') {
+        if ($user && $user->type === 'service_provider') {
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'card_number' => ['required', 'string', 'max:255'],
@@ -97,7 +97,7 @@ class UserUpdateProfileRequest extends FormRequest
                 'working_times.*.start_at' => ['required', 'date_format:H:i'],
                 'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
             ]);
-        } elseif ($user->type === 'shop_owner') {
+        } elseif ($user && $user->type === 'shop_owner') {
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'address' => ['required', 'string', 'max:255'],
@@ -154,6 +154,15 @@ class UserUpdateProfileRequest extends FormRequest
     public function authorize(): bool
     {
         $user = auth('user')->user();
+        if (!$user) {
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    trans('validation.unauthorized'),
+                    null
+                )
+            );
+        }
         if ($user->type == null) {
             throw new HttpResponseException(
                 returnUnauthorizedMessage(

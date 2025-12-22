@@ -22,7 +22,7 @@ class UserUpdateLocation extends FormRequest
             'country' => ['required', 'string', 'max:255'],
         ];
 
-        if ($user->type == User::TYPE_SERVICE_PROVIDER || $user->type == User::TYPE_SHOP_OWNER) {
+        if ($user && ($user->type == User::TYPE_SERVICE_PROVIDER || $user->type == User::TYPE_SHOP_OWNER)) {
             $data['long'] = ['required', 'numeric', 'min:-180', 'max:180'];
             $data['lat'] = ['required', 'numeric', 'min:-90', 'max:90'];
         }
@@ -48,6 +48,16 @@ class UserUpdateLocation extends FormRequest
      */
     public function authorize(): bool
     {
+        $user = auth('user')->user();
+        if (!$user) {
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    trans('validation.unauthorized'),
+                    null
+                )
+            );
+        }
         return true;
     }
 

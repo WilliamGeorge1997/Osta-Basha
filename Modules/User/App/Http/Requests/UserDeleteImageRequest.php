@@ -23,6 +23,16 @@ class UserDeleteImageRequest extends FormRequest
         $image_id = $this->route('id');
         $user = auth('user')->user();
 
+        if (!$user) {
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    trans('validation.unauthorized'),
+                    null
+                )
+            );
+        }
+
         switch ($user->type) {
             case User::TYPE_SERVICE_PROVIDER:
                 $image = $user->providerCertificates()->find($image_id);

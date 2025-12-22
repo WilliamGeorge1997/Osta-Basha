@@ -64,6 +64,15 @@ class UserChooseType extends FormRequest
     public function authorize(): bool
     {
         $user = auth('user')->user();
+        if (!$user) {
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    trans('validation.unauthorized'),
+                    null
+                )
+            );
+        }
         if ($user->is_active !== 1)
             throw new HttpResponseException(
                 returnUnauthorizedMessage(

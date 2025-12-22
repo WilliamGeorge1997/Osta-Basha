@@ -81,7 +81,7 @@ class UserCompleteRegistrationRequest extends FormRequest
             'whatsapp_country_code' => ['required', 'string', 'max:255'],
         ];
 
-        if ($user->type === 'service_provider') {
+        if ($user && $user->type === 'service_provider') {
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'card_number' => ['nullable', 'string', 'max:255'],
@@ -98,7 +98,7 @@ class UserCompleteRegistrationRequest extends FormRequest
                 'working_times.*.start_at' => ['required', 'string'],
                 'working_times.*.end_at' => ['required', 'string', 'after:working_times.*.start_at'],
             ]);
-        } elseif ($user->type === 'shop_owner') {
+        } elseif ($user && $user->type === 'shop_owner') {
             $rules = array_merge($rules, [
                 'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
                 'address' => ['required', 'string', 'max:255'],
@@ -155,6 +155,15 @@ class UserCompleteRegistrationRequest extends FormRequest
     public function authorize(): bool
     {
         $user = auth('user')->user();
+        if (!$user) {
+            throw new HttpResponseException(
+                returnUnauthorizedMessage(
+                    false,
+                    trans('validation.unauthorized'),
+                    null
+                )
+            );
+        }
         if ($user->type == null) {
             throw new HttpResponseException(
                 returnUnauthorizedMessage(
