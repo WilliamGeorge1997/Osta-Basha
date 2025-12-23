@@ -101,11 +101,12 @@ class UserAuthController extends Controller
             }
             $data = (new UserDto($request))->dataFromRequest();
             $data['is_active'] = 1;
-            $this->userService->create($data);
+            $user = $this->userService->create($data);
+            $token = auth('user')->login($user);
             // $whatsappService = new WhatsAppService();
             // $whatsappService->sendMessage($data['country_code'] . $data['phone'], trans('messages.verify_code', ['code' => $data['verify_code']]));
             DB::commit();
-            return returnMessage(true, 'User Registered Successfully', null);
+            return $this->respondWithToken($token);
         } catch (\Exception $e) {
             DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
