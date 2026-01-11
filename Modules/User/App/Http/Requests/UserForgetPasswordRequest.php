@@ -17,8 +17,7 @@ class UserForgetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'country_code' => ['required'],
-            'phone' => ['required', 'exists:users,phone'],
+            'email' => ['required', 'email', 'exists:users,email'],
         ];
     }
 
@@ -28,8 +27,7 @@ class UserForgetPasswordRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'country_code' => trans('attributes.country_code'),
-            'phone' => trans('attributes.phone'),
+            'email' => trans('attributes.email'),
         ];
     }
 

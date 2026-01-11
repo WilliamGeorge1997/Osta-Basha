@@ -7,6 +7,7 @@ use Modules\User\DTO\UserDto;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Mail;
 use Modules\User\DTO\UserDetailsDto;
 use Modules\Provider\DTO\ProviderDto;
 use Modules\User\Service\UserService;
@@ -17,8 +18,10 @@ use Modules\User\App\resources\UserResource;
 use Modules\Provider\DTO\ProviderWorkingTimeDto;
 use Modules\ShopOwner\DTO\ShopOwnerWorkingTimeDto;
 use Modules\User\App\Http\Requests\UserChooseType;
+use Modules\User\App\Emails\ForgetPasswordOtpEmail;
 use Modules\User\App\Http\Requests\UserVerifyRequest;
 use Modules\User\App\Http\Requests\UserResendOtpRequest;
+use Modules\User\App\Notifications\UserForgetPasswordOtp;
 use Modules\User\App\Http\Requests\UserForgetPasswordRequest;
 use Modules\User\App\Http\Requests\UserLoginOrRegisterRequest;
 use Modules\User\App\Http\Requests\UserCompleteRegistrationRequest;
@@ -230,21 +233,24 @@ class UserAuthController extends Controller
     public function forgetPassword(UserForgetPasswordRequest $request, UserService $userService)
     {
         $data = $request->all();
-        $user = $userService->findBy('phone', $data['phone'])[0];
+        $user = $userService->findBy('email', $data['email'])[0];
+        // $user = $userService->findBy('phone', $data['phone'])[0];
         $verify_code = rand(1000, 9999);
         // $verify_code = 9999;
         $userService->update($user->id, ['verify_code' => $verify_code]);
-        $whatsappService = new WhatsAppService();
-        $whatsappService->sendMessage($user->country_code . $user->phone, trans('messages.verify_code', ['code' => $verify_code]));
+        // $whatsappService = new WhatsAppService();
+        // $whatsappService->sendMessage($user->country_code . $user->phone, trans('messages.verify_code', ['code' => $verify_code]));
         // $smsService = new SMSService();
         // $smsService->sendSMS($client->phone, $verify_code);
+        Mail::to($user->email)->send(new ForgetPasswordOtpEmail($user, $verify_code));
         return returnMessage(true, 'OTP Sent Successfully', null);
     }
 
     public function verifyForgetPassword(UserVerifyRequest $request, UserService $userService)
     {
         $data = $request->all();
-        $user = $userService->findBy('phone', $data['phone'])[0];
+        $user = $userService->findBy('email', $data['email'])[0];
+        // $user = $userService->findBy('phone', $data['phone'])[0];
         if ($user && $user['verify_code'] == $data['otp']) {
             return returnMessage(true, 'OTP is correct');
         }
@@ -254,7 +260,7 @@ class UserAuthController extends Controller
     public function newPassword(UserLoginOrRegisterRequest $request, UserService $userService)
     {
         $data = $request->all();
-        $user = $userService->findBy('phone', $data['phone'])[0];
+        $user = $userService->findBy('email', $data['email'])[0];
         $userService->update($user->id, ['password' => bcrypt($data['password'])]);
         return returnMessage(true, 'Password Updated Successfully');
     }

@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserVerifyRequest extends FormRequest
+class UserForgetPasswordRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,9 +17,8 @@ class UserVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'exists:users,email'],
-            'otp' => ['required'],
-            'expo_token' => ['sometimes', 'nullable', 'string'],
+            'country_code' => ['required'],
+            'phone' => ['required', 'exists:users,phone'],
         ];
     }
 
@@ -28,9 +28,8 @@ class UserVerifyRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'email' => trans('attributes.email'),
-            'otp' => trans('attributes.otp'),
-            'expo_token' => 'Expo Token',
+            'country_code' => trans('attributes.country_code'),
+            'phone' => trans('attributes.phone'),
         ];
     }
 

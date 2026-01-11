@@ -83,6 +83,11 @@ class User extends Authenticatable implements JWTSubject
         }
         return null;
     }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
+    }
     //Helper
 
     public function scopeActive($query)
