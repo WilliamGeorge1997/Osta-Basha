@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UserVerifyRequest extends FormRequest
+class UserChooseSubCategoriesRequest extends FormRequest
 {
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -16,10 +17,8 @@ class UserVerifyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'country_code' => ['required'],
-            'phone' => ['required'],
-            'otp' => ['required'],
-            'expo_token' => ['sometimes', 'nullable', 'string'],
+            'sub_category_ids' => ['required', 'array'],
+            'sub_category_ids.*' => ['required', 'exists:sub_categories,id,is_active,1', 'distinct'],
         ];
     }
 
@@ -29,10 +28,8 @@ class UserVerifyRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'country_code' => trans('attributes.country_code'),
-            'phone' => trans('attributes.phone'),
-            'otp' => trans('attributes.otp'),
-            'expo_token' => 'Expo Token',
+            'sub_category_ids' => trans('attributes.sub_category_ids'),
+            'sub_category_ids.*' => trans('attributes.sub_category_ids.*'),
         ];
     }
 

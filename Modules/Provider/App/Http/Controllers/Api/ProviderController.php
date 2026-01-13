@@ -30,7 +30,10 @@ class ProviderController extends Controller
                         'subCategory' => function ($q) {
                             $q->with('category');
                         },
-                        'package'
+                        'package',
+                        'subCategories' => function ($q) {
+                            $q->with('category');
+                        }
                     ]);
                 },
                 'providerWorkingTimes',
@@ -54,7 +57,10 @@ class ProviderController extends Controller
                         'subCategory' => function ($q) {
                             $q->with('category');
                         },
-                        'package'
+                        'package',
+                        'subCategories' => function ($q) {
+                            $q->with('category');
+                        }
                     ]);
                 },
                 'providerWorkingTimes',
@@ -79,7 +85,10 @@ class ProviderController extends Controller
                         'subCategory' => function ($q) {
                             $q->with('category');
                         },
-                        'package'
+                        'package',
+                        'subCategories' => function ($q) {
+                            $q->with('category');
+                        }
                     ]);
                 },
                 'providerWorkingTimes',

@@ -34,7 +34,10 @@ class ProviderAdminController extends Controller
                         'subCategory' => function ($q) {
                             $q->with('category');
                         },
-                        'package'
+                        'package',
+                        'subCategories' => function ($q) {
+                            $q->with('category');
+                        }
                     ]);
                 },
                 'providerWorkingTimes',

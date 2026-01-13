@@ -32,7 +32,8 @@ class ProviderProfileResource extends JsonResource
                 "created_at" => $this->created_at->format('Y-m-d h:i A'),
                 "updated_at" => $this->updated_at->format('Y-m-d h:i A'),
                 "sub_category" => $this->whenLoaded('subCategory'),
-                "package" => $this->whenLoaded('package')
+                "package" => $this->whenLoaded('package'),
+                "sub_categories" => $this->whenLoaded('subCategories')
             ];
         return $data;
         // return $this->convertNumericToArabic($data, [

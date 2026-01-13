@@ -31,6 +31,8 @@ return [
     'image' => 'Image',
     'user_id' => 'User',
     'sub_category_id' => 'Sub Category',
+    'sub_category_ids' => 'Sub Categories',
+    'sub_category_id.*' => 'Sub Category',
     'current_password' => 'Current Password',
     'new_password' => 'New Password',
     'new_password_confirmation' => 'New Password Confirmation',

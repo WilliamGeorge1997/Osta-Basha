@@ -30,6 +30,7 @@ Route::group([
         Route::post('login-or-register', [UserAuthController::class, 'loginOrRegister']);
         Route::post('choose-user-type', [UserAuthController::class, 'chooseUserType']);
         Route::post('complete-registration', [UserAuthController::class, 'completeRegistration']);
+        Route::post('choose-subcategories', [UserAuthController::class, 'chooseSubCategories']);
         Route::post('verify', [UserAuthController::class, 'verifyOtp']);
         Route::post('logout', [UserAuthController::class, 'logout']);
         Route::post('refresh', [UserAuthController::class, 'refresh']);

@@ -5,6 +5,7 @@ namespace Modules\Category\App\Models;
 use Spatie\Activitylog\LogOptions;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Category\App\Models\Category;
+use Modules\Provider\App\Models\Provider;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Category\App\Models\SubCategoryLocalization;
@@ -55,6 +56,12 @@ class SubCategory extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function providers()
+    {
+        return $this->belongsToMany(Provider::class, 'provider_sub_category')
+            ->withTimestamps();
     }
     public function localizations()
     {

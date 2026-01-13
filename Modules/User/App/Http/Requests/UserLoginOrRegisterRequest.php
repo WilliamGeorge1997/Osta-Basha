@@ -16,7 +16,8 @@ class UserLoginOrRegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'email', 'exists:users,email'],
+            'country_code' => ['required'],
+            'phone' => ['required'],
             'password' => ['required'],
             'expo_token' => ['sometimes', 'nullable', 'string'],
         ];
@@ -28,7 +29,8 @@ class UserLoginOrRegisterRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'email' => trans('attributes.email'),
+            'country_code' => trans('attributes.country_code'),
+            'phone' => trans('attributes.phone'),
             'password' => trans('attributes.password'),
             'expo_token' => 'Expo Token',
         ];

@@ -9,6 +9,7 @@ use Modules\Package\App\Models\Package;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Modules\Category\App\Models\SubCategory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Provider extends Model
 {
@@ -66,6 +67,12 @@ class Provider extends Model
     {
         return $this->belongsTo(SubCategory::class);
     }
+
+    public function subCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(SubCategory::class, 'provider_sub_category')->withTimestamps();
+    }
+
     public function package()
     {
         return $this->belongsTo(Package::class);

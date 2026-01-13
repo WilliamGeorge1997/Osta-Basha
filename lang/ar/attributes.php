@@ -31,6 +31,8 @@ return [
     'image' => 'الصورة',
     'user_id' => 'المستخدم',
     'sub_category_id' => 'التصنيف الفرعي',
+    'sub_category_ids' => 'التصنيفات الفرعية',
+    'sub_category_id.*' => 'الفرعي التصنيف',
     'current_password' => 'كلمة المرور الحالية',
     'new_password' => 'كلمة المرور الجديدة',
     'new_password_confirmation' => 'تأكيد كلمة المرور الجديدة',

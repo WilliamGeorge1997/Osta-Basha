@@ -68,7 +68,10 @@ class ProviderService
             ->whereHas('providerProfile', function ($query) use ($data) {
                 $query
                     ->when($data['sub_category_id'] ?? null, function ($q) use ($data) {
-                        $q->where('sub_category_id', $data['sub_category_id']);
+                        $q->where('sub_category_id', $data['sub_category_id'])
+                            ->orWhereHas('subCategories', function ($subQuery) use ($data) {
+                                $subQuery->where('sub_category_id', $data['sub_category_id']);
+                            });
                     })
                     ->active()
                     ->withinActiveSubscriptionPeriod();
@@ -184,7 +187,10 @@ class ProviderService
             })
             ->when($data['sub_category_id'] ?? null, function ($query) use ($data) {
                 $query->whereHas('providerProfile', function ($q) use ($data) {
-                    $q->where('sub_category_id', $data['sub_category_id']);
+                    $q->where('sub_category_id', $data['sub_category_id'])
+                        ->orWhereHas('subCategories', function ($subQuery) use ($data) {
+                            $subQuery->where('sub_category_id', $data['sub_category_id']);
+                        });
                 });
             })
 
@@ -237,7 +243,10 @@ class ProviderService
                 ->where('is_available', 1)
                 ->where('id', '!=', $data['user_id'])
                 ->whereHas('providerProfile', function ($query) use ($provider_subcategory_id) {
-                    $query->where('sub_category_id', $provider_subcategory_id);
+                    $query->where('sub_category_id', $provider_subcategory_id)
+                        ->orWhereHas('subCategories', function ($subQuery) use ($provider_subcategory_id) {
+                            $subQuery->where('sub_category_id', $provider_subcategory_id);
+                        });
                 })
                 ->whereHas('providerProfile', function ($query) {
                     $query->where('is_active', 1);

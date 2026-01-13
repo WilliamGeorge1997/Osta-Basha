@@ -3,6 +3,7 @@
 namespace Modules\User\App\Http\Controllers\Api;
 
 use Carbon\Carbon;
+use Modules\User\App\Http\Requests\UserChooseSubCategoriesRequest;
 use Modules\User\DTO\UserDto;
 use Modules\User\App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -166,6 +167,20 @@ class UserAuthController extends Controller
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }
+
+    public function chooseSubCategories(UserChooseSubCategoriesRequest $request)
+    {
+        try {
+            DB::beginTransaction();
+            $response = $this->userService->chooseSubCategories($request['sub_category_ids']);
+            DB::commit();
+            return returnMessage(true, 'Sub Categories Added Successfully To Provider', $response);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
     private function getFreeTrialMonths()
     {
         $setting = Setting::where('key', 'free_trial_months')->first();
@@ -274,7 +289,7 @@ class UserAuthController extends Controller
         $user = auth('user')->user();
 
         if ($user->type == 'service_provider') {
-            $user->load(['providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client']);
+            $user->load(['providerProfile.subCategories.category', 'providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client']);
         } elseif ($user->type == 'shop_owner') {
             $user->load(['shopOwnerProfile.package', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerContacts.client']);
         }
@@ -318,7 +333,7 @@ class UserAuthController extends Controller
             $status = 'non_authoritative_information';
         }
         if ($user->type == User::TYPE_SERVICE_PROVIDER) {
-            $user->load(['providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client']);
+            $user->load(['providerProfile.subCategories.category', 'providerProfile.subCategory.category', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client']);
         } elseif ($user->type == User::TYPE_SHOP_OWNER) {
             $user->load(['shopOwnerProfile.subCategory.category', 'shopOwnerWorkingTimes', 'shopOwnerShopImages', 'shopOwnerProfile.package', 'shopOwnerContacts.client']);
         }

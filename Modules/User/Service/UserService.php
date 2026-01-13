@@ -74,7 +74,7 @@ class UserService
                         $user->country
                     )->onConnection('database');
                 }
-                return $user->fresh()->load('providerProfile', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client');
+                return $user->fresh()->load('providerProfile.subCategories.category', 'providerWorkingTimes', 'providerCertificates', 'providerProfile.package', 'providerContacts.client');
 
             case User::TYPE_SHOP_OWNER:
                 $this->completeShopOwnerRegistration($user, $profileData, $workingTimesData);
@@ -99,14 +99,18 @@ class UserService
             $profileData['card_image'] = $this->upload(request()->file('card_image'), 'provider');
         }
         $providerProfile = $user->providerProfile()->create($profileData);
-        $user->providerWorkingTimes()->createMany($workingTimesData);
+        if (!empty($workingTimesData)) {
+            $user->providerWorkingTimes()->createMany($workingTimesData);
+        }
         $this->processImages($user, 'certificates', 'provider/certificates', 'providerCertificates');
     }
 
     private function completeShopOwnerRegistration($user, $profileData, $workingTimesData)
     {
         $shopOwnerProfile = $user->shopOwnerProfile()->create($profileData);
-        $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
+        if (!empty($workingTimesData)) {
+            $user->shopOwnerWorkingTimes()->createMany($workingTimesData);
+        }
         $this->processImages($user, 'shop_images', 'shop_owner/shop_images', 'shopOwnerShopImages');
     }
 
@@ -171,7 +175,7 @@ class UserService
 
             case User::TYPE_SERVICE_PROVIDER:
                 $this->updateProviderProfile($user, $profileData, $workingTimesData);
-                return $user->fresh()->load('providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client');
+                return $user->fresh()->load('providerProfile.subCategories.category', 'providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client');
 
             case User::TYPE_SHOP_OWNER:
                 $this->updateShopOwnerProfile($user, $profileData, $workingTimesData);
@@ -295,7 +299,7 @@ class UserService
                 'providerProfile' => function ($q) {
                     $q->whereHas('user', function ($query) {
                         $query->where('type', User::TYPE_SERVICE_PROVIDER);
-                    })->with('subCategory.category');
+                    })->with(['subCategory.category', 'subCategories.category']);
                 }
             ])
             ->with([
@@ -337,7 +341,7 @@ class UserService
             $relations = [];
             if ($type == User::TYPE_SERVICE_PROVIDER) {
                 $relations = array_merge($relations, [
-                    'providerProfile',
+                    'providerProfile.subCategories.category',
                     'providerCertificates',
                     'providerWorkingTimes',
                     'providerProfile.package',
@@ -396,5 +400,15 @@ class UserService
     function findToken($id)
     {
         return User::where('id', $id)->first()['expo_token'];
+    }
+
+    public function chooseSubCategories(array $sub_category_ids)
+    {
+        auth()->guard('user')->user()
+            ->providerProfile
+            ->subCategories()
+            ->syncWithoutDetaching($sub_category_ids);
+
+        return auth()->guard('user')->user()->fresh('providerProfile.subCategories');
     }
 }
