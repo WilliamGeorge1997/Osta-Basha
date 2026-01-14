@@ -18,6 +18,7 @@ use Modules\User\App\Http\Requests\UserUpdateLocation;
 use Modules\User\App\Http\Requests\UserDeleteImageRequest;
 use Modules\User\App\Http\Requests\UserUpdateProfileRequest;
 use Modules\User\App\Http\Requests\UserChangePasswordRequest;
+use Modules\User\App\Http\Requests\UserDeleteSubCategoriesRequest;
 
 class UserController extends Controller
 {
@@ -31,6 +32,7 @@ class UserController extends Controller
     {
         $this->middleware('auth:user')->except(['search']);
         $this->middleware('role:Service Provider|Shop Owner')->only('deleteImage', 'toggleAvailable', 'receivedContacts');
+        $this->middleware('role:Service Provider')->only('deleteSubCategories');
         $this->userService = $userService;
     }
 
@@ -123,6 +125,19 @@ class UserController extends Controller
             $user = $this->userService->updateLocation($request->validated());
             return returnMessage(true, 'Location Updated Successfully', new UserResource($user));
         } catch (\Exception $e) {
+            return returnMessage(false, $e->getMessage(), null, 'server_error');
+        }
+    }
+
+    public function deleteSubCategories(UserDeleteSubCategoriesRequest $request)
+    {
+        DB::beginTransaction();
+        try {
+            $user = $this->userService->deleteSubCategories($request->validated()['sub_category_ids']);
+            DB::commit();
+            return returnMessage(true, 'Subcategories deleted successfully', new UserResource($user));
+        } catch (\Exception $e) {
+            DB::rollBack();
             return returnMessage(false, $e->getMessage(), null, 'server_error');
         }
     }

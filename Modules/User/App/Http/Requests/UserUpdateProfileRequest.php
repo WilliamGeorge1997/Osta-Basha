@@ -16,18 +16,18 @@ class UserUpdateProfileRequest extends FormRequest
     protected function prepareForValidation()
     {
         $data = $this->all();
-    //     if (isset($data['whatsapp'])) {
-    //         $data['whatsapp'] = $this->convertToWestern($data['whatsapp']);
-    //     }
-    //     if (isset($data['experience_years'])) {
-    //         $data['experience_years'] = $this->convertToWestern($data['experience_years']);
-    //     }
-    //     if (isset($data['price'])) {
-    //         $data['price'] = $this->convertToWestern($data['price']);
-    //     }
-    //     if (isset($data['card_number'])) {
-    //         $data['card_number'] = $this->convertToWestern($data['card_number']);
-    //     }
+        //     if (isset($data['whatsapp'])) {
+        //         $data['whatsapp'] = $this->convertToWestern($data['whatsapp']);
+        //     }
+        //     if (isset($data['experience_years'])) {
+        //         $data['experience_years'] = $this->convertToWestern($data['experience_years']);
+        //     }
+        //     if (isset($data['price'])) {
+        //         $data['price'] = $this->convertToWestern($data['price']);
+        //     }
+        //     if (isset($data['card_number'])) {
+        //         $data['card_number'] = $this->convertToWestern($data['card_number']);
+        //     }
         if (isset($data['working_times']) && is_array($data['working_times'])) {
             $processedWorkingTimes = [];
 
@@ -35,12 +35,12 @@ class UserUpdateProfileRequest extends FormRequest
                 if (!is_array($workingTime)) {
                     continue;
                 }
-    //             if (isset($workingTime['start_at'])) {
-    //                 $workingTime['start_at'] = $this->convertToWestern($workingTime['start_at']);
-    //             }
-    //             if (isset($workingTime['end_at'])) {
-    //                 $workingTime['end_at'] = $this->convertToWestern($workingTime['end_at']);
-    //             }
+                //             if (isset($workingTime['start_at'])) {
+                //                 $workingTime['start_at'] = $this->convertToWestern($workingTime['start_at']);
+                //             }
+                //             if (isset($workingTime['end_at'])) {
+                //                 $workingTime['end_at'] = $this->convertToWestern($workingTime['end_at']);
+                //             }
                 if (isset($workingTime['day']) && is_string($workingTime['day']) && strpos($workingTime['day'], ',') !== false) {
                     $days = explode(',', $workingTime['day']);
                     foreach ($days as $day) {
@@ -57,9 +57,9 @@ class UserUpdateProfileRequest extends FormRequest
             $data['working_times'] = $processedWorkingTimes;
         }
         $this->replace($data);
-    //     foreach ($data as $key => $value) {
-    //         $this->request->set($key, $value);
-    //     }
+        //     foreach ($data as $key => $value) {
+        //         $this->request->set($key, $value);
+        //     }
     }
 
     /**
@@ -73,43 +73,43 @@ class UserUpdateProfileRequest extends FormRequest
         $user = auth('user')->user();
 
         $rules = [
-            'first_name' => ['required', 'string', 'max:255'],
-            'last_name' => ['required', 'string', 'max:255'],
+            'first_name' => ['nullable', 'string', 'max:255'],
+            'last_name' => ['nullable', 'string', 'max:255'],
             'email' => ['sometimes', 'nullable', 'email', 'max:255', 'unique:users,email,' . $user->id],
-            'whatsapp' => ['required', 'string', 'max:255'],
-            'whatsapp_country_code' => ['required', 'string', 'max:255'],
+            'whatsapp' => ['nullable', 'string', 'max:255'],
+            'whatsapp_country_code' => ['nullable', 'string', 'max:255'],
         ];
 
         if ($user && $user->type === 'service_provider') {
             $rules = array_merge($rules, [
-                'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
-                'card_number' => ['required', 'string', 'max:255'],
-                'card_image' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-                'address' => ['required', 'string', 'max:255'],
-                'experience_years' => ['required', 'numeric', 'min:0'],
-                'experience_description' => ['required', 'string'],
-                'price' => ['required', 'string'],
-                'unit' => ['sometimes','nullable', 'string'],
+                // 'sub_category_id' => ['nullable', 'exists:sub_categories,id,is_active,1'],
+                'card_number' => ['nullable', 'string', 'max:255'],
+                'card_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'address' => ['nullable', 'string', 'max:255'],
+                'experience_years' => ['nullable', 'string'],
+                'experience_description' => ['nullable', 'string'],
+                'price' => ['nullable', 'string'],
+                'unit' => ['sometimes', 'nullable', 'string'],
                 'certificates' => ['sometimes', 'array'],
                 'certificates.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-                'working_times' => ['required', 'array'],
-                'working_times.*.day' => ['required', 'string'],
-                'working_times.*.start_at' => ['required', 'date_format:H:i'],
-                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+                'working_times' => ['nullable', 'array'],
+                'working_times.*.day' => ['required_with:working_times', 'string'],
+                'working_times.*.start_at' => ['required_with:working_times', 'string'],
+                'working_times.*.end_at' => ['required_with:working_times', 'string', 'after:working_times.*.start_at'],
             ]);
         } elseif ($user && $user->type === 'shop_owner') {
             $rules = array_merge($rules, [
-                'sub_category_id' => ['required', 'exists:sub_categories,id,is_active,1'],
-                'address' => ['required', 'string', 'max:255'],
-                'shop_name' => ['required', 'string', 'max:255'],
-                'products_description' => ['required', 'string'],
-                'experience_years' => ['required', 'numeric', 'min:0'],
-                'shop_images' => ['sometimes', 'array'],
-                'shop_images.*' => ['sometimes', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
-                'working_times' => ['required', 'array'],
-                'working_times.*.day' => ['required', 'string'],
-                'working_times.*.start_at' => ['required', 'date_format:H:i'],
-                'working_times.*.end_at' => ['required', 'date_format:H:i', 'after:working_times.*.start_at'],
+                'sub_category_id' => ['nullable', 'exists:sub_categories,id,is_active,1'],
+                'address' => ['nullable', 'string', 'max:255'],
+                'shop_name' => ['nullable', 'string', 'max:255'],
+                'products_description' => ['nullable', 'string'],
+                'experience_years' => ['nullable', 'string'],
+                'shop_images' => ['nullable', 'array'],
+                'shop_images.*' => ['required_with:shop_images', 'image', 'mimes:jpeg,png,jpg,webp', 'max:1024'],
+                'working_times' => ['nullable', 'array'],
+                'working_times.*.day' => ['required_with:working_times', 'string'],
+                'working_times.*.start_at' => ['required_with:working_times', 'string'],
+                'working_times.*.end_at' => ['required_with:working_times', 'string', 'after:working_times.*.start_at'],
             ]);
         }
 

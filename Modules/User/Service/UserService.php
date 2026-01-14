@@ -296,19 +296,19 @@ class UserService
                     });
             })
             ->with([
-                'providerProfile' => function ($q) {
-                    $q->whereHas('user', function ($query) {
-                        $query->where('type', User::TYPE_SERVICE_PROVIDER);
-                    })->with(['subCategory.category', 'subCategories.category']);
-                }
-            ])
+                    'providerProfile' => function ($q) {
+                        $q->whereHas('user', function ($query) {
+                            $query->where('type', User::TYPE_SERVICE_PROVIDER);
+                        })->with(['subCategory.category', 'subCategories.category']);
+                    }
+                ])
             ->with([
-                'shopOwnerProfile' => function ($q) {
-                    $q->whereHas('user', function ($query) {
-                        $query->where('type', User::TYPE_SHOP_OWNER);
-                    })->with('subCategory.category');
-                }
-            ])
+                    'shopOwnerProfile' => function ($q) {
+                        $q->whereHas('user', function ($query) {
+                            $query->where('type', User::TYPE_SHOP_OWNER);
+                        })->with('subCategory.category');
+                    }
+                ])
             ->latest();
 
         return getCaseCollection($query, $data);
@@ -410,5 +410,20 @@ class UserService
             ->syncWithoutDetaching($sub_category_ids);
 
         return auth()->guard('user')->user()->fresh('providerProfile.subCategories');
+    }
+
+    public function deleteSubCategories(array $sub_category_ids)
+    {
+        $user = auth()->guard('user')->user();
+
+        if (!$user->providerProfile) {
+            throw new \Exception('Provider profile not found');
+        }
+
+        $user->providerProfile
+            ->subCategories()
+            ->detach($sub_category_ids);
+
+        return $user->fresh()->load('providerProfile.subCategories.category', 'providerProfile.package', 'providerWorkingTimes', 'providerCertificates', 'providerContacts.client');
     }
 }

@@ -43,6 +43,7 @@ Route::group([
     Route::post('toggle-available', [UserController::class, 'toggleAvailable']);
     Route::get('received-contacts', [UserController::class, 'receivedContacts']);
     Route::post('update-location', [UserController::class, 'updateLocation']);
+    Route::post('delete-subcategories', [UserController::class, 'deleteSubCategories']);
 
     //Forget Password
     Route::post('forget-password', [UserAuthController::class, 'forgetPassword']);
